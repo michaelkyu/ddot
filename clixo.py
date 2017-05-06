@@ -18,7 +18,7 @@ def run_clixo(graph, alpha, beta, dt_thresh, max_time, warm_start,
         with tempfile.NamedTemporaryFile('w', delete=False) as f:
             f.write('\n'.join(['\t'.join([str(x[0]),str(x[1]),str(x[2])]) for x in graph]) + '\n')
 
-        shutil.copy(f.name, '/cellar/users/mikeyu/DeepTranslate/clixo_cx')
+#        shutil.copy(f.name, '/cellar/users/mikeyu/DeepTranslate/clixo_cx')
         graph = f.name
         delete_file = f.name
         print 'Temporary file for graph:', f.name

@@ -38,13 +38,18 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                             'dt_thresh': 100000,
                             'max_time': 100000,
                             'warm_start': False,
-                            'clixo_folder': '/cellar/users/mikeyu/mhk7-clixo_0.3-cec3674',
+                            'clixo_folder': os.getenv('CLIXO'),
                             'output_suffix': '',
                             'iteration': 1,
                             'verbose': True}
 
+            # '/cellar/users/mikeyu/mhk7-clixo_0.3-cec3674',
+            # if clixo_params['clixo_folder'] is#  None:
+                # clixo_params['clixo_folder'] =
+
             input_G, clixo_params, errors = self.read_element_stream(element_iterator, clixo_params)
 
+            
 #            print clixo_params
 #            0 / asdf
 
@@ -53,9 +58,9 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
             if isinstance(clixo_params['ndex_uuid'], (str, unicode)):
                 # Read graph using NDEx client
                 input_G = NdexGraph(server=clixo_params['ndex_server'],
-                                  username=clixo_params['ndex_user'],
-                                  password=clixo_params['ndex_pass'],
-                                  uuid=clixo_params['ndex_uuid'])
+                                    username=clixo_params['ndex_user'],
+                                    password=clixo_params['ndex_pass'],
+                                    uuid=clixo_params['ndex_uuid'])
                 graph = [(input_G.node[u]['name'],
                           input_G.node[v]['name'],
                           float(attr['similarity'])) for u, v, attr in input_G.edges_iter(data=True)]

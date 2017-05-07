@@ -29,10 +29,15 @@ def run_clixo(graph, alpha, beta, dt_thresh, max_time,
     clixo_cmd = os.path.join(clixo_folder, 'clixo')
     extract_cmd = os.path.join(clixo_folder, 'extractOnt')
 
-    if not (isinstance(output_log, str) and os.path.isfile(output_log)):
-        output_log = tempfile.NamedTemporaryFile('w', delete=True)
+    if not isinstance(output_log, str):
+        output_log_file = tempfile.NamedTemporaryFile('w', delete=True)
+        output_log = output_log_file.name
         delete_output_log = True
     else:
+        # print 'output_log', output_log
+        # print 'output_log dirname:', os.path.dirname(output_log)
+        # print 'output_log dirname exists:', os.path.isdir(os.path.dirname(output_log))
+        assert os.path.isdir(os.path.dirname(output_log))
         delete_output_log = False
 
     # For timestamping everyline: awk '{ print strftime("%Y-%m-%d %H:%M:%S"), $0; fflush(); }'
@@ -62,7 +67,9 @@ def run_clixo(graph, alpha, beta, dt_thresh, max_time,
         # Break if the dt_threshold has been met
         if '# dt: ' in line:
             curr_dt = float(line.split('# dt: ')[1])
-            if curr_dt < dt_thresh:  break
+            if curr_dt < dt_thresh:
+                if verbose: time_print('Killing process %s (BEYOND MIN THRESHOLD). Current dt: %s, dt_thresh: %s' % (p.pid, curr_dt, dt_thresh))
+                break
 
         # If line was empty, then sleep a bit
         if line=='':  time.sleep(0.1)
@@ -71,13 +78,19 @@ def run_clixo(graph, alpha, beta, dt_thresh, max_time,
         if verbose: time_print('Killing process %s. Output: %s' % (p.pid, output_log))
         p.kill()  # Kill the process
 
-    # Extract ontology with extractOnt
-    p_ext = Popen('%s %s 0 0 %s' % (extract_cmd, output_log, output),
-                  shell=True, stdout=PIPE, stderr=STDOUT)
-    p_ext.communicate()
+        # Extract ontology with extractOnt
+        p_ext = Popen('%s %s 0 0 %s' % (extract_cmd, output_log, output),
+                      shell=True, stdout=PIPE, stderr=STDOUT)
+        p_ext.communicate()
+    else:
+        if verbose: time_print('Extracting by grep -v #')
+
+        # Extract ontology with grep -v '#'
+        p_ext = Popen("grep -v '#' %s | grep -v '@' > %s" % (output_log, output), shell=True)
+        p_ext.communicate()
 
     if delete_output_log:
-        output_log.close()
+        output_log_file.close()
 
     if delete_file and os.path.isfile(delete_file):
         os.remove(delete_file)

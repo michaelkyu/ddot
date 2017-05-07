@@ -39,6 +39,7 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                             'dt_thresh': -100000,
                             'max_time': 100000,
                             'clixo_folder': os.getenv('CLIXO'),
+                            'output_fmt': 'cx',
                             'iteration': 1,
                             'verbose': True}
 
@@ -59,7 +60,7 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                 graph = [(input_G.node[u]['name'],
                           input_G.node[v]['name'],
                           float(attr[similarity_attr])) for u, v, attr in input_G.edges_iter(data=True)]
-                print 'graph:', graph[:5]
+#                print 'graph:', graph[:5]
                 clixo_params['graph'] = graph
             else:
                 # Read graph from CXmate stream
@@ -70,7 +71,6 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
 
 #            if len(errors) == 0:
             if True:
-# len(errors) == 0:
                 ## Run CLIXO
                 with tempfile.NamedTemporaryFile('w', delete=False) as output:
                     clixo_params['output'] = output.name
@@ -103,36 +103,43 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                 term_2_uuid = {t : url.split('http://public.ndexbio.org/v2/network/')[1] for t, url in term_2_url.items()}
 #                term_2_uuid = {t : '' for t in ontology.terms}
 
-                # Directly output to NDEX
-                ontology_ndex = ontology.to_networkx()
-                for t in ontology.terms:
-                    ontology_ndex.node[t]['name'] = 'CLIXO:%s' % t
-                    ontology_ndex.node[t]['Gene_or_Term'] = 'Term'
-                    ontology_ndex.node[t]['Size'] = term_sizes[t]
-                    ontology_ndex.node[t]['ndex:internalLink'] = term_2_uuid[t]
-                for g in ontology.genes:
-                    ontology_ndex.node[t]['name'] = g
-                    ontology_ndex.node[g]['Size'] = 1
-                    ontology_ndex.node[t]['Gene_or_Term'] = 'Gene'
+                if clixo_params['output_fmt']=='cx':
+                    # Use CXmate to stream to NDEX
+                    for elt in self.stream_ontology(ontology, term_sizes, term_2_uuid):
+                        yield elt
+                elif clixo_params['output_fmt']=='ndex':
+                    # Directly output to NDEX
+                    ontology_ndex = ontology.to_networkx()
+                    for t in ontology.terms:
+                        ontology_ndex.node[t]['name'] = 'CLIXO:%s' % t
+                        ontology_ndex.node[t]['Gene_or_Term'] = 'Term'
+                        ontology_ndex.node[t]['Size'] = term_sizes[t]
+                        ontology_ndex.node[t]['ndex:internalLink'] = term_2_uuid[t]
+                    for g in ontology.genes:
+                        ontology_ndex.node[t]['name'] = g
+                        ontology_ndex.node[g]['Size'] = 1
+                        ontology_ndex.node[t]['Gene_or_Term'] = 'Gene'
 
-                ontology_ndex = networkx_to_NdexGraph(ontology_ndex)
-                ontology_ndex.set_name(clixo_params['name'])
+                    ontology_ndex = networkx_to_NdexGraph(ontology_ndex)
+                    ontology_ndex.set_name(clixo_params['name'])
 
-                ontology_url = ontology_ndex.upload_to(clixo_params['ndex_server'], clixo_params['ndex_user'], clixo_params['ndex_pass'])
-                ontology_uuid = ontology_url.split('http://public.ndexbio.org/v2/network/')[1]
-                print 'ontology_url:', ontology_url 
+                    ontology_url = ontology_ndex.upload_to(clixo_params['ndex_server'], clixo_params['ndex_user'], clixo_params['ndex_pass'])
+                    ontology_uuid = ontology_url.split('http://public.ndexbio.org/v2/network/')[1]
+                    print 'ontology_url:', ontology_url 
 
-                # description = 'Data-driven ontology created by CLIXO (parameters: alpha=%s, beta=%s).' % (clixo_params['alpha'], clixo_params['beta'])
-                # if isinstance(clixo_params['ndex_uuid'], (str, unicode)):
-                #     description += ' Created from similarity network at %s/%s' % (clixo_params['ndex_server'], clixo_params['ndex_uuid'])
-                # my_ndex=nc.Ndex(clixo_params['ndex_server'], clixo_params['ndex_user'], clixo_params['ndex_pass'])
-                # ontology_profile = {'description': description}
-                # my_ndex.update_network_profile(ontology_uuid, ontology_profile)
+                    # description = 'Data-driven ontology created by CLIXO (parameters: alpha=%s, beta=%s).' % (clixo_params['alpha'], clixo_params['beta'])
+                    # if isinstance(clixo_params['ndex_uuid'], (str, unicode)):
+                    #     description += ' Created from similarity network at %s/%s' % (clixo_params['ndex_server'], clixo_params['ndex_uuid'])
+                    # my_ndex=nc.Ndex(clixo_params['ndex_server'], clixo_params['ndex_user'], clixo_params['ndex_pass'])
+                    # ontology_profile = {'description': description}
+                    # my_ndex.update_network_profile(ontology_uuid, ontology_profile)
 
-                # Use CXmate to stream to NDEX
-                for elt in self.stream_ontology(ontology, term_sizes, term_2_uuid):
-                    yield elt
-                
+                    element = cx_pb2.Element()
+                    param = element.parameter
+                    param.name = 'ndex_uuid'
+                    param.value = ontology_uuid
+                    yield element
+
             else:
                 for caught_error in errors:
                     error = self.create_internal_crash_error(caught_error.message, 500)

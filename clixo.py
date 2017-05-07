@@ -8,9 +8,8 @@ from itertools import combinations
 from subprocess import Popen, PIPE, STDOUT
 from utilities import time_print
 
-def run_clixo(graph, alpha, beta, dt_thresh, max_time, warm_start,
-              output, clixo_folder, output_suffix, iteration,
-              verbose=True):
+def run_clixo(graph, alpha, beta, dt_thresh, max_time,
+              output, clixo_folder, output_log=None, verbose=True):
 
     if not isinstance(graph, str):
         # Write graph into a temporary file.
@@ -18,33 +17,28 @@ def run_clixo(graph, alpha, beta, dt_thresh, max_time, warm_start,
         with tempfile.NamedTemporaryFile('w', delete=False) as f:
             f.write('\n'.join(['\t'.join([str(x[0]),str(x[1]),str(x[2])]) for x in graph]) + '\n')
 
-#        shutil.copy(f.name, '/cellar/users/mikeyu/DeepTranslate/clixo_cx')
         graph = f.name
         delete_file = f.name
         print 'Temporary file for graph:', f.name
     else:
         delete_file = False
 
-    if verbose: time_print('\t'.join(map(str, [graph, alpha, beta, dt_thresh, iteration])))
-
-    if output is None:
-        output = '%s.clixo_%s_%s%s' % (graph, alpha, beta, output_suffix)
-    
-    # Exit if a warm start is specified and if the output file already exists
-    if warm_start and os.path.isfile(output):
-        prev_lines = [float(x.split('# dt: ')[1]) for x in open(output).read().splitlines() if '# dt: ' in x]
-        if len(prev_lines) > 0 and min(prev_lines) < dt_thresh:
-            return
+    if verbose: time_print('\t'.join(map(str, [graph, alpha, beta, dt_thresh])))
 
     # '/cellar/users/mikeyu/mhk7-clixo_0.3-cec3674'
     clixo_cmd = os.path.join(clixo_folder, 'clixo')
     extract_cmd = os.path.join(clixo_folder, 'extractOnt')
-    stats_cmd = os.path.join(clixo_folder, 'ontologyTermStats')
 
+    if not (isinstance(output_log, str) and os.path.isfile(output_log)):
+        output_log = tempfile.NamedTemporaryFile('w', delete=True)
+        delete_output_log = True
+    else:
+        delete_output_log = False
+
+    # For timestamping everyline: awk '{ print strftime("%Y-%m-%d %H:%M:%S"), $0; fflush(); }'
     cmd = """{0} {1} {2} {3} | awk""".format(clixo_cmd, graph, alpha, beta) + \
           """ '{if ( $1 ~ /^#/ ) {print "\#", strftime("%Y-%m-%d %H:%M:%S"), $0 ; fflush() } else {print $0}}'""" + \
-          """ | tee {}""".format(output)
-    # For timestamping everyline: awk '{ print strftime("%Y-%m-%d %H:%M:%S"), $0; fflush(); }'
+          """ | tee {}""".format(output_log)
     print >>sys.stderr, cmd
 
     p = Popen(cmd, shell=True, stdout=PIPE, stderr=STDOUT, bufsize=1)
@@ -57,7 +51,7 @@ def run_clixo(graph, alpha, beta, dt_thresh, max_time, warm_start,
 
         # Break if passed the maximum processing time
         if time.time() - start > max_time:
-            if verbose: time_print('Iteration: %s. Killing process %s (OUT OF TIME). Current dt: %s: Output: %s' % (iteration, p.pid, curr_dt, output))
+            if verbose: time_print('Killing process %s (OUT OF TIME). Current dt: %s: Output: %s' % (p.pid, curr_dt, output_log))
             break
 
         line = p.stdout.readline()
@@ -68,78 +62,68 @@ def run_clixo(graph, alpha, beta, dt_thresh, max_time, warm_start,
         # Break if the dt_threshold has been met
         if '# dt: ' in line:
             curr_dt = float(line.split('# dt: ')[1])
-            if curr_dt < dt_thresh: break
+            if curr_dt < dt_thresh:  break
 
         # If line was empty, then sleep a bit
-        if line=='':
-            time.sleep(0.1)
-
-        # # Stderr output
-        # print p.stderr.readline()
+        if line=='':  time.sleep(0.1)
 
     if p.poll() is None:
-        if verbose: time_print('Iteration: %s. Killing process %s. Output: %s' % (iteration, p.pid, output))
+        if verbose: time_print('Killing process %s. Output: %s' % (p.pid, output_log))
         p.kill()  # Kill the process
 
-        # Extract ontology with extractOnt
-        p_ext = Popen('%s %s 0 2 %s.peek' % (extract_cmd, output, output),
-                      shell=True, stdout=PIPE, stderr=STDOUT)
-        p_ext.communicate()
-    else:
-        if verbose: time_print('Iteration: %s. Process %s is already dead. Output: %s' % (iteration, p.pid, output))
-        
-        # Extract ontology with grep -v '#'
-        p_ext = Popen("grep -v '#' %s | grep -v '@' > %s.peek" % (output, output), shell=True)
-        p_ext.communicate()
-
-    # Extract statistics
-    p_stats = Popen('%s %s.peek genes gene > %s.stats' % (stats_cmd, output, output),
+    # Extract ontology with extractOnt
+    p_ext = Popen('%s %s 0 0 %s' % (extract_cmd, output_log, output),
                   shell=True, stdout=PIPE, stderr=STDOUT)
-    p_stats.communicate()
+    p_ext.communicate()
+
+    if delete_output_log:
+        output_log.close()
 
     if delete_file and os.path.isfile(delete_file):
         os.remove(delete_file)
 
-    time_print('Iteration: %s. Elapsed time (sec): %s' % (iteration, time.time() - start))
+    time_print('Elapsed time (sec): %s' % (time.time() - start))
 
-if __name__=='__main__':
-    parser = argparse.ArgumentParser('Convert contact maps into a clixo readable format')
-    parser.add_argument('--alpha', type=float, nargs='*', help='List of alpha parameters')
-    parser.add_argument('--beta', type=float, nargs='*', help='List of beta parameters')
-    parser.add_argument('--graphs', type=str, nargs='*', help='List of pairwise similarity files')
-    parser.add_argument('--clixo_folder', type=str, default='/cellar/users/mikeyu/mhk7-clixo_0.3-cec3674')
-    parser.add_argument('--output_suffix', type=str, nargs='?', const='', default='')
-    parser.add_argument('--dt_thresh', type=float,
-                        help="Terminate CliXO when dt falls below this threshold. If not specified, then run to completion.")
-    parser.add_argument('--max_time', type=float,
-                        help="Max allowable time before CliXO is terminated.  If not specified, then run to completion")
-    parser.add_argument('--n_jobs', type=int, help="Number of parallel jobs")
-    parser.add_argument('--iteration_chunk', type=int, default=1,
-                        help="In combination with the arg <iteration>, this divide the parameter settings into equal-sized chunks")
-    parser.add_argument('--iteration', type=int, default=None,
-                        help="In combination with the arg <iteration_chunk>, this is the 0-based index of which chunk of parameter settings to use")
-    parser.add_argument('--warm_start', action='store_true', help="Skip parameters if the output file already exists")
-    parser.add_argument('--output', default=None)
-    args = parser.parse_args()
+    return output, output_log
 
-    pprint.pprint(vars(args))
+# if __name__=='__main__':
+#     parser = argparse.ArgumentParser('Convert contact maps into a clixo readable format')
+#     parser.add_argument('--alpha', type=float, nargs='*', help='List of alpha parameters')
+#     parser.add_argument('--beta', type=float, nargs='*', help='List of beta parameters')
+#     parser.add_argument('--graphs', type=str, nargs='*', help='List of pairwise similarity files')
+#     parser.add_argument('--clixo_folder', type=str, default='/cellar/users/mikeyu/mhk7-clixo_0.3-cec3674')
+#     parser.add_argument('--output_suffix', type=str, nargs='?', const='', default='')
+#     parser.add_argument('--dt_thresh', type=float,
+#                         help="Terminate CliXO when dt falls below this threshold. If not specified, then run to completion.")
+#     parser.add_argument('--max_time', type=float,
+#                         help="Max allowable time before CliXO is terminated.  If not specified, then run to completion")
+#     parser.add_argument('--n_jobs', type=int, help="Number of parallel jobs")
+#     parser.add_argument('--iteration_chunk', type=int, default=1,
+#                         help="In combination with the arg <iteration>, this divide the parameter settings into equal-sized chunks")
+#     parser.add_argument('--iteration', type=int, default=None,
+#                         help="In combination with the arg <iteration_chunk>, this is the 0-based index of which chunk of parameter settings to use")
+#     parser.add_argument('--warm_start', action='store_true', help="Skip parameters if the output file already exists")
+#     parser.add_argument('--output', default=None)
+#     args = parser.parse_args()
 
-    param_list = [(g, a, b, args.dt_thresh, args.max_time, args.warm_start, args.output, args.clixo_folder, args.output_suffix) \
-                  for g in args.graphs for a in args.alpha for b in args.beta]
-    param_list = [x + (i, ) for i, x in enumerate(param_list)]
+#     pprint.pprint(vars(args))
 
-#def run_clixo(graph, alpha, beta, dt_thresh, max_time, warm_start, iteration, verbose=True):
+#     param_list = [(g, a, b, args.dt_thresh, args.max_time, args.warm_start, args.output, args.clixo_folder, args.output_suffix) \
+#                   for g in args.graphs for a in args.alpha for b in args.beta]
+#     param_list = [x + (i, ) for i, x in enumerate(param_list)]
 
-    # If an iteration index is specified, then run only one setting of parameters
-    if args.iteration is not None:
-        param_list = param_list[args.iteration_chunk*args.iteration: args.iteration_chunk*(args.iteration+1)]
+# #def run_clixo(graph, alpha, beta, dt_thresh, max_time, warm_start, iteration, verbose=True):
 
-    try:
-        pool = Pool(args.n_jobs, maxtasksperchild=1)
-        start = time.time()
-        val_list = [run_clixo_star(x) for x in param_list]        
-#        time_print('Running pool')        
-#        val_list = pool.map(run_clixo_star, param_list, chunksize=1)
-    finally:
-        pool.close()
-        print 'Elapsed time (sec)', time.time() - start
+#     # If an iteration index is specified, then run only one setting of parameters
+#     if args.iteration is not None:
+#         param_list = param_list[args.iteration_chunk*args.iteration: args.iteration_chunk*(args.iteration+1)]
+
+#     try:
+#         pool = Pool(args.n_jobs, maxtasksperchild=1)
+#         start = time.time()
+#         val_list = [run_clixo_star(x) for x in param_list]        
+# #        time_print('Running pool')        
+# #        val_list = pool.map(run_clixo_star, param_list, chunksize=1)
+#     finally:
+#         pool.close()
+#         print 'Elapsed time (sec)', time.time() - start

@@ -34,21 +34,15 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
         try:
             clixo_params = {'ndex_uuid' : None,
                             'ndex_server' : 'http://public.ndexbio.org/',
+                            'similarity_attr' : 'similarity',
                             'name' : 'Data-Driven Ontology',
                             'dt_thresh': 100000,
                             'max_time': 100000,
-                            'warm_start': False,
                             'clixo_folder': os.getenv('CLIXO'),
-                            'output_suffix': '',
                             'iteration': 1,
                             'verbose': True}
 
-            # '/cellar/users/mikeyu/mhk7-clixo_0.3-cec3674',
-            # if clixo_params['clixo_folder'] is#  None:
-                # clixo_params['clixo_folder'] =
-
             input_G, clixo_params, errors = self.read_element_stream(element_iterator, clixo_params)
-
             
 #            print clixo_params
 #            0 / asdf
@@ -61,9 +55,10 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                                     username=clixo_params['ndex_user'],
                                     password=clixo_params['ndex_pass'],
                                     uuid=clixo_params['ndex_uuid'])
+                similarity_attr = clixo_params['similarity_attr']
                 graph = [(input_G.node[u]['name'],
                           input_G.node[v]['name'],
-                          float(attr['similarity'])) for u, v, attr in input_G.edges_iter(data=True)]
+                          float(attr[similarity_attr])) for u, v, attr in input_G.edges_iter(data=True)]
                 print 'graph:', graph[:5]
                 clixo_params['graph'] = graph
             else:
@@ -75,13 +70,21 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
 
             if len(errors) == 0:
                 ## Run CLIXO
-                clixo_argnames = inspect.getargspec(run_clixo).args
-                run_clixo(**{k : v for k, v in clixo_params.items() if k in clixo_argnames})
-                    
-                ## Read using Ontology class (to make tree, and to get term sizes)
-                with open(clixo_params['output']) as f:
-                    lines = [x.split('\t') for x in f.read().splitlines() if len(x)>0 and x[0]!='#']
+                with tempfile.NamedTemporaryFile('w', delete=True) as output:
+                    clixo_params['output'] = output.name
+                    print 'Temp file exists:', os.path.isfile(output.name)
 
+                    clixo_argnames = inspect.getargspec(run_clixo).args
+                    run_clixo(**{k : v for k, v in clixo_params.items() if k in clixo_argnames})
+
+                    with open(clixo_params['output'], 'r') as f:
+                        lines = [x.split('\t') for x in f.read().splitlines() if len(x)>0 and x[0]!='#']
+
+                    print 'Temp file exists:', os.path.isfile(output.name)
+
+                print 'Temp file still exists:', os.path.isfile(output.name)
+
+                ## Read using Ontology class (to make tree, and to get term sizes)
                 ontology_table = [x for x in lines if x[2]!='gene']
                 mapping_table = [x for x in lines if x[2]=='gene']
                 ontology = Ontology(ontology_table, mapping_table, parent_child=True)

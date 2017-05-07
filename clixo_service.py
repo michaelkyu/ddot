@@ -68,7 +68,9 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
 #                print 'graph:', graph[:5]
                 clixo_params['graph'] = graph
 
-            if len(errors) == 0:
+#            if len(errors) == 0:
+            if True:
+# len(errors) == 0:
                 ## Run CLIXO
                 with tempfile.NamedTemporaryFile('w', delete=False) as output:
                     clixo_params['output'] = output.name

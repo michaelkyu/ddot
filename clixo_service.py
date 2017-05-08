@@ -40,10 +40,18 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                             'max_time': 100000,
                             'clixo_folder': os.getenv('CLIXO'),
                             'output_fmt': 'cx',
-                            'iteration': 1,
                             'verbose': True}
 
+            # print 'context:'
+            # print context
+            # print dir(context)
+            # 0 / asdf
+
             input_G, clixo_params, errors = self.read_element_stream(element_iterator, clixo_params)
+
+
+            print 'Parameters:'
+            print clixo_params
 
             ###############################
 
@@ -65,12 +73,18 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                 clixo_params['graph'] = graph
 
 #            if len(errors) == 0:
+
             if True:
                 ## Run CLIXO
-                with tempfile.NamedTemporaryFile('w', delete=True) as output:
+#                with tempfile.NamedTemporaryFile('w', delete=False) as output:
+                with open('/tmp/tmp.txt', 'w') as output:
                     clixo_params['output'] = output.name
 
                     clixo_argnames = inspect.getargspec(run_clixo).args
+
+                    print 'Input to CLIXO:'
+                    print {k : v for k, v in clixo_params.items() if k in clixo_argnames}.keys()
+
                     run_clixo(**{k : v for k, v in clixo_params.items() if k in clixo_argnames})
 
                     with open(clixo_params['output'], 'r') as f:
@@ -111,15 +125,20 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                 elif clixo_params['output_fmt']=='ndex':
                     # Directly output to NDEX
                     ontology_ndex = ontology.to_networkx()
+
+                    # import cPickle
+                    # with open('/cellar/users/mikeyu/DeepTranslate/tmp.pickle', 'wb') as f:
+                    #     cPickle.dump({'ontology_ndex':ontology_ndex, 'ontology':ontology}, f, protocol=2)
+
                     for t in ontology.terms:
                         ontology_ndex.node[t]['name'] = 'CLIXO:%s' % t
                         ontology_ndex.node[t]['Gene_or_Term'] = 'Term'
                         ontology_ndex.node[t]['Size'] = term_sizes[t]
                         ontology_ndex.node[t]['ndex:internalLink'] = term_2_uuid[t]
                     for g in ontology.genes:
-                        ontology_ndex.node[t]['name'] = g
+                        ontology_ndex.node[g]['name'] = g
                         ontology_ndex.node[g]['Size'] = 1
-                        ontology_ndex.node[t]['Gene_or_Term'] = 'Gene'
+                        ontology_ndex.node[g]['Gene_or_Term'] = 'Gene'
                     nx.set_edge_attributes(ontology_ndex,
                                            'Is_Tree_Edge',
                                            {(s,t) : 'Tree' if ((s,t) in tree_edges) else 'Not_Tree' \

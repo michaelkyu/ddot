@@ -23,7 +23,7 @@ import pandas as pd
 from ndex.networkn import NdexGraph
 
 from clixo import run_clixo
-from Ontology import Ontology, networkx_to_NdexGraph
+from Ontology import Ontology, networkx_to_NdexGraph, make_tree
 from utilities import pivot_2_square
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
@@ -44,9 +44,6 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                             'verbose': True}
 
             input_G, clixo_params, errors = self.read_element_stream(element_iterator, clixo_params)
-            
-#            print clixo_params
-#            0 / asdf
 
             ###############################
 
@@ -60,19 +57,17 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                 graph = [(input_G.node[u]['name'],
                           input_G.node[v]['name'],
                           float(attr[similarity_attr])) for u, v, attr in input_G.edges_iter(data=True)]
-#                print 'graph:', graph[:5]
                 clixo_params['graph'] = graph
             else:
                 # Read graph from CXmate stream
                 #graph = [(nodes_dict[v1], nodes_dict[v2], s) for v1, v2, s in edges_dict.values()]
                 graph = [(u, v, float(attr['similarity'])) for u, v, attr in input_G.edges_iter(data=True)]
-#                print 'graph:', graph[:5]
                 clixo_params['graph'] = graph
 
 #            if len(errors) == 0:
             if True:
                 ## Run CLIXO
-                with tempfile.NamedTemporaryFile('w', delete=False) as output:
+                with tempfile.NamedTemporaryFile('w', delete=True) as output:
                     clixo_params['output'] = output.name
 
                     clixo_argnames = inspect.getargspec(run_clixo).args
@@ -101,12 +96,18 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                                                             clixo_params['ndex_server'], clixo_params['ndex_user'], clixo_params['ndex_pass'],
                                                             clixo_params['name'])
                 term_2_uuid = {t : url.split('http://public.ndexbio.org/v2/network/')[1] for t, url in term_2_url.items()}
-#                term_2_uuid = {t : '' for t in ontology.terms}
+
+                ont_tmp = Ontology(ontology_table, mapping_table, parent_child=True, genes_as_terms=True)
+                ont_tmp.propagate_annotations()
+                tree = make_tree(ont_tmp.get_igraph(),
+                                 parent_priority=ont_tmp.get_term_sizes(), optim=min)
+                tree_edges = set([(tree.vs[e.source]['name'], tree.vs[e.target]['name']) for e in tree.es if e['smallest_parent']])
 
                 if clixo_params['output_fmt']=='cx':
                     # Use CXmate to stream to NDEX
-                    for elt in self.stream_ontology(ontology, term_sizes, term_2_uuid):
+                    for elt in self.stream_ontology(ontology, term_sizes, term_2_uuid, tree_edges):
                         yield elt
+
                 elif clixo_params['output_fmt']=='ndex':
                     # Directly output to NDEX
                     ontology_ndex = ontology.to_networkx()
@@ -119,6 +120,10 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                         ontology_ndex.node[t]['name'] = g
                         ontology_ndex.node[g]['Size'] = 1
                         ontology_ndex.node[t]['Gene_or_Term'] = 'Gene'
+                    nx.set_edge_attributes(ontology_ndex,
+                                           'Is_Tree_Edge',
+                                           {(s,t) : 'Tree' if ((s,t) in tree_edges) else 'Not_Tree' \
+                                            for s, t in ontology_ndex.edges_iter(data=False)})
 
                     ontology_ndex = networkx_to_NdexGraph(ontology_ndex)
                     ontology_ndex.set_name(clixo_params['name'])
@@ -135,10 +140,15 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                     # my_ndex.update_network_profile(ontology_uuid, ontology_profile)
 
                     element = cx_pb2.Element()
-                    param = element.parameter
-                    param.name = 'ndex_uuid'
-                    param.value = ontology_uuid
+                    netAttr = element.networkAttribute
+                    netAttr.name = 'ndex_uuid'
+                    netAttr.value = ontology_uuid
                     yield element
+
+                    # param = element.parameter
+                    # param.name = 'ndex_uuid'
+                    # param.value = ontology_uuid
+                    # yield element
 
             else:
                 for caught_error in errors:
@@ -155,7 +165,7 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
 
             yield error
 
-    def stream_ontology(self, ontology, term_sizes, term_2_uuid):
+    def stream_ontology(self, ontology, term_sizes, term_2_uuid, tree_edges):
         node_2_id = {}
         node_id = 0
         for node_name in ontology.genes:
@@ -178,11 +188,19 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                 t = ontology.terms[t_i]
                 yield self.create_edge(edge_id, node_2_id[g], node_2_id[t])
                 yield self.create_edgeAttribute(edge_id, 'EdgeType', 'Gene-Term Annotation')
+                if (g, t) in tree_edges:
+                    yield self.create_edgeAttribute(edge_id, 'Is_Tree_Edge', 'Tree')
+                else:
+                    yield self.create_edgeAttribute(edge_id, 'Is_Tree_Edge', 'Not_Tree')
                 edge_id += 1
-        for p, c_list in ontology.term_2_terms.iteritems():                        
+        for p, c_list in ontology.term_2_terms.iteritems():        
             for c in c_list:
                 yield self.create_edge(edge_id, node_2_id[c], node_2_id[p])
                 yield self.create_edgeAttribute(edge_id, 'EdgeType', 'Child-Parent Hierarchical Relation')
+                if (c,p) in tree_edges:
+                    yield self.create_edgeAttribute(edge_id, 'Is_Tree_Edge', 'Tree')
+                else:
+                    yield self.create_edgeAttribute(edge_id, 'Is_Tree_Edge', 'Not_Tree')
                 edge_id += 1
 
     def upload_subnetworks_2_ndex(self, ontology, arr, arr_genes_index,
@@ -261,9 +279,9 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
         element = cx_pb2.Element()
         error = element.error
         error.status = status
-        error.code = 'cy://heat-diffusion/' + str(status)
+        error.code = 'clixo_service/' + str(status)
         error.message = message
-        error.link = 'http://logs.cytoscape.io/heat-diffusion'
+        error.link = 'https://github.com/michaelkyu/ontology_cx'
         return element
 
     def read_element_stream(self, element_iter, parameters):

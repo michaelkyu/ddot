@@ -76,8 +76,8 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
 
             if True:
                 ## Run CLIXO
-#                with tempfile.NamedTemporaryFile('w', delete=False) as output:
-                with open('/tmp/tmp.txt', 'w') as output:
+                with tempfile.NamedTemporaryFile('w', delete=True) as output:
+#                with open('/tmp/tmp.txt', 'w') as output:
                     clixo_params['output'] = output.name
 
                     clixo_argnames = inspect.getargspec(run_clixo).args

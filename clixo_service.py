@@ -171,6 +171,12 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                     netAttr.value = ontology_uuid
                     yield element
 
+                    element = cx_pb2.Element()
+                    netAttr = element.networkAttribute
+                    netAttr.name = 'ndex_url'
+                    netAttr.value = ontology_url
+                    yield element
+
                     # param = element.parameter
                     # param.name = 'ndex_uuid'
                     # param.value = ontology_uuid

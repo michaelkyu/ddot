@@ -46,6 +46,11 @@ def networkx_to_NdexGraph(networkx_G):
         G.max_edge_id += 1
     return G
 
+def NdexGraph_to_Ontology(G, gene_term='Gene-Term Annotation'):
+    tr = lambda x : 'gene' if x==gene_term else 'default'
+    G_edges = [(G.node[u]['name'], G.node[v]['name'], tr(attr['EdgeType'])) for u, v, attr in G.edges_iter(data=True)]
+    return Ontology(G_edges, combined_file=True, parent_child=False)
+
 class Ontology:
     
     def __init__(self,
@@ -181,7 +186,7 @@ class Ontology:
 
     def to_networkx(self, use_NdexGraph=False):
         import networkx as nx
-        G = nx.Graph()
+        G = nx.DiGraph()
 
         # if use_NdexGraph:
         #     from ndex.networkn import NdexGraph
@@ -230,7 +235,7 @@ class Ontology:
         elif hasattr(ontology, '__iter__'):
             ## Assume that the input is already in the desired format:
             ## a list of (child, parent, relation (optional) ) tuples
-            ontology_table = ontology
+            ontology_table = ontology        
         else:
             raise Exception('Unsupported ontology format')
 
@@ -251,57 +256,90 @@ class Ontology:
 
         return mapping_table
 
-    def collapse_ontology(self, verbose=True, default_relation='default', min_term_size=2):
-        ## Returns a new ontology where redundant and empty terms have been collapsed
+    def collapse_ontology(self,
+                          method='mhkramer',
+                          verbose=True, default_relation='default', min_term_size=2):
+    
+        if method=='mhkramer':
+            if verbose: print 'Propagating annotations'
+            self.propagate_annotations()
 
-        g = self.get_igraph().copy()
-        if verbose: print len(g.vs), 'total nodes'
+            import tempfile
+            assert 'ALIGN_ONTOLOGY' in os.environ
+            #print 'os.env ALIGN_ONTOLOGY:', os.getenv('ALIGN_ONTOLOGY')
+            with tempfile.NamedTemporaryFile('w', delete=False) as f:
+                self.write_ontology(f, parent_child=True, encoding=None, default_relation=u'default')
+#                print f.name
 
-        if verbose: print 'Propagating annotations'
-        self.propagate_annotations()
+            try:
+                cmd = '%s %s' % (os.path.join(os.getenv('ALIGN_ONTOLOGY'), 'collapseRedundantNodes'), f.name)
+                print 'collapse command:', cmd
+                from subprocess import Popen, PIPE
+                p = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+                collapsed, err = p.communicate()
+                #print 'collapsed output:', collapsed[:50]
+                #print 'err:', err
 
-        # Get term_2_genes
-        if hasattr(self, 'term_2_genes'):
-            del self.term_2_genes
+                # with open('/tmp/tmp.txt', 'w') as g:
+                #     g.write(collapsed)
 
-        parity = True
-        while True:
-            names_2_idx = {b : a for a, b in enumerate(g.vs['name'])}
-            term_hash = {names_2_idx[t] : (len(g_list), hash(tuple(g_list))) for t, g_list in self.get_term_2_genes().items() if names_2_idx.has_key(t)}
+            finally:
+#                pass
+                os.remove(f.name)
 
-            if verbose: time_print('Identify nodes to collapse')
-            node_order = g.topological_sorting(mode='out')
+            ontology = [x.split('\t') for x in collapsed.splitlines()]
+            return Ontology(ontology, parent_child=True, combined_file=True)
 
-            small_terms = [v for v in node_order if term_hash[v][0]<min_term_size]
+        elif method=='python':
+            ## Returns a new ontology where redundant and empty terms have been collapsed
+            g = self.get_igraph().copy()
+            if verbose: print len(g.vs), 'total nodes'
 
-            same_as_all_parents = [v for v in node_order \
-                                      if (len(g.neighbors(v, mode='out'))>0 and all(term_hash[v]==term_hash[y] for y in g.neighbors(v, mode='out')))]
-            same_as_all_children = [v for v in node_order \
-                                      if (len(g.neighbors(v, mode='in'))>0 and all(term_hash[v]==term_hash[y] for y in g.neighbors(v, mode='in')))]
-            if verbose: time_print('%s empty terms, %s (%s) terms that are redundant with all their parents (children)' % \
-                       (len(small_terms), len(same_as_all_parents), len(same_as_all_children)))
+            if verbose: print 'Propagating annotations'
+            self.propagate_annotations()
 
-            to_delete = list(set(small_terms) | set(same_as_all_children if parity else same_as_all_parents))
+            # Get term_2_genes
+            if hasattr(self, 'term_2_genes'):
+                del self.term_2_genes
 
-            if verbose: time_print('Collapsing %s empty terms and %s terms that redundant with its %s' % \
-                                   (len(small_terms),
-                                    len(same_as_all_children) if parity else len(same_as_all_parents),
-                                    'children' if parity else 'parents'))
-            parity = not parity
+            parity = True
+            while True:
+                names_2_idx = {b : a for a, b in enumerate(g.vs['name'])}
+                term_hash = {names_2_idx[t] : (len(g_list), hash(tuple(g_list))) for t, g_list in self.get_term_2_genes().items() if names_2_idx.has_key(t)}
 
-            if len(to_delete)==0:
-                break
-            else:
-                for v in to_delete:
-                    g = collapse_node(g, v, use_v_name=False, verbose=False, fast_collapse=True, delete=False)
-                g.delete_vertices(to_delete)
+                if verbose: time_print('Identify nodes to collapse')
+                node_order = g.topological_sorting(mode='out')
 
-        g.es(relation_eq=None)['relation'] = default_relation
+                small_terms = [v for v in node_order if term_hash[v][0]<min_term_size]
 
-        remaining_terms = set([self.terms_index[x] for x in g.vs['name']])
-        return Ontology(g,
-                        mapping_file=[(gene, self.terms[t]) for gene, t_list in self.gene_2_terms.items() for t in t_list if t in remaining_terms],
-                        combined_file=False, parent_child=False)
+                same_as_all_parents = [v for v in node_order \
+                                          if (len(g.neighbors(v, mode='out'))>0 and all(term_hash[v]==term_hash[y] for y in g.neighbors(v, mode='out')))]
+                same_as_all_children = [v for v in node_order \
+                                          if (len(g.neighbors(v, mode='in'))>0 and all(term_hash[v]==term_hash[y] for y in g.neighbors(v, mode='in')))]
+                if verbose: time_print('%s empty terms, %s (%s) terms that are redundant with all their parents (children)' % \
+                           (len(small_terms), len(same_as_all_parents), len(same_as_all_children)))
+
+                to_delete = list(set(small_terms) | set(same_as_all_children if parity else same_as_all_parents))
+
+                if verbose: time_print('Collapsing %s empty terms and %s terms that redundant with its %s' % \
+                                       (len(small_terms),
+                                        len(same_as_all_children) if parity else len(same_as_all_parents),
+                                        'children' if parity else 'parents'))
+                parity = not parity
+
+                if len(to_delete)==0:
+                    break
+                else:
+                    for v in to_delete:
+                        g = collapse_node(g, v, use_v_name=False, verbose=False, fast_collapse=True, delete=False)
+                    g.delete_vertices(to_delete)
+
+            g.es(relation_eq=None)['relation'] = default_relation
+
+            remaining_terms = set([self.terms_index[x] for x in g.vs['name']])
+            return Ontology(g,
+                            mapping_file=[(gene, self.terms[t]) for gene, t_list in self.gene_2_terms.items() for t in t_list if t in remaining_terms],
+                            combined_file=False, parent_child=False)
         
     def delete_terms(self, terms_to_delete):
         terms_to_delete = set(terms_to_delete)
@@ -314,34 +352,50 @@ class Ontology:
         ontology_file.flush()
         return Ontology(ontology_file.name, combined_file=True, parent_child=False)
 
-    def delete_genes(self, genes_to_delete, collapse=True, default_relation='default'):
+    def delete_genes(self, genes_to_delete):
+        genes_to_delete = set(genes_to_delete)
+        self.genes = [g for g in self.genes if g not in genes_to_delete]
+        self.genes_index = {b : a for a, b in enumerate(self.genes)}
+        self.gene_2_terms = {g : t for g, t in self.gene_2_terms.items() if g not in genes_to_delete}
+    
+        if hasattr(self, 'term_2_genes'):
+            del self.term_2_genes
+        if hasattr(self, 'term_sizes'):
+            del self.term_sizes
 
-        if hasattr(self, 'relation_dict') and len(self.relation_dict)>0:
-            ontology_table = [(c, p, self.relation_dict.get((c,p), default_relation)) for p, c_list in self.term_2_terms.items() for c in c_list]
-        else:
-            ontology_table = [(c, p) for p, c_list in self.term_2_terms.items() for c in c_list]
-        
-        if isinstance(genes_to_delete, set):
-            genes_to_delete = set(genes_to_delete)
+    # def delete_genes(self, genes_to_delete, collapse=True, default_relation='default'):
 
-        mapping_table = [(g, self.terms[t]) for g, t_list in self.gene_2_terms.items() if g not in genes_to_delete for t in t_list]
+        # if hasattr(self, 'relation_dict') and len(self.relation_dict)>0:
+        #     ontology_table = [(c, p, self.relation_dict.get((c,p), default_relation)) for p, c_list in self.term_2_terms.items() for c in c_list]
+        # else:
+        #     ontology_table = [(c, p) for p, c_list in self.term_2_terms.items() for c in c_list]
         
-        ont = Ontology(ontology_table, mapping_table, parent_child=False, combined_file=False)
+        # if isinstance(genes_to_delete, set):
+        #     genes_to_delete = set(genes_to_delete)
+
+        # mapping_table = [(g, self.terms[t]) for g, t_list in self.gene_2_terms.items() if g not in genes_to_delete for t in t_list]
         
-        if collapse:
-            return ont.collapse_ontology()
-        else:
-            return ont
+        # ont = Ontology(ontology_table, mapping_table, parent_child=False, combined_file=False)
+        
+        # if collapse:
+        #     return ont.collapse_ontology()
+        # else:
+        #     return ont
 
     def write_ontology(self, output, parent_child=True, encoding=None, default_relation=u'default'):
 
         assert parent_child
 
-        if encoding:
-            import codecs
-            f = codecs.open(output, 'w', encoding=encoding)
-        else:
-            f = open(output, 'w')
+        try:
+            # Assume output is a string
+            if encoding:
+                import codecs
+                f = codecs.open(output, 'w', encoding=encoding)
+            else:
+                f = open(output, 'w')
+        except:
+            # Assume output is already a file-like object
+            f = output
 
         if hasattr(self, 'relation_dict'):
             f.write(u'\n'.join([u'%s\t%s\t%s' % (p,c, self.relation_dict.get((c, p), default_relation)) for p, c_list in self.term_2_terms.items() for c in c_list]))

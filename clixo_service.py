@@ -32,6 +32,8 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
 
     def StreamElements(self, element_iterator, context):
         try:
+            assert 'CLIXO' in os.environ
+
             clixo_params = {'ndex_uuid' : None,
                             'ndex_server' : 'http://public.ndexbio.org',
                             'similarity_attr' : 'similarity',
@@ -39,16 +41,9 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                             'dt_thresh': -100000,
                             'max_time': 100000,
                             'clixo_folder': os.getenv('CLIXO'),
-                            'output_fmt': 'cx',
+                            'output_fmt': 'ndex',
                             'verbose': True}
-
-            # print 'context:'
-            # print context
-            # print dir(context)
-            # 0 / asdf
-
             input_G, clixo_params, errors = self.read_element_stream(element_iterator, clixo_params)
-
 
             print 'Parameters:'
             print clixo_params
@@ -72,8 +67,26 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                 graph = [(u, v, float(attr['similarity'])) for u, v, attr in input_G.edges_iter(data=True)]
                 clixo_params['graph'] = graph
 
-#            if len(errors) == 0:
+            # Convert gene-gene similarity network into a square matrix
+            graph_pd = pd.DataFrame(graph, columns=['Gene1', 'Gene2', 'Sim'])
+            graph_pd['Sim'] = graph_pd['Sim'].astype(np.float32)
+            mat = graph_pd.pivot(index='Gene1', columns='Gene2', values='Sim')
+            arr, arr_genes, arr_genes_index = pivot_2_square(mat)
+            assert arr.flags['C_CONTIGUOUS']
 
+            if clixo_params.has_key('genes'):
+                assert clixo_params.has_key('expand_size')
+
+                seed_genes = clixo_params['genes'].split(',')
+                print 'Seed genes:', seed_genes
+
+                seed_idx = [arr_genes_index[g] for g in seed_genes]
+            
+                # Take genes that are most similar to the seed set of genes
+                sim_2_seed = arr[seed_idx, :].mean(0)
+                arr_genes[np.argsort(sim_2_seed)[:int(clixo_params['expand_size'])]]
+
+#            if len(errors) == 0:
             if True:
                 ## Run CLIXO
                 with tempfile.NamedTemporaryFile('w', delete=True) as output:
@@ -98,12 +111,6 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                 ontology_propagated = Ontology(ontology_table, mapping_table, parent_child=True)
                 ontology_propagated.propagate_annotations()
                 term_sizes = dict(zip(ontology_propagated.terms, ontology_propagated.get_term_sizes()))
-
-                # Convert gene-gene similarity network into a square matrix
-                graph_pd = pd.DataFrame(graph, columns=['Gene1', 'Gene2', 'Sim'])
-                graph_pd['Sim'] = graph_pd['Sim'].astype(np.float32)
-                mat = graph_pd.pivot(index='Gene1', columns='Gene2', values='Sim')
-                arr, arr_genes_index = pivot_2_square(mat)
 
                 # Create an NDEX network for every term's subnetwork
                 term_2_url = self.upload_subnetworks_2_ndex(ontology_propagated, arr, arr_genes_index,

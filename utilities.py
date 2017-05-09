@@ -50,5 +50,5 @@ def pivot_2_square(mat):
 
     rows_index = {b : a for a, b in enumerate(rows)}
 
-    return arr, rows_index
+    return arr, rows, rows_index 
 

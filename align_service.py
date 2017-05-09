@@ -115,7 +115,8 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                     align_hierarchies(hier1_edges, hier2_edges,
                                       output,
                                       align_params['iterations'],
-                                      align_params['threads'])
+                                      align_params['threads'],
+                                      calculateFDRs_cmd=align_params['calculateFDRs_cmd'])
                 
                     alignment = pd.read_csv(output,
                                             names=['Term_1', 'Term_2', 'Similarity', 'FDR', 'Term_1_Size'],
@@ -368,7 +369,7 @@ def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     cx_pb2_grpc.add_CyServiceServicer_to_server(
             CyServiceServicer(), server)
-    server.add_insecure_port('0.0.0.0:8080')
+    server.add_insecure_port('0.0.0.0:8081')
     server.start()
     try:
         while True:
@@ -378,5 +379,5 @@ def serve():
 
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s %(message)s')
-    log_info("Listening for requests on '0.0.0.0:8080'")
+    log_info("Listening for requests on '0.0.0.0:8081'")
     serve()

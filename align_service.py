@@ -118,6 +118,7 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                                       align_params['threads'],
                                       calculateFDRs_cmd=align_params['calculateFDRs_cmd'])
                 
+
                     alignment = pd.read_csv(output,
                                             names=['Term_1', 'Term_2', 'Similarity', 'FDR', 'Term_1_Size'],
                                             header=None,

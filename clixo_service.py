@@ -58,6 +58,7 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
 
             ###############################
 
+
             if isinstance(clixo_params['input_ndex_uuid'], (str, unicode)):
                 # Read graph using NDEx client
                 input_G = NdexGraph(server=clixo_params['ndex_server'],

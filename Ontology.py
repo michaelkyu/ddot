@@ -184,6 +184,9 @@ class Ontology:
         
         if verbose: print 'Done constructing ontology'
 
+    def get_roots(self):
+        return [x for x in self.terms if len(self.child_2_parents.get(x, []))==0]
+
     def to_networkx(self, use_NdexGraph=False):
         import networkx as nx
         G = nx.DiGraph()

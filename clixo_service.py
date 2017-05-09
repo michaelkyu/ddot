@@ -34,7 +34,7 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
         try:
             assert 'CLIXO' in os.environ
 
-            clixo_params = {'ndex_uuid' : None,
+            clixo_params = {'input_ndex_uuid' : None,
                             'ndex_server' : 'http://public.ndexbio.org',
                             'similarity_attr' : 'similarity',
                             'name' : 'Data-Driven Ontology',
@@ -44,6 +44,14 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                             'output_fmt': 'ndex',
                             'verbose': True}
             input_G, clixo_params, errors = self.read_element_stream(element_iterator, clixo_params)
+
+            assert clixo_params.has_key('input_ndex_uuid')
+            assert clixo_params.has_key('alpha')
+            assert clixo_params.has_key('beta')
+            assert clixo_params.has_key('similarity_attr')
+            assert clixo_params.has_key('ndex_user')
+            assert clixo_params.has_key('ndex_pass')
+            assert clixo_params.has_key('ndex_server')
 
             print 'Parameters:'
             print clixo_params
@@ -176,11 +184,6 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                     netAttr.name = 'ndex_url'
                     netAttr.value = ontology_url
                     yield element
-
-                    # param = element.parameter
-                    # param.name = 'ndex_uuid'
-                    # param.value = ontology_uuid
-                    # yield element
 
             else:
                 for caught_error in errors:

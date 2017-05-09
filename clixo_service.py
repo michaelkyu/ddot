@@ -58,12 +58,12 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
 
             ###############################
 
-            if isinstance(clixo_params['ndex_uuid'], (str, unicode)):
+            if isinstance(clixo_params['input_ndex_uuid'], (str, unicode)):
                 # Read graph using NDEx client
                 input_G = NdexGraph(server=clixo_params['ndex_server'],
                                     username=clixo_params['ndex_user'],
                                     password=clixo_params['ndex_pass'],
-                                    uuid=clixo_params['ndex_uuid'])
+                                    uuid=clixo_params['input_ndex_uuid'])
                 similarity_attr = clixo_params['similarity_attr']
                 graph = [(input_G.node[u]['name'],
                           input_G.node[v]['name'],

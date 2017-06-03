@@ -10,16 +10,16 @@ def align_hierarchies(hier1, hier2,
 
     if not isinstance(hier1, (str, unicode)):        
         # Write to file
-        with open('/tmp/tmp1.txt', 'w') as f:
-#        with tempfile.NamedTemporaryFile('w', delete=False) as f:
+#        with open('/tmp/tmp1.txt', 'w') as f:
+        with tempfile.NamedTemporaryFile('w', delete=True) as f:
             f.write('\n'.join(['\t'.join([str(x[0]),str(x[1]),str(x[2])]) for x in hier1]) + '\n')
         hier1 = f.name
     else:
         assert os.path.exists(hier1)
 
     if not isinstance(hier2, (str, unicode)):
-        with open('/tmp/tmp2.txt', 'w') as g:
-#        with tempfile.NamedTemporaryFile('w', delete=False) as g:
+#        with open('/tmp/tmp2.txt', 'w') as g:
+        with tempfile.NamedTemporaryFile('w', delete=True) as g:
             g.write('\n'.join(['\t'.join([str(x[0]),str(x[1]),str(x[2])]) for x in hier2]) + '\n')
         hier2 = g.name
     else:

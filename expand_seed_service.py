@@ -22,9 +22,8 @@ import pandas as pd
 
 from ndex.networkn import NdexGraph
 
-from Ontology import Ontology, align_hierarchies
-from utilities import pivot_2_square
-import config
+from Ontology import Ontology, networkx_to_NdexGraph, make_tree
+from utils import pivot_2_square, graph_2_square
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
@@ -32,69 +31,82 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
 
     def StreamElements(self, element_iterator, context):
         try:
-            assert 'ALIGN_ONTOLOGY' in os.environ
-
-            params = {'ndex_uuid' : None,
-                      'name' : 'Data-Driven Ontology',
-                      'ont1_ndex_uuid' : None,
-                      'ont2_ndex_uuid' : None,                            
-                      'iterations' : 3,
-                      'threads' : 4}
-            params.update(config.params)
+            params = {'input_ndex_uuid' : None,
+                      'ndex_server' : 'http://public.ndexbio.org',
+                      'similarity_attr' : 'similarity',
+                      'aggregation' : 'mean',
+                      'percentile' : 0,
+                      'expand_size:' : 100,
+                      'min_similarity' : None,
+                      'seed' : None,
+                      'output_fmt': 'ndex',
+                      'verbose': True}
             input_G, params, errors = self.read_element_stream(element_iterator, params)
+
+            for x in ['input_ndex_uuid', 'similarity_attr', 'seed',
+                      'ndex_user', 'ndex_pass', 'ndex_server']:
+                assert params.has_key(x) and params[x] is not None
 
             print 'Parameters:'
             print params
 
             ###############################
 
-            if isinstance(params['ont1_ndex_uuid'], (str, unicode)) and \
-               isinstance(params['ont2_ndex_uuid'], (str, unicode)):
-                ## Read graph using NDEx client
+            similarity_attr = params['similarity_attr']
 
-                print 'Reading hierarchy 1'
-                hier1 = NdexGraph(server=params['ndex_server'],
-                                  username=params['ndex_user'],
-                                  password=params['ndex_pass'],
-                                  uuid=params['ont1_ndex_uuid'])
-                
-                print 'Reading hierarchy 2'
-                hier2 = NdexGraph(server=params['ndex_server'],
-                                  username=params['ndex_user'],
-                                  password=params['ndex_pass'],
-                                  uuid=params['ont2_ndex_uuid'])
+            if isinstance(params['input_ndex_uuid'], (str, unicode)):
+                # Read graph using NDEx client
+                input_G = NdexGraph(server=params['ndex_server'],
+                                    username=params['ndex_user'],
+                                    password=params['ndex_pass'],
+                                    uuid=params['input_ndex_uuid'])
+                graph = [(input_G.node[u]['name'],
+                          input_G.node[v]['name'],
+                          float(attr[similarity_attr])) for u, v, attr in input_G.edges_iter(data=True)]
+                params['graph'] = graph
             else:
-                raise Exception()
+                # Read graph from CXmate stream
+                graph = [(u, v, float(attr[similarity_attr])) for u, v, attr in input_G.edges_iter(data=True)]
+                params['graph'] = graph
 
+            arr, arr_genes, arr_genes_index = graph_2_square(graph)
+            
+            seed_genes = [x.strip() for x in params['seed'].split(',')]
+
+            print 'Seed genes:'
+            print seed_genes
+
+            seed_idx = [arr_genes_index[g] for g in seed_genes]
+
+            # Take genes that are most similar to the seed set of genes
+            if params['aggregation']=='mean':
+                sim_2_seed = arr[seed_idx, :].mean(0)
+            elif params['aggregation']=='min':
+                sim_2_seed = arr[seed_idx, :].min(0)
+            elif params['aggregation']=='max':
+                sim_2_seed = arr[seed_idx, :].max(0)
+            elif params['aggregation']=='percentile' and params.has_key('percentile'):
+                sim_2_seed = np.percentile(arr[seed_idx, :], float(params['percentile']))
+            else:
+                raise Exception('Unsupported aggregation method: %s' % params['aggregation'])
+
+            expand_genes_idx = np.argsort(sim_2_seed)[:int(params['expand_size'])]
+            try:
+                min_similarity = float(params['min_similarity'])
+                expand_genes_idx = expand_genes_idx[sim_2_seed[expand_genes_idx] > min_similarity]
+            except:
+                pass
+            expand_genes = arr_genes[expand_genes_idx]
+            
+            print 'Expanded set of genes:'
+            print expand_genes
+
+            for node_id, node_name in enumerate(expand_genes):
+                yield self.create_node(node_id, node_name)
+            
 #            if len(errors) == 0:
             if True:
-                hier1_ont = Ontology.from_NdexGraph(hier1, gene_term='Gene-Term Annotation')
-                hier2_ont = Ontology.from_NdexGraph(hier2, gene_term='Gene-Term Annotation')
-                print 'Summary of hier1_ont:', hier1_ont.summary()
-                print 'Summary of hier2_ont:', hier2_ont.summary()
-
-                hier1_collapsed, hier2_collapsed = Ontology.mutual_collapse(hier1, hier2, verbose=True)
-                assert len(hier1_collapsed.terms) < 3000, len(hier1_collapsed.terms)
-                assert len(hier2_collapsed.terms) < 3000, len(hier2_collapsed.terms)
-
-                print 'Aligning hierarchies'
-                alignment = align_hierarchies(\
-                              hier1_edges, hier2_edges,
-                              output,
-                              params['iterations'],
-                              params['threads'],
-                              calculateFDRs_cmd=params['calculateFDRs_cmd'])                
-
-                print 'One-to-one term alignments:', alignment.shape[0]
-                print alignment.iloc[:30,:]
-
-                hier1 = update_nx_with_alignment(hier1, alignment)
-
-                ndex_url = hier1.upload_to(params['ndex_server'],
-                                           params['ndex_user'],
-                                           params['ndex_pass'])
-                print 'ndex_uuid:', ndex_uuid
-                yield yield_ndex(ndex_url)
+                pass
             else:
                 for caught_error in errors:
                     error = self.create_internal_crash_error(caught_error.message, 500)
@@ -110,7 +122,7 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
 
             yield error
 
-    def stream_ontology(self, ontology, term_sizes, term_2_uuid):
+    def stream_ontology(self, ontology, term_sizes, term_2_uuid, tree_edges):
         node_2_id = {}
         node_id = 0
         for node_name in ontology.genes:
@@ -132,12 +144,20 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
             for t_i in ontology.gene_2_terms[g]:
                 t = ontology.terms[t_i]
                 yield self.create_edge(edge_id, node_2_id[g], node_2_id[t])
-                yield self.create_edgeAttribute(edge_id, 'Relation', 'Gene-Term Annotation')
+                yield self.create_edgeAttribute(edge_id, 'EdgeType', 'Gene-Term Annotation')
+                if (g, t) in tree_edges:
+                    yield self.create_edgeAttribute(edge_id, 'Is_Tree_Edge', 'Tree')
+                else:
+                    yield self.create_edgeAttribute(edge_id, 'Is_Tree_Edge', 'Not_Tree')
                 edge_id += 1
-        for p, c_list in ontology.term_2_terms.iteritems():                        
+        for p, c_list in ontology.term_2_terms.iteritems():        
             for c in c_list:
                 yield self.create_edge(edge_id, node_2_id[c], node_2_id[p])
-                yield self.create_edgeAttribute(edge_id, 'Relation', 'Child-Parent Hierarchical Relation')
+                yield self.create_edgeAttribute(edge_id, 'EdgeType', 'Child-Parent Hierarchical Relation')
+                if (c,p) in tree_edges:
+                    yield self.create_edgeAttribute(edge_id, 'Is_Tree_Edge', 'Tree')
+                else:
+                    yield self.create_edgeAttribute(edge_id, 'Is_Tree_Edge', 'Not_Tree')
                 edge_id += 1
 
     def upload_subnetworks_2_ndex(self, ontology, arr, arr_genes_index,
@@ -216,9 +236,9 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
         element = cx_pb2.Element()
         error = element.error
         error.status = status
-        error.code = 'cy://align-hierarchies/' + str(status)
+        error.code = 'clixo_service/' + str(status)
         error.message = message
-        error.link = 'http://align-hierarchies'
+        error.link = 'https://github.com/michaelkyu/ontology_cx'
         return element
 
     def read_element_stream(self, element_iter, parameters):
@@ -250,6 +270,9 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                 else:
                     edgesAttr_dict[edgeAttr.name] = {edgeAttr.edgeId : edgeAttr.value}
 
+#        print 'nodes_dict:', nodes_dict
+
+
         G = nx.Graph()
         for n_id, u in nodes_dict.iteritems():
             G.add_node(u, node_id=n_id)
@@ -258,6 +281,9 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
             G.add_edge(nodes_dict[u], nodes_dict[v],
                        attr_dict={k : edgesAttr_dict[k][e_id] for k in edge_attributes_list if edgesAttr_dict[k].has_key(e_id)},
                        edge_id=e_id)
+
+#        print 'G nodes:', G.nodes()
+#        0 / asdf
 
         return G, parameters, errors
 
@@ -304,7 +330,7 @@ def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     cx_pb2_grpc.add_CyServiceServicer_to_server(
             CyServiceServicer(), server)
-    server.add_insecure_port('0.0.0.0:8081')
+    server.add_insecure_port('0.0.0.0:8080')
     server.start()
     try:
         while True:
@@ -314,5 +340,5 @@ def serve():
 
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s %(message)s')
-    log_info("Listening for requests on '0.0.0.0:8081'")
+    log_info("Listening for requests on '0.0.0.0:8080'")
     serve()

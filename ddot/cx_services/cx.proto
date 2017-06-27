@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+package cxpb;
+
+service CyService {
+  rpc StreamElements (stream Element) returns (stream Element) {}
+}
+
+message Element {
+  int64 networkId = 1;
+  oneof value {
+    Parameter parameter = 2;
+    Error error = 3;
+    NumberVerification numberVerification = 4;
+    MetaData metadata = 5;
+    AnonymousAspect aspect = 6;
+    Node node = 7;
+    Edge edge = 8;
+    NodeAttribute nodeAttribute = 9;
+    EdgeAttribute edgeAttribute = 10;
+    NetworkAttribute networkAttribute = 11;
+    CartesianLayout cartesianLayout = 12;
+  }
+}
+
+message NumberVerification {
+  int64 longNumber = 1;
+}
+
+message MetaData {
+  string name = 1;
+  string version = 2;
+  int64 idCounter = 3;
+  int64 elementCount = 4;
+  int64 consistencyGroup = 5;
+  int64 checksum = 6;
+  repeated Property properties = 7;
+}
+
+message Property {
+  string name = 1;
+  string value = 2;
+}
+
+message Parameter {
+  string name = 1;
+  string value = 2;
+}
+
+message Error {
+  int64 status = 1;
+  string code = 2;
+  string message = 3;
+  string link = 4;
+}
+
+message Node {
+  int64 id = 1 [ json_name = "@id" ];
+  string name = 2 [ json_name = "n" ];
+  string represents = 3 [ json_name = "r" ];
+}
+
+message Edge {
+  int64 id = 1 [ json_name = "@id" ];
+  int64 sourceId = 2 [ json_name = "s" ];
+  int64 targetId = 3 [ json_name = "t" ];
+  string interaction = 4 [ json_name = "i" ];
+}
+
+message NodeAttribute {
+  int64 nodeId = 1 [ json_name = "po" ];
+  string name = 2 [ json_name = "n" ];
+  string value = 3 [ json_name = "v" ];
+  string type = 4 [ json_name = "d" ];
+  int64 subnetId = 5 [ json_name = "s" ];
+}
+
+message EdgeAttribute {
+  int64 edgeId = 1 [ json_name = "po" ];
+  string name = 2 [ json_name = "n" ];
+  string value = 3 [ json_name = "v" ];
+  string type = 4 [ json_name = "d" ];
+  int64 subnetId = 5 [ json_name = "s" ];
+}
+
+message NetworkAttribute {
+  int64 edgeId = 1 [ json_name = "po" ];
+  string name = 2 [ json_name = "n" ];
+  string value = 3 [ json_name = "v" ];
+  string type = 4 [ json_name = "d" ];
+  int64 subnetId = 5 [ json_name = "s" ];
+}
+
+message CartesianLayout {
+  int64 nodeid = 1;
+  double x = 2;
+  double y = 3;
+  int64 viewid = 4;
+}
+
+message AnonymousAspect {
+  string type = 1;
+  bytes element = 2;
+}

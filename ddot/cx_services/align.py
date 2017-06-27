@@ -1,4 +1,6 @@
 import ndex.client as nc
+from ndex.networkn import NdexGraph
+
 import io
 import json
 from IPython.display import HTML
@@ -20,106 +22,86 @@ from itertools import combinations
 from subprocess import Popen, PIPE, STDOUT
 import pandas as pd
 
-from ndex.networkn import NdexGraph
-
-from Ontology import Ontology
-from utils import pivot_square, nx_to_NdexGraph, NdexGraph_to_nx, nx_nodes_to_pandas, nx_edges_to_pandas
-from cx_utils import yield_ndex, parse_ndex_uuid
-import config
+from ddot import Ontology, align_hierarchies
+from ddot.utils import update_nx_with_alignment
+from ddot.cx_services.cx_utils import yield_ndex, required_params, cast_params
+from ddot.config import default_params
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
+verbose = True
+
 class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
+
+    def format_params(self, params):
+        required = [
+            'ndex_user',
+            'ndex_pass',
+            'ndex_server',
+            'ont1_ndex_uuid',
+            'ont2_ndex_uuid',
+        ]
+        required_params(params, required)
+
+        cast = [
+            ('iterations', int),
+            ('threads', int),
+            ('ont1_ndex_uuid', str),
+            ('ont2_ndex_uuid', str)
+        ]
+        cast_params(params, cast)
 
     def StreamElements(self, element_iterator, context):
         try:
-#            assert 'CLIXO' in os.environ
+            params = {
+                'name' : 'Data-Driven Ontology',
+                'ont1_ndex_uuid' : None,
+                'ont2_ndex_uuid' : None,
+                'iterations' : 3,
+                'threads' : 4
+            }
+            params.update(default_params)
+            G, params, errors = self.read_element_stream(element_iterator, params)
+            self.format_params(params)
 
-            params = {'similarity' : 'Similarity',
-                      'name' : 'Data-Driven Ontology',
-                      'dt_thresh': -100000,
-                      'max_time': 100000}
-            params.update(config.params)
-            input_G, params, errors = self.read_element_stream(element_iterator, params)
-            
-            # Required parameters
-            for x in ['ndex_uuid', 'alpha', 'beta', 'similarity', 'ndex_user', 'ndex_pass', 'ndex_server', 'output_fmt']:
-                assert params.has_key(x)
-            SIMILARITY = params['similarity']
+            if verbose:
+                print('Parameters:', params)
 
-            print 'Parameters:'
-            print params
+            ## Read graphs using NDEx client
+            hier1, hier2 = self.read_hierarchies(params)
 
-            ###############################
+            if True:
+                hier1_ont = Ontology.from_NdexGraph(hier1)
+                hier2_ont = Ontology.from_NdexGraph(hier2)
+                print('Summary of hier1_ont:', hier1_ont.summary())
+                print('Summary of hier2_ont:', hier2_ont.summary())
 
-            if isinstance(params['ndex_uuid'], (str, unicode)):
-                # Read graph using NDEx client
-                input_G = NdexGraph(server=params['ndex_server'],
-                                    username=params['ndex_user'],
-                                    password=params['ndex_pass'],
-                                    uuid=params['ndex_uuid'])
-                assert len(input_G.nodes()) > 0
-                input_G = NdexGraph_to_nx(input_G)
+                hier1_collapsed, hier2_collapsed = Ontology.mutual_collapse(hier1_ont, hier2_ont, verbose=True)
+                assert len(hier1_collapsed.terms) < 3000, len(hier1_collapsed.terms)
+                assert len(hier2_collapsed.terms) < 3000, len(hier2_collapsed.terms)
 
-            gene_attr = nx_nodes_to_pandas(input_G)
+                if verbose:
+                    print 'Aligning hierarchies'
 
-            graph_df = nx_edges_to_pandas(input_G)
-            #feature_columns = graph_df.columns.values.tolist()
-            feature_columns = [SIMILARITY]
+                alignment = align_hierarchies(
+                    hier1_collapsed,
+                    hier2_collapsed,
+                    params['iterations'],
+                    params['threads'])
+                
+                if verbose:
+                    print('One-to-one term alignments:', alignment.shape[0])
+                    print(alignment.iloc[:30,:])
 
-            graph_df.index.rename(['Gene1', 'Gene2'], inplace=True)
-            graph_df.reset_index(inplace=True)
-            graph_df[SIMILARITY] = graph_df[SIMILARITY].astype(np.float64)
-            mat = pivot_square(graph_df, 'Gene1', 'Gene2', SIMILARITY)
-            arr, arr_genes, arr_genes_index = mat.values, mat.index.values, pd.Series(mat.index).to_dict()
-            assert arr.flags['C_CONTIGUOUS']
+                update_nx_with_alignment(hier1, alignment)
+                ont_url = hier1.upload_to(params['ndex_server'],
+                                           params['ndex_user'],
+                                           params['ndex_pass'])
+                if verbose:
+                    print 'ontology_url:', ont_url
 
-#            'SIMILARITY'
-
-            # print 'errors:', [type(x) for x in errors]
-            # for x in errors:
-            #     print x
-
-            errors = [e for e in errors if e.message != "Error decoding token from stream, EOF"]
-            if len(errors) == 0:
-#            if True:
-                ## Run CLIXO
-                ontology = Ontology.run_clixo(graph_df[['Gene1', 'Gene2', SIMILARITY]],
-                                              params['alpha'],
-                                              params['beta'],
-                                              params['dt_thresh'],
-                                              params['max_time'],
-                                              params['clixo_folder'])
-
-                print graph_df.head()
-                print feature_columns
-
-                # Create an NDEX network for every term's subnetwork
-                term_2_url = ontology.upload_subnetworks_2_ndex(graph_df,
-                                                                feature_columns,
-                                                                params['ndex_server'], params['ndex_user'], params['ndex_pass'],
-                                                                params['name'],
-                                                                propagate=True)
-                term_2_uuid = {t : parse_ndex_uuid(url) for t, url in term_2_url.items()}
-
-                if params['output_fmt']=='cx':
-                    # Use CXmate to stream to NDEX
-                    for elt in self.stream_ontology(ontology, term_sizes, term_2_uuid, tree_edges):
-                        yield elt
-
-                elif params['output_fmt']=='ndex':
-                    ontology_ndex = ontology.format_for_hierarchical_viewer(term_2_uuid)
-                    ontology_ndex = nx_to_NdexGraph(ontology_ndex)
-                    ontology_ndex.set_name(params['name'])
-                    ontology_url = ontology_ndex.upload_to(params['ndex_server'], params['ndex_user'], params['ndex_pass'])
-                    print 'ontology_url:', ontology_url
-
-                    description = 'Data-driven ontology created by CLIXO (parameters: alpha=%s, beta=%s).' % (params['alpha'], params['beta'])
-                    description += ' Created from similarity network at %s/%s' % (params['ndex_server'], params['ndex_uuid'])
-                    ontology_ndex.set_network_attribute('Description', description)
-
-                    for elt in yield_ndex(ontology_url):
-                        yield elt
+                for elt in yield_ndex(ont_url):
+                    yield elt
             else:
                 for caught_error in errors:
                     error = self.create_internal_crash_error(caught_error.message, 500)
@@ -135,7 +117,22 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
 
             yield error
 
-    def stream_ontology(self, ontology, term_sizes, term_2_uuid, tree_edges):
+    def read_hierarchies(self, params):
+        # Read hierarchy 1
+        hier1 = NdexGraph(server=params['ndex_server'],
+                          username=params['ndex_user'],
+                          password=params['ndex_pass'],
+                          uuid=params['ont1_ndex_uuid'])
+
+        # Read hierarchy 2
+        hier2 = NdexGraph(server=params['ndex_server'],
+                          username=params['ndex_user'],
+                          password=params['ndex_pass'],
+                          uuid=params['ont2_ndex_uuid'])
+
+        return hier1, hier2
+
+    def stream_ontology(self, ontology, term_sizes, term_2_uuid):
         node_2_id = {}
         node_id = 0
         for node_name in ontology.genes:
@@ -158,20 +155,45 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                 t = ontology.terms[t_i]
                 yield self.create_edge(edge_id, node_2_id[g], node_2_id[t])
                 yield self.create_edgeAttribute(edge_id, 'Relation', 'Gene-Term Annotation')
-                if (g, t) in tree_edges:
-                    yield self.create_edgeAttribute(edge_id, 'Is_Tree_Edge', 'Tree')
-                else:
-                    yield self.create_edgeAttribute(edge_id, 'Is_Tree_Edge', 'Not_Tree')
                 edge_id += 1
-        for p, c_list in ontology.term_2_terms.iteritems():        
+        for p, c_list in ontology.term_2_terms.iteritems():                        
             for c in c_list:
                 yield self.create_edge(edge_id, node_2_id[c], node_2_id[p])
                 yield self.create_edgeAttribute(edge_id, 'Relation', 'Child-Parent Hierarchical Relation')
-                if (c,p) in tree_edges:
-                    yield self.create_edgeAttribute(edge_id, 'Is_Tree_Edge', 'Tree')
-                else:
-                    yield self.create_edgeAttribute(edge_id, 'Is_Tree_Edge', 'Not_Tree')
                 edge_id += 1
+
+    def upload_subnetworks_2_ndex(self, ontology, arr, arr_genes_index,
+                                  ndex_server, ndex_user, ndex_pass, name):
+        """Push subnetworks"""
+
+        #print ontology.get_term_2_genes()
+
+        term_2_url = {}
+        for t in ontology.terms:
+            #print 't:', t
+            genes = np.array([ontology.genes[g] for g in ontology.get_term_2_genes()[t]])
+            #print 'genes:', genes
+            idx = np.array([arr_genes_index[g] for g in genes])
+            #print 'idx:', idx
+            subarr = arr[idx,:][:,idx]
+
+            # Set nan to 0
+            subarr[np.isnan(subarr)] = 0
+
+            row, col = subarr.nonzero()
+            row, col = row[row < col], col[row < col]
+                        
+            G = NdexGraph()    
+            G.create_from_edge_list(zip(genes[row], genes[col]))
+            for i in np.arange(row.size):
+                G.set_edge_attribute(i+1, "similarity", str(subarr[row[i], col[i]]))
+            G.set_name('%s supporting network for CLIXO:%s' % (name, t))
+            G.set_network_attribute('Description', '%s supporting network for CLIXO:%s' % (name, t))
+
+            ndex_url = G.upload_to(ndex_server, ndex_user, ndex_pass)
+            term_2_url[t] = ndex_url
+
+        return term_2_url
 
     def create_node(self, node_id, node_name):
         element = cx_pb2.Element()
@@ -216,9 +238,9 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
         element = cx_pb2.Element()
         error = element.error
         error.status = status
-        error.code = 'clixo_service/' + str(status)
+        error.code = 'cy://align-hierarchies/' + str(status)
         error.message = message
-        error.link = 'https://github.com/michaelkyu/ontology_cx'
+        error.link = 'http://align-hierarchies'
         return element
 
     def read_element_stream(self, element_iter, parameters):
@@ -249,9 +271,6 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                     edgesAttr_dict[edgeAttr.name][edgeAttr.edgeId] = edgeAttr.value
                 else:
                     edgesAttr_dict[edgeAttr.name] = {edgeAttr.edgeId : edgeAttr.value}
-
-#        print 'nodes_dict:', nodes_dict
-
 
         G = nx.Graph()
         for n_id, u in nodes_dict.iteritems():
@@ -307,7 +326,7 @@ def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     cx_pb2_grpc.add_CyServiceServicer_to_server(
             CyServiceServicer(), server)
-    server.add_insecure_port('0.0.0.0:8080')
+    server.add_insecure_port('0.0.0.0:8081')
     server.start()
     try:
         while True:
@@ -317,5 +336,5 @@ def serve():
 
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s %(message)s')
-    log_info("Listening for requests on '0.0.0.0:8080'")
+    log_info("Listening for requests on '0.0.0.0:8081'")
     serve()

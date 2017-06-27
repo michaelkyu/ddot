@@ -1,4 +1,6 @@
 import ndex.client as nc
+from ndex.networkn import NdexGraph
+
 import io
 import json
 from IPython.display import HTML
@@ -20,93 +22,165 @@ from itertools import combinations
 from subprocess import Popen, PIPE, STDOUT
 import pandas as pd
 
-from ndex.networkn import NdexGraph
-
-from Ontology import Ontology, networkx_to_NdexGraph, make_tree
-from utils import pivot_2_square, graph_2_square
+from ddot import Ontology
+from ddot.utils import ndex_to_sim_matrix, nx_nodes_to_pandas
+from ddot.cx_services.cx_utils import yield_ndex, required_params, cast_params
+from ddot.config import default_params
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
+verbose = True
+
 class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
+
+    def format_params(self, params):
+        required = [
+            'ndex_uuid',
+            'ndex_user',
+            'ndex_pass',
+            'ndex_server',
+            'alpha',
+            'beta',
+            'similarity',
+            'input_fmt',
+            'output_fmt'
+        ]
+        required_params(params, required)
+
+        cast = [
+            ('alpha', float),
+            ('beta', float),
+            ('min_dt', float),
+            ('timeout', int),
+            ('all_features', bool)
+        ]
+        cast_params(params, cast)
+
+        if params['features']:
+            params['features'] = params['features'].split(',')
+
+        assert params['input_fmt'] in ['cx', 'cx_matrix', 'ndex', 'ndex_matrix']
+        assert params['output_fmt'] in ['cx', 'cx_matrix', 'ndex', 'ndex_matrix']
 
     def StreamElements(self, element_iterator, context):
         try:
-            params = {'input_ndex_uuid' : None,
-                      'ndex_server' : 'http://public.ndexbio.org',
-                      'similarity_attr' : 'similarity',
-                      'aggregation' : 'mean',
-                      'percentile' : 0,
-                      'expand_size:' : 100,
-                      'min_similarity' : None,
-                      'seed' : None,
-                      'output_fmt': 'ndex',
-                      'verbose': True}
-            input_G, params, errors = self.read_element_stream(element_iterator, params)
+            params = {
+                'similarity' : 'Similarity',
+                'name' : 'Data-Driven Ontology',
+                'min_dt' : -100000,
+                'features' : '',
+                'all_features' : False,
+                'input_fmt' : 'cx',
+                'timeout' : 100,
+                'ndex_uuid' : None
+            }
+            params.update(default_params)
+            G, params, errors = self.read_element_stream(element_iterator, params)
+            self.format_params(params)
 
-            for x in ['input_ndex_uuid', 'similarity_attr', 'seed',
-                      'ndex_user', 'ndex_pass', 'ndex_server']:
-                assert params.has_key(x) and params[x] is not None
+            if verbose:
+                print('Parameters', params)
 
-            print 'Parameters:'
-            print params
+            input_fmt = params['input_fmt'].replace('ndex', 'cx')
 
-            ###############################
-
-            similarity_attr = params['similarity_attr']
-
-            if isinstance(params['input_ndex_uuid'], (str, unicode)):
-                # Read graph using NDEx client
-                input_G = NdexGraph(server=params['ndex_server'],
-                                    username=params['ndex_user'],
-                                    password=params['ndex_pass'],
-                                    uuid=params['input_ndex_uuid'])
-                graph = [(input_G.node[u]['name'],
-                          input_G.node[v]['name'],
-                          float(attr[similarity_attr])) for u, v, attr in input_G.edges_iter(data=True)]
-                params['graph'] = graph
-            else:
-                # Read graph from CXmate stream
-                graph = [(u, v, float(attr[similarity_attr])) for u, v, attr in input_G.edges_iter(data=True)]
-                params['graph'] = graph
-
-            arr, arr_genes, arr_genes_index = graph_2_square(graph)
+            G_df, nodes_attr = ndex_to_sim_matrix(
+                params['ndex_uuid'],
+                params['ndex_server'],
+                params['ndex_user'],
+                params['ndex_pass'],
+                similarity=params['similarity'],
+                input_fmt=input_fmt,
+                output_fmt='sparse')
             
-            seed_genes = [x.strip() for x in params['seed'].split(',')]
+            print 'Similarity'
+            print G_df.head()
 
-            print 'Seed genes:'
-            print seed_genes
+            features = [params['similarity']]
+            if params['all_features']:
+                features.extend(G_df.columns.values.tolist())
 
-            seed_idx = [arr_genes_index[g] for g in seed_genes]
+            gene_names = np.unique(np.append(
+                G_df['Gene1'].values,
+                G_df['Gene2'].values))
+            if verbose:
+                print 'Gene names:', gene_names
 
-            # Take genes that are most similar to the seed set of genes
-            if params['aggregation']=='mean':
-                sim_2_seed = arr[seed_idx, :].mean(0)
-            elif params['aggregation']=='min':
-                sim_2_seed = arr[seed_idx, :].min(0)
-            elif params['aggregation']=='max':
-                sim_2_seed = arr[seed_idx, :].max(0)
-            elif params['aggregation']=='percentile' and params.has_key('percentile'):
-                sim_2_seed = np.percentile(arr[seed_idx, :], float(params['percentile']))
-            else:
-                raise Exception('Unsupported aggregation method: %s' % params['aggregation'])
+            if params['features']:
+                to_concat = []
 
-            expand_genes_idx = np.argsort(sim_2_seed)[:int(params['expand_size'])]
-            try:
-                min_similarity = float(params['min_similarity'])
-                expand_genes_idx = expand_genes_idx[sim_2_seed[expand_genes_idx] > min_similarity]
-            except:
-                pass
-            expand_genes = arr_genes[expand_genes_idx]
-            
-            print 'Expanded set of genes:'
-            print expand_genes
+                for f in params['features']:
+                    if f in G_df.columns:
+                        in_G.append(f)
+                    else:
+                        tmp = ndex_to_sim_matrix(
+                            params['ndex_uuid'],
+                            params['ndex_server'],
+                            params['ndex_user'],
+                            params['ndex_pass'],
+                            similarity=params['similarity'],
+                            input_fmt=input_fmt,
+                            output_fmt='sparse',
+                            subset=None)
+                        tmp.set_index(['Gene1', 'Gene2'], inplace=True)
+                        to_concat.append(tmp)
+                to_concat.append(G_df)
+                G_df = pd.concat(to_concat, axis=1)
 
-            for node_id, node_name in enumerate(expand_genes):
-                yield self.create_node(node_id, node_name)
-            
-#            if len(errors) == 0:
-            if True:
-                pass
+            if verbose:
+                print 'Features:', features
+
+            errors = [e for e in errors if e.message != "Error decoding token from stream, EOF"]
+            if len(errors) == 0:
+
+                ## Run CLIXO
+                graph = G_df[['Gene1', 'Gene2', params['similarity']]]
+                ont = Ontology.run_clixo(
+                    graph,
+                    params['alpha'],
+                    params['beta'],
+                    min_dt=params['min_dt'],
+                    timeout=params['timeout']
+                )                
+
+                # Create an NDEX network for every term's subnetwork
+                term_2_uuid = ont.upload_subnets_ndex(
+                    G_df,
+                    features,
+                    params['ndex_server'],
+                    params['ndex_user'],
+                    params['ndex_pass'],
+                    params['name'],
+                    propagate=True
+                )
+
+                if params['output_fmt']=='cx':
+                    # Use CXmate to stream to NDEX
+                    for elt in self.stream_ontology(ont, term_sizes, term_2_uuid, tree_edges):
+                        yield elt
+
+                elif params['output_fmt']=='ndex':
+                    description = (
+                        'Data-driven ontology created by CLIXO '
+                        '(parameters: alpha={alpha}, beta={beta}). '
+                        'Created from similarity network '
+                        'at {ndex_server}/{ndex_uuid}').format(**params)
+
+                    # nx_nodes_to_pandas(G)
+
+                    ont_ndex = ont.to_NdexGraph(
+                        name=params['name'],
+                        description=description,
+                        term_2_uuid=term_2_uuid,
+                        gene_attr=nodes_attr)
+
+                    ont_url = ont_ndex.upload_to(
+                        params['ndex_server'],
+                        params['ndex_user'],
+                        params['ndex_pass'])
+                    print 'ontology_url:', ont_url
+
+                    for elt in yield_ndex(ont_url):
+                        yield elt
             else:
                 for caught_error in errors:
                     error = self.create_internal_crash_error(caught_error.message, 500)
@@ -144,7 +218,7 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
             for t_i in ontology.gene_2_terms[g]:
                 t = ontology.terms[t_i]
                 yield self.create_edge(edge_id, node_2_id[g], node_2_id[t])
-                yield self.create_edgeAttribute(edge_id, 'EdgeType', 'Gene-Term Annotation')
+                yield self.create_edgeAttribute(edge_id, 'Relation', 'Gene-Term Annotation')
                 if (g, t) in tree_edges:
                     yield self.create_edgeAttribute(edge_id, 'Is_Tree_Edge', 'Tree')
                 else:
@@ -153,45 +227,12 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
         for p, c_list in ontology.term_2_terms.iteritems():        
             for c in c_list:
                 yield self.create_edge(edge_id, node_2_id[c], node_2_id[p])
-                yield self.create_edgeAttribute(edge_id, 'EdgeType', 'Child-Parent Hierarchical Relation')
+                yield self.create_edgeAttribute(edge_id, 'Relation', 'Child-Parent Hierarchical Relation')
                 if (c,p) in tree_edges:
                     yield self.create_edgeAttribute(edge_id, 'Is_Tree_Edge', 'Tree')
                 else:
                     yield self.create_edgeAttribute(edge_id, 'Is_Tree_Edge', 'Not_Tree')
                 edge_id += 1
-
-    def upload_subnetworks_2_ndex(self, ontology, arr, arr_genes_index,
-                                  ndex_server, ndex_user, ndex_pass, name):
-        """Push subnetworks"""
-
-        #print ontology.get_term_2_genes()
-
-        term_2_url = {}
-        for t in ontology.terms:
-            #print 't:', t
-            genes = np.array([ontology.genes[g] for g in ontology.get_term_2_genes()[t]])
-            #print 'genes:', genes
-            idx = np.array([arr_genes_index[g] for g in genes])
-            #print 'idx:', idx
-            subarr = arr[idx,:][:,idx]
-
-            # Set nan to 0
-            subarr[np.isnan(subarr)] = 0
-
-            row, col = subarr.nonzero()
-            row, col = row[row < col], col[row < col]
-                        
-            G = NdexGraph()    
-            G.create_from_edge_list(zip(genes[row], genes[col]))
-            for i in np.arange(row.size):
-                G.set_edge_attribute(i+1, "similarity", str(subarr[row[i], col[i]]))
-            G.set_name('%s supporting network for CLIXO:%s' % (name, t))
-            G.set_network_attribute('Description', '%s supporting network for CLIXO:%s' % (name, t))
-
-            ndex_url = G.upload_to(ndex_server, ndex_user, ndex_pass)
-            term_2_url[t] = ndex_url
-
-        return term_2_url
 
     def create_node(self, node_id, node_name):
         element = cx_pb2.Element()
@@ -270,9 +311,6 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
                 else:
                     edgesAttr_dict[edgeAttr.name] = {edgeAttr.edgeId : edgeAttr.value}
 
-#        print 'nodes_dict:', nodes_dict
-
-
         G = nx.Graph()
         for n_id, u in nodes_dict.iteritems():
             G.add_node(u, node_id=n_id)
@@ -281,9 +319,6 @@ class CyServiceServicer(cx_pb2_grpc.CyServiceServicer):
             G.add_edge(nodes_dict[u], nodes_dict[v],
                        attr_dict={k : edgesAttr_dict[k][e_id] for k in edge_attributes_list if edgesAttr_dict[k].has_key(e_id)},
                        edge_id=e_id)
-
-#        print 'G nodes:', G.nodes()
-#        0 / asdf
 
         return G, parameters, errors
 
@@ -329,7 +364,7 @@ def log_error(message):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     cx_pb2_grpc.add_CyServiceServicer_to_server(
-            CyServiceServicer(), server)
+            CyServiceServicer(), server) 
     server.add_insecure_port('0.0.0.0:8080')
     server.start()
     try:

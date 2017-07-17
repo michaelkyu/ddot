@@ -1,0 +1,53 @@
+#!/bin/bash
+
+ONT1=$1
+GO_ONT=$2
+THRESHOLD=$3
+VER_MODE=$4
+RESULTS_DIR=$5
+NUM_ITER=$6
+NUM_THREADS=$7
+TERM_NAME=$8
+GENES=$9
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+$DIR/alignOntology $ONT1 $GO_ONT $THRESHOLD $VER_MODE 0 1 $TERM_NAME > $RESULTS_DIR/alignment.out &
+
+#grep $TERM_NAME $ONT1 | cut -f 2 | sort -u > $RESULTS_DIR/all_genes;
+
+mkdir $RESULTS_DIR/rand_files
+
+ITER=0
+while [ $ITER -lt $NUM_ITER ]
+do
+    echo "$ITER"
+    awk 'BEGIN {srand()} {print int(rand()*1000000) "\t" $0}' $GENES | sort -n | cut -f 2 > $RESULTS_DIR/tmp;
+    paste $GENES $RESULTS_DIR/tmp > $RESULTS_DIR/rand_files/rand_dict_$ITER
+    $DIR/replace_words_using_dicts.pl $ONT1 $RESULTS_DIR/rand_files/rand_dict_$ITER > $RESULTS_DIR/rand_files/rand_ont_$ITER
+
+    $DIR/alignOntology $RESULTS_DIR/rand_files/rand_ont_$ITER $GO_ONT $THRESHOLD $VER_MODE 0 1 $TERM_NAME > $RESULTS_DIR/rand_files/alignment_$ITER &
+    sleep 1;
+    while [ $(ps --no-headers | grep alignOntology | wc -l) -ge $NUM_THREADS ]
+    do
+	sleep 1
+    done
+    ITER=$(( $ITER + 1 ))
+done
+rm $RESULTS_DIR/tmp;
+sleep 1
+
+while [ $(ps --no-headers | grep alignOntology | wc -l) -ge 1 ]
+do
+    sleep 1
+done
+
+for i in $(seq 0 $(($NUM_ITER - 1)) )
+do
+  END_OF_HEADER=$(grep -n Matched $RESULTS_DIR/rand_files/alignment_"$i" | sed 's/:.*//');
+  sed "1,$END_OF_HEADER""d" $RESULTS_DIR/rand_files/alignment_"$i" | sort -r -n -k 3 | cut -f 1,2,3 > $RESULTS_DIR/rand_files/alignment_without_descendents_$i
+done
+END_OF_HEADER=$(grep -n Matched $RESULTS_DIR/alignment.out | sed 's/:.*//');
+sed "1,$END_OF_HEADER""d" $RESULTS_DIR/alignment.out | sort -r -n -k 3 | cut -f 1,2,3 > $RESULTS_DIR/alignment_without_descendents
+
+$DIR/calculateFDRsForAlignment $ONT1 $RESULTS_DIR/alignment_without_descendents $RESULTS_DIR/rand_files/alignment_without_descendents $NUM_ITER > $RESULTS_DIR/FDRs

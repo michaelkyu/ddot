@@ -1,0 +1,56 @@
+#!/bin/bash
+
+ONT1=$1
+GO_ONT=$2
+THRESHOLD=$3
+VER_MODE=$4
+RESULTS_DIR=$5
+NUM_ITER=$6
+NUM_THREADS=$7
+TERM_NAME=$8
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+$DIR/alignOntology $ONT1 $GO_ONT $THRESHOLD $VER_MODE 0 1 $TERM_NAME > $RESULTS_DIR/alignment.out &
+
+grep $TERM_NAME $ONT1 | cut -f 2 | sort -u > $RESULTS_DIR/all_genes;
+
+mkdir $RESULTS_DIR/rand_files
+
+ITER=0
+while [ $ITER -lt $NUM_ITER ]
+do
+    echo "$ITER"
+    #awk 'BEGIN {srand()} {print int(rand()*1000000) "\t" $0}' $RESULTS_DIR/all_genes | sort -n | cut -f 2 > $RESULTS_DIR/tmp;
+    shuf $RESULTS_DIR/all_genes | paste $RESULTS_DIR/all_genes - > $RESULTS_DIR/rand_files/rand_dict_$ITER
+    $DIR/replace_words_using_dicts.pl $ONT1 $RESULTS_DIR/rand_files/rand_dict_$ITER > $RESULTS_DIR/rand_files/rand_ont_$ITER
+
+    $DIR/alignOntology $RESULTS_DIR/rand_files/rand_ont_$ITER $GO_ONT $THRESHOLD $VER_MODE 0 1 $TERM_NAME > $RESULTS_DIR/rand_files/alignment_$ITER &
+    #sleep 1;
+    while [ $(ps --no-headers | grep alignOntology | wc -l) -ge $NUM_THREADS ]
+    do
+	sleep 1
+    done
+    ITER=$(( $ITER + 1 ))
+done
+sleep 1
+
+while [ $(ps --no-headers | grep alignOntology | wc -l) -ge 1 ]
+do
+    sleep 1
+done
+
+for i in $(seq 0 $(($NUM_ITER - 1)) )
+do
+  END_OF_HEADER=$(grep -n Matched $RESULTS_DIR/rand_files/alignment_"$i" | sed 's/:.*//');
+  sed "1,$END_OF_HEADER""d" $RESULTS_DIR/rand_files/alignment_"$i" | sort -r -n -k 3 | cut -f 1,2,3 > $RESULTS_DIR/rand_files/alignment_without_descendents_$i
+done
+END_OF_HEADER=$(grep -n Matched $RESULTS_DIR/alignment.out | sed 's/:.*//');
+sed "1,$END_OF_HEADER""d" $RESULTS_DIR/alignment.out | sort -r -n -k 3 | cut -f 1,2,3 > $RESULTS_DIR/alignment_without_descendents
+
+$DIR/calculateFDRsForAlignment $ONT1 $RESULTS_DIR/alignment_without_descendents $RESULTS_DIR/rand_files/alignment_without_descendents $NUM_ITER > $RESULTS_DIR/FDRs
+grep -v '#' $RESULTS_DIR/FDRs | awk -F "\t" '{if (($3 > 0.1) && ($4 < 0.1)) print}' > $RESULTS_DIR/alignments_FDR_0.1_t_0.1
+
+cd $RESULTS_DIR
+for i in $(seq 1 $(cat alignment_without_descendents | wc -l)); do echo -e $i'\t'$(sed -n $i''p alignment_without_descendents | cut -f 1)'\t'$(sed -n $i''p alignment_without_descendents | cut -f 2)'\t'$(sed -n $i''p alignment_without_descendents | cut -f 3)'\t'$(grep -w "$(cut -f 2 alignment_without_descendents | sed -n $i''p)" rand_files/alignment_* | cut -f 2,3 | awk -F "\t" -v m="$(cut -f 2 alignment_without_descendents | sed -n $i''p)" -v iter=$N -v t=$(cut -f 3 alignment_without_descendents | sed -n $i''p) 'BEGIN {count=0}; {if (($1 == m) && ($2 > t)) {count++}}; END {print count/1000}'); done | cut -f 2- > alignments_indiv
+awk -F "\t" '{if (($4 <= 0.1) && ($3 >= 0.1)) print}' alignments_indiv > alignments_indiv_FDR_0.1_t_0.1

@@ -1,0 +1,343 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Utility methods for analysis &mdash; Data-Driven Ontology Toolkit 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Data-Driven Ontology Toolkit 0.1 documentation" href="index.html"/>
+        <link rel="prev" title="Analyzing and Manipulating Ontologies" href="ontology.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Data-Driven Ontology Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#dependencies">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#features">Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#examples">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html#references">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ontology.html">Analyzing and Manipulating Ontologies</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Utility methods for analysis</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Data-Driven Ontology Toolkit</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Utility methods for analysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ddot.utils">
+<span id="utility-methods-for-analysis"></span><h1>Utility methods for analysis<a class="headerlink" href="#module-ddot.utils" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="ddot.utils.expand_seed">
+<code class="descclassname">ddot.utils.</code><code class="descname">expand_seed</code><span class="sig-paren">(</span><em>seed</em>, <em>sim</em>, <em>sim_names</em>, <em>agg='mean'</em>, <em>min_sim=-inf</em>, <em>filter_perc=None</em>, <em>seed_perc=None</em>, <em>agg_perc=0.5</em>, <em>expand_size=None</em>, <em>include_seed=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/utils.html#expand_seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.utils.expand_seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take genes that are most similar to the seed set of genes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddot.utils.get_gene_name_converter">
+<code class="descclassname">ddot.utils.</code><code class="descname">get_gene_name_converter</code><span class="sig-paren">(</span><em>genes</em>, <em>scopes='symbol'</em>, <em>fields='entrezgene'</em>, <em>species='human'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/utils.html#get_gene_name_converter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.utils.get_gene_name_converter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query mygene.info to get a dictionary mapping gene names in the ID
+namespace scopes to the ID namespace in fields</p>
+<p>Weird behavior with mygene.info: for Entrez genes, use fields &#8216;entrezgene&#8217;. For ENSEMBL genes, use fields &#8220;ensembl&#8221;</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddot.utils.make_index">
+<code class="descclassname">ddot.utils.</code><code class="descname">make_index</code><span class="sig-paren">(</span><em>it</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/utils.html#make_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.utils.make_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a dictionary mapping elements of an iterable to the index
+position of that element</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddot.utils.melt_square">
+<code class="descclassname">ddot.utils.</code><code class="descname">melt_square</code><span class="sig-paren">(</span><em>df, columns=['Gene1', 'Gene2'], similarity='similarity', empty_value=0, upper_triangle=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/utils.html#melt_square"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.utils.melt_square" title="Permalink to this definition">¶</a></dt>
+<dd><p>Melts square dataframe into sparse representation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddot.utils.ndex_to_sim_matrix">
+<code class="descclassname">ddot.utils.</code><code class="descname">ndex_to_sim_matrix</code><span class="sig-paren">(</span><em>ndex_uuid</em>, <em>ndex_server</em>, <em>ndex_user</em>, <em>ndex_pass</em>, <em>similarity='similarity'</em>, <em>input_fmt='cx_matrix'</em>, <em>output_fmt='matrix'</em>, <em>subset=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/utils.html#ndex_to_sim_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.utils.ndex_to_sim_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a similarity network from NDEx and return it as either a
+square np.array (compact representation) or a pandas.DataFrame of
+the non-zero similarity values (sparse representation)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddot.utils.nx_edges_to_pandas">
+<code class="descclassname">ddot.utils.</code><code class="descname">nx_edges_to_pandas</code><span class="sig-paren">(</span><em>G</em>, <em>attr_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/utils.html#nx_edges_to_pandas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.utils.nx_edges_to_pandas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create pandas.DataFrame of edge attributes of a NetworkX graph</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddot.utils.nx_nodes_to_pandas">
+<code class="descclassname">ddot.utils.</code><code class="descname">nx_nodes_to_pandas</code><span class="sig-paren">(</span><em>G</em>, <em>attr_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/utils.html#nx_nodes_to_pandas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.utils.nx_nodes_to_pandas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create pandas.DataFrame of node attributes of a NetworkX graph</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddot.utils.nx_to_NdexGraph">
+<code class="descclassname">ddot.utils.</code><code class="descname">nx_to_NdexGraph</code><span class="sig-paren">(</span><em>G_nx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/utils.html#nx_to_NdexGraph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.utils.nx_to_NdexGraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a NetworkX into a NdexGraph object</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddot.utils.pivot_square">
+<code class="descclassname">ddot.utils.</code><code class="descname">pivot_square</code><span class="sig-paren">(</span><em>df</em>, <em>index</em>, <em>columns</em>, <em>values</em>, <em>fill_value=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/utils.html#pivot_square"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.utils.pivot_square" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a dataframe into a square compact representation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddot.utils.sim_matrix_to_NdexGraph">
+<code class="descclassname">ddot.utils.</code><code class="descname">sim_matrix_to_NdexGraph</code><span class="sig-paren">(</span><em>sim</em>, <em>names</em>, <em>similarity</em>, <em>output_fmt</em>, <em>node_attr=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/utils.html#sim_matrix_to_NdexGraph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.utils.sim_matrix_to_NdexGraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert similarity matrix into NdexGraph object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sim</strong> &#8211; Square-shaped NumPy array representing similarities</li>
+<li><strong>names</strong> &#8211; Genes names, in the same order as the rows and columns of sim</li>
+<li><strong>similarity</strong> &#8211; Edge attribute name for similarities in the resulting NdexGraph object</li>
+<li><strong>output_fmt</strong> &#8211; Either &#8216;cx&#8217; (Standard CX format), or &#8216;cx_matrix&#8217; (custom edgeMatrix aspect)</li>
+<li><strong>node_attr</strong> &#8211; Node attributes, as a pandas.DataFrame, to be set in NdexGraph object</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">NdexGraph object</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddot.utils.update_nx_with_alignment">
+<code class="descclassname">ddot.utils.</code><code class="descname">update_nx_with_alignment</code><span class="sig-paren">(</span><em>G</em>, <em>alignment</em>, <em>term_descriptions=None</em>, <em>use_node_name=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/utils.html#update_nx_with_alignment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.utils.update_nx_with_alignment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add node attributes to a NetworkX graph.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>G</strong> &#8211; NetworkX object</li>
+<li><strong>alignment</strong> &#8211; pandas.DataFrame where the index is the name of terms,
+and where there are 3 columns: &#8216;Term&#8217;, &#8216;Similarity&#8217;, &#8216;FDR&#8217;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="ontology.html" class="btn btn-neutral" title="Analyzing and Manipulating Ontologies" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Michael Ku Yu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

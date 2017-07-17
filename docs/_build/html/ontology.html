@@ -1,0 +1,883 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Analyzing and Manipulating Ontologies &mdash; Data-Driven Ontology Toolkit 0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Data-Driven Ontology Toolkit 0.1 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Data-Driven Ontology Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Analyzing and Manipulating Ontologies</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Data-Driven Ontology Toolkit</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Analyzing and Manipulating Ontologies</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ontology.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ddot.Ontology">
+<span id="analyzing-and-manipulating-ontologies"></span><h1>Analyzing and Manipulating Ontologies<a class="headerlink" href="#module-ddot.Ontology" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="ddot.Ontology.Ontology">
+<em class="property">class </em><code class="descclassname">ddot.Ontology.</code><code class="descname">Ontology</code><span class="sig-paren">(</span><em>hierarchy</em>, <em>mapping</em>, <em>hierarchy_attr=None</em>, <em>parent_child=False</em>, <em>add_root_name=None</em>, <em>propagate=False</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology" title="Permalink to this definition">¶</a></dt>
+<dd><p>A Python representation for constructing, analyzing, and
+manipulating ontologies.</p>
+<p>This class&#8217;s attributes and methods are focused on the ontology&#8217;s
+hierarchical structure, i.e. a directed acyclic graph.</p>
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.collapse_ontology">
+<code class="descname">collapse_ontology</code><span class="sig-paren">(</span><em>method='mhkramer'</em>, <em>collapseRedundantNodes=None</em>, <em>verbose=True</em>, <em>default_relation='default'</em>, <em>min_term_size=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.collapse_ontology"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.collapse_ontology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove redundant and empty terms. When a term T is removed,
+hierarchical relations are preserved by connecting every child
+of T with every parent of T. This removal operation has the
+nice property of being commutative, i.e. the order of removal
+does not matter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>method</strong> &#8211; If &#8220;mhkramer&#8221;, then use the collapseRedundantNodes script
+in the alignOntology package. If &#8220;python&#8221;, then use an internal Python script</li>
+<li><strong>propagate</strong> &#8211; If True, propagate annotations beforehand</li>
+<li><strong>min_term_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Remove terms that are below this size</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a deep copy of the Ontology object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.delete_genes">
+<code class="descname">delete_genes</code><span class="sig-paren">(</span><em>genes_to_delete</em>, <em>inplace=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.delete_genes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.delete_genes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete genes from ontology</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="ddot.Ontology.Ontology.from_NdexGraph">
+<em class="property">classmethod </em><code class="descname">from_NdexGraph</code><span class="sig-paren">(</span><em>G</em>, <em>edgetype_attr='EdgeType'</em>, <em>edgetype_value='Gene-Term'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.from_NdexGraph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.from_NdexGraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a NdexGraph object to an Ontology object. Gene and terms
+are distinguished according by a node attribute.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>G</strong> (<em>NdexGraph</em>) &#8211; </li>
+<li><strong>edgetype_attr</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Name of the edge attribute that distinguishes a (gene,
+term) pair from a (child term, parent term) pair</li>
+<li><strong>gene_value</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Value of the edge attribute for (gene, term) pairs</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ddot.Ontology.Ontology" title="ddot.Ontology.Ontology">ddot.Ontology.Ontology</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="ddot.Ontology.Ontology.from_table">
+<em class="property">classmethod </em><code class="descname">from_table</code><span class="sig-paren">(</span><em>table_file</em>, <em>is_mapping=&lt;function &lt;lambda&gt;&gt;</em>, <em>parent_col=0</em>, <em>child_col=1</em>, <em>propagate=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.from_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.from_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create Ontology from a tab-delimited table.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table_file</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Filename of table</li>
+<li><strong>is_mapping</strong> (<em>function</em>) &#8211; Function applied on each row to determine if it is</li>
+<li><strong>parent_col</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Column for parent terms</li>
+<li><strong>child_col</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Column for child terms and genes</li>
+<li><strong>propagate</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If True, then propagate gene-term mappings</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ddot.Ontology.Ontology" title="ddot.Ontology.Ontology">ddot.Ontology.Ontology</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.get_annotation_matrix">
+<code class="descname">get_annotation_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.get_annotation_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.get_annotation_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a gene-by-term matrix as a scipy.sparse.coo_matrix</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.get_best_ancestor_matrix">
+<code class="descname">get_best_ancestor_matrix</code><span class="sig-paren">(</span><em>node_order=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.get_best_ancestor_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.get_best_ancestor_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute common ancestor matrix.</p>
+<p>lca[a,b] = index of least common ancestor of terms a and b</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.get_connectivity_matrix">
+<code class="descname">get_connectivity_matrix</code><span class="sig-paren">(</span><em>sparse=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.get_connectivity_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.get_connectivity_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate which terms are descendants/ancestors of other terms</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sparse</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If True, return a scipy.sparse matrix. If False, return a
+NumPy array</li>
+<li><strong>a term-by-term matrix d where</strong> (<em>Creates</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>d</strong> &#8211; d[i,j] is 1 if term i is an ancestor of term j, and 0
+otherwise. Note that d[i,i] == 1 and d[root,i] == 0, for
+every i.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.ndarray or scipy.sparse.matrix</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.get_connectivity_matrix_nodiag">
+<code class="descname">get_connectivity_matrix_nodiag</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.get_connectivity_matrix_nodiag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.get_connectivity_matrix_nodiag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a similar matrix as in Ontology.get_connectivity_matrix(),
+but the diagonal of the matrix is 0.</p>
+<dl class="docutils">
+<dt>Note: !!!!!!!!!!!!!!!!!!!!!!!!</dt>
+<dd>d[a, a] == 0 instead of 1</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.get_leaves">
+<code class="descname">get_leaves</code><span class="sig-paren">(</span><em>terms_list</em>, <em>children_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.get_leaves"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.get_leaves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns terms in &lt;terms_list&gt; that are not ancestors of any term in
+&lt;children_list&gt;</p>
+<p>If &lt;children_list&gt; is None, then select the terms in
+&lt;terms_list&gt; that are not ancestors of any of the other terms
+in &lt;terms_list&gt;.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.get_longest_paths">
+<code class="descname">get_longest_paths</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.get_longest_paths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.get_longest_paths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the lengths of the longest directed paths between all pairs
+of terms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">NumPy array d where d[x,y] is length of the longest
+directed path from a descendant term x to an ancestral term y</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.get_ontotype">
+<code class="descname">get_ontotype</code><span class="sig-paren">(</span><em>gset_sample</em>, <em>prop</em>, <em>format='dict'</em>, <em>dtype=&lt;type 'numpy.int8'&gt;</em>, <em>gene_ordering=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.get_ontotype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.get_ontotype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the ontotypes of genotypes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>gset_sample</strong> (<em>list</em>) &#8211; List of gene sets (i.e. gsets) A &#8220;gset&#8221; is a set of genes,
+represented as a tuple</li>
+<li><strong>prop</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; If &#8216;genes&#8217;, then the value of a term is the number of
+genes in the term which are deleted.</li>
+<li><strong>format</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The data format of the ontotype. Supported formats are
+&#8216;dict&#8217;, &#8216;scipy.coo&#8217;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>If format==&#8217;dict&#8217;, then return a list, where each element is a</em></li>
+<li><em>dictionary representation of an ontotype.</em></li>
+<li><em>If format==&#8217;scipy.coo&#8217;, then return a genotype-by-term matrix</em></li>
+<li><em>as a scipy.sparse.coo_matrix</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.get_roots">
+<code class="descname">get_roots</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.get_roots"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.get_roots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of the root term(s)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.get_shortest_paths">
+<code class="descname">get_shortest_paths</code><span class="sig-paren">(</span><em>sparse=False</em>, <em>chunk_size=500</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.get_shortest_paths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.get_shortest_paths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the length of the shortest paths between all pairs of
+terms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sparse</strong> &#8211; If True, return a scipy.sparse matrix. If False, return a
+NumPy array</li>
+<li><strong>chunk_size</strong> &#8211; Computational optimization: shortest paths are calculated in batches.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>d</strong> &#8211; d[x,y] is the length of the shortest directed path from a
+descendant term with index x to an ancestral term with
+index y. Term indices are defined by
+self.terms_index. d[x,y]=0 if no directed path exists.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.ndarray or scipy.sparse.matrix</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.get_term_sizes">
+<code class="descname">get_term_sizes</code><span class="sig-paren">(</span><em>propagate=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.get_term_sizes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.get_term_sizes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array of term sizes in the same order as self.terms</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.get_tree_edges">
+<code class="descname">get_tree_edges</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.get_tree_edges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.get_tree_edges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identify a spanning tree of the DAG (including genes as part of the
+DAG), and return a list of (u, v) edges in the tree.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.is_dag">
+<code class="descname">is_dag</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.is_dag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.is_dag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if the Ontology is a valid directed acyclic graph,
+False otherwise.</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="ddot.Ontology.Ontology.mutual_collapse">
+<em class="property">classmethod </em><code class="descname">mutual_collapse</code><span class="sig-paren">(</span><em>ont1</em>, <em>ont2</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.mutual_collapse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.mutual_collapse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collapses two ontologies to the common set of genes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ont1</strong> (<a class="reference internal" href="#ddot.Ontology.Ontology" title="ddot.Ontology.Ontology"><em>ddot.Ontology.Ontology</em></a>) &#8211; </li>
+<li><strong>ont2</strong> (<a class="reference internal" href="#ddot.Ontology.Ontology" title="ddot.Ontology.Ontology"><em>ddot.Ontology.Ontology</em></a>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>ont1_collapsed</strong> (<em>ddot.Ontology.Ontology</em>)</li>
+<li><strong>ont2_collapsed</strong> (<em>ddot.Ontology.Ontology</em>)</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.propagate_annotations">
+<code class="descname">propagate_annotations</code><span class="sig-paren">(</span><em>direction='forward'</em>, <em>method='iterative_union'</em>, <em>verbose=False</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.propagate_annotations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.propagate_annotations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Propagates gene-term annotations through the ontology</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.propagate_ontotypes">
+<code class="descname">propagate_ontotypes</code><span class="sig-paren">(</span><em>ontotypes</em>, <em>prop</em>, <em>ontotype_size</em>, <em>max_ontotype</em>, <em>method='fixed_size'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.propagate_ontotypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.propagate_ontotypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Propagates a list of base ontotypes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ontotypes</strong> &#8211; An array of ontotypes in scipy.sparse.csr_matrix format.
+Each row is a separate ontotype.</li>
+<li><strong>method</strong> &#8211; If &#8216;fixed_size&#8217;, then the sum of values in every ontotype
+is exactly the same, namely &lt;ontotype_size&gt;</li>
+<li><strong>ontotype_size</strong> &#8211; If method==&#8217;fixed_size&#8217;, then this is the sum of values in
+every ontotype</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.rename">
+<code class="descname">rename</code><span class="sig-paren">(</span><em>genes=None</em>, <em>terms=None</em>, <em>gene_prefix=None</em>, <em>term_prefix=None</em>, <em>inplace=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.rename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename gene and/or term names.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>genes</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; Dictionary mapping current gene names to new names. If
+specified, genes not in dictionary are deleted.</li>
+<li><strong>terms</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; Dictionary mapping current term names to new names. If
+specified, terms not in dictionary are deleted.</li>
+<li><strong>gene_prefix</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Prefix to append to every gene&#8217;s name</li>
+<li><strong>term_prefix</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Prefix to append to every term&#8217;s name</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If True, then manipulate this Ontology. If False, create a
+new Ontology.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ddot.Ontology.Ontology" title="ddot.Ontology.Ontology">ddot.Ontology.Ontology</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="ddot.Ontology.Ontology.run_clixo">
+<em class="property">classmethod </em><code class="descname">run_clixo</code><span class="sig-paren">(</span><em>graph</em>, <em>alpha</em>, <em>beta</em>, <em>min_dt=-10000000</em>, <em>timeout=100000000</em>, <em>output=None</em>, <em>output_log=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.run_clixo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.run_clixo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the CLIXO algorithm and returns the result as an Ontology object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>graph</strong> &#8211; 3-column pandas.DataFrame</li>
+<li><strong>alpha</strong> &#8211; CLIXO alpha parameter</li>
+<li><strong>beta</strong> &#8211; CLIXO beta parameter</li>
+<li><strong>min_dt</strong> &#8211; Minimum similarity score</li>
+<li><strong>timeout</strong> &#8211; Maximum time (in seconds) allowed to run CLIXO</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#ddot.Ontology.Ontology" title="ddot.Ontology.Ontology">ddot.Ontology.Ontology</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.semantic_similarity">
+<code class="descname">semantic_similarity</code><span class="sig-paren">(</span><em>genes_subset=None</em>, <em>term_sizes='subset'</em>, <em>between_terms=False</em>, <em>output='Resnik'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.semantic_similarity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.semantic_similarity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the semantic similarity between pair of genes in
+&lt;genes_subset&gt;. Similarity s(g1,g2) is defined as
+<span class="math">\(-log_2(|T_sca| / |T_root|)\)</span> where <span class="math">\(|T|\)</span> is the number of genes in
+&lt;genes_subset&gt; that are under term T. <span class="math">\(T_sca\)</span> is the &#8220;smallest
+common ancestor&#8221;, the common ancestral term with the smallest
+term size. <span class="math">\(T_root\)</span> is the root term of the ontology.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>genes_subset</strong> (<em>iterable</em>) &#8211; The set of genfes, over which pairs the similarity will be
+calculated. If &lt;term_sizes&gt;=&#8217;subset&#8217;, then term sizes will
+be recalculated according to only these genes, rather than
+all genes in the ontology</li>
+<li><strong>between_terms</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; if True, then output similarity between all terms</li>
+<li><strong>output</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; type of semantic similarity</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.shuffle_genes">
+<code class="descname">shuffle_genes</code><span class="sig-paren">(</span><em>inplace=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.shuffle_genes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.shuffle_genes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shuffle the names of genes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.summary">
+<code class="descname">summary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a summary of the Ontology&#8217;s contents.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.to_3col_table">
+<code class="descname">to_3col_table</code><span class="sig-paren">(</span><em>output</em>, <em>header=False</em>, <em>parent_child=True</em>, <em>encoding=None</em>, <em>default_relation=u'default'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.to_3col_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.to_3col_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write Ontology to tab-delimited table with 3 columns and 2 types of rows:</p>
+<dl class="docutils">
+<dt>Row Type A. Parent term, child term, ontology relation</dt>
+<dd>e.g. &#8220;<a class="reference external" href="GO:0007005">GO:0007005</a>      <a class="reference external" href="GO:0007006">GO:0007006</a>      is_a&#8221;</dd>
+<dt>Row Type B. Term, gene, &#8220;gene&#8221;</dt>
+<dd>e.g. &#8220;<a class="reference external" href="GO:0007005">GO:0007005</a>      ATG7    gene&#8221;</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>output</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Filename of table</li>
+<li><strong>header</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If True, include a header line in the table</li>
+<li><strong>parent_child</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If False, then the first and second columns switch places</li>
+<li><strong>encoding</strong> &#8211; Character encoding</li>
+<li><strong>default_relation</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Relation type for all (child term, parent term)
+pairs. Note that the relation type for (gene, term) pairs
+is &#8220;gene&#8221;.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.to_NdexGraph">
+<code class="descname">to_NdexGraph</code><span class="sig-paren">(</span><em>name=None</em>, <em>description=None</em>, <em>term_2_uuid=None</em>, <em>represents=False</em>, <em>gene_attr=None</em>, <em>term_attr=None</em>, <em>gene_prefix=''</em>, <em>term_prefix=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.to_NdexGraph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.to_NdexGraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formats an Ontology object into a NetworkX object with extra node
+attributes that are accessed by the hierarchical viewer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.to_igraph">
+<code class="descname">to_igraph</code><span class="sig-paren">(</span><em>include_genes=False</em>, <em>spanning_tree=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.to_igraph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.to_igraph" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Convert Ontology to an igraph.Graph object. Gene and term names are</dt>
+<dd>stored in the &#8216;name&#8217; vertex attribute of the igraph object.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>include_genes</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Include genes as vertices in the igraph object.</li>
+<li><strong>spanning_tree</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If True, then identify a spanning tree of the DAG. include
+an edge attribute &#8220;Is_Tree_Edge&#8221; that indicates</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">igraph.Graph</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.to_networkx">
+<code class="descname">to_networkx</code><span class="sig-paren">(</span><em>gene_attr=None</em>, <em>term_attr=None</em>, <em>spanning_tree=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.to_networkx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.to_networkx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts Ontology into a NetworkX object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>gene_attr</strong> (<em>pandas.DataFrame</em>) &#8211; Meta-data about genes that will be included as node
+attributes in the NetworkX object.</li>
+<li><strong>term_attr</strong> (<em>pandas.DataFrame</em>) &#8211; Meta-data about term that will be included as node
+attributes in the NetworkX object.</li>
+<li><strong>spanning_tree</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If True, then identify a spanning tree of the DAG. include
+an edge attribute &#8220;Is_Tree_Edge&#8221; that indicates</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.to_pandas">
+<code class="descname">to_pandas</code><span class="sig-paren">(</span><em>term_2_term=True</em>, <em>gene_2_term=True</em>, <em>default_relation=u'default'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.to_pandas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.to_pandas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert Ontology to pandas.DataFrame</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>term_2_term</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Include (child term, parent term) pairs</li>
+<li><strong>gene_2_term</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Include (gene, term) pairs</li>
+<li><strong>default_relation</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The relation type assigned to all (child term, parent term) pairs</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Three columns: (1) Parent (2) Child &#8211; a gene or child
+term, (3) Relation type.  The relation type of all (gene,
+term) pairs is &#8220;gene&#8221;.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pandas.DataFrame</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.transitive_closure">
+<code class="descname">transitive_closure</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.transitive_closure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.transitive_closure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the transitive closure on (child term, parent term)
+relations. Transitivity rules are defined at</p>
+<p><a class="reference external" href="http://www.geneontology.org/page/ontology-relations">http://www.geneontology.org/page/ontology-relations</a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="ddot.Ontology.Ontology.upload_subnets_ndex">
+<code class="descname">upload_subnets_ndex</code><span class="sig-paren">(</span><em>sim, features, ndex_server, ndex_user, ndex_pass, name, gene_columns=['Gene1', 'Gene2'], propagate=True, public=False, gene_attr=None, verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#Ontology.upload_subnets_ndex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.Ontology.upload_subnets_ndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Push subnetworks to NDEx</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="ddot.Ontology.align_hierarchies">
+<code class="descclassname">ddot.Ontology.</code><code class="descname">align_hierarchies</code><span class="sig-paren">(</span><em>hier1</em>, <em>hier2</em>, <em>iterations</em>, <em>threads</em>, <em>calculateFDRs=None</em>, <em>output=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#align_hierarchies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.align_hierarchies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Align two hierarchies using alignOntology&#8217;s calculateFDRs script</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>hier1</strong> (<a class="reference internal" href="#ddot.Ontology.Ontology" title="ddot.Ontology.Ontology"><em>ddot.Ontology.Ontology</em></a>) &#8211; First ontology</li>
+<li><strong>hier2</strong> &#8211; Second ontology</li>
+<li><strong>iterations</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of randomized iterations</li>
+<li><strong>threads</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of CPU threads</li>
+<li><strong>calculateFDRs</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Filename of calculateFDRs script from alignOntology package. If
+None, then it is inferred based on ddot.config.</li>
+<li><strong>output</strong> &#8211; Filename to write alignment. If None, then don&#8217;t write.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddot.Ontology.parse_gaf">
+<code class="descclassname">ddot.Ontology.</code><code class="descname">parse_gaf</code><span class="sig-paren">(</span><em>gaf</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#parse_gaf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.parse_gaf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read gene-term annotations from GAF file format:</p>
+<p><a class="reference external" href="http://geneontology.org/page/go-annotation-file-gaf-format-21">http://geneontology.org/page/go-annotation-file-gaf-format-21</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gaf</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Filename of GAF file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">A list of 2-tuples (gene, GO term)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddot.Ontology.parse_obo">
+<code class="descclassname">ddot.Ontology.</code><code class="descname">parse_obo</code><span class="sig-paren">(</span><em>obo</em>, <em>output_file=None</em>, <em>id2name_file=None</em>, <em>id2namespace_file=None</em>, <em>alt_id_file=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#parse_obo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.parse_obo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an OBO file and writes the results into several tables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>obo</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Filename of OBO file</li>
+<li><strong>output_file</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Filename to write table that describes the ontology&#8217;s
+hierarchical structure. The table has four columns: (1) parent
+term, (2) child term, (3) relation type (e.g. &#8220;is_a&#8221; or
+&#8220;part_of&#8221;), (4) namespace of relation
+(e.g. &#8220;biological_process&#8221; or &#8220;cellular component&#8221;)</li>
+<li><strong>id2name_file</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Filename to write table of term descriptions.  The table has
+two columns: (1) Ontology term (e.g. &#8220;<a class="reference external" href="GO:0000030">GO:0000030</a>&#8221;), (2)
+description (e.g. &#8220;mannosyltransferase activity&#8221;)</li>
+<li><strong>id2namespace_file</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Filename to write table of term namespaces.  The table has two
+columns: (1) Ontology term (e.g. &#8220;<a class="reference external" href="GO:0000030">GO:0000030</a>&#8221;), (2) namespace
+of the term (e.g. &#8220;biological_process&#8221;)</li>
+<li><strong>alt_id_file</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Filename to write table of alternative Term IDs that are
+synonyms and refer to the same term. The table has two
+columns: (1) Primary Term ID, (2) Alternative Term ID</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddot.Ontology.read_alignment_file">
+<code class="descclassname">ddot.Ontology.</code><code class="descname">read_alignment_file</code><span class="sig-paren">(</span><em>f</em>, <em>source='Term_1'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#read_alignment_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.read_alignment_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an alignment file created from alignOntology&#8217;s calculateFDRs script</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Filename of alignment file</li>
+<li><strong>source</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Indicates which ontology will be the index of the
+returned pandas.DataFrame. Value must be either &#8216;Term_1&#8217; (first
+ontology) or &#8216;Term_2&#8217; (second ontology)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">DataFrame with four columns: &#8216;Term&#8217;, &#8216;Similarity&#8217;, &#8216;FDR&#8217;, and &#8216;Size&#8217;.
+The index of the DataFrame are the names of terms in the &#8220;source&#8221; ontology.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pandas.DataFrame</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="ddot.Ontology.read_term_descriptions">
+<code class="descclassname">ddot.Ontology.</code><code class="descname">read_term_descriptions</code><span class="sig-paren">(</span><em>description_table</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ddot/Ontology.html#read_term_descriptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ddot.Ontology.read_term_descriptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read mapping of GO term ID to their term descriptions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>description_table</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Filename of a tab-delimited table with two columns: GO term ID and term description</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The index is the GO ID and the values are the term descriptions</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">pandas.Series</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Michael Ku Yu.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

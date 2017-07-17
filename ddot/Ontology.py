@@ -16,28 +16,12 @@ from scipy.sparse import csr_matrix
 
 import ddot
 from ddot import config
-from ddot.utils import time_print, set_node_attributes_from_pandas, nx_to_NdexGraph, parse_ndex_uuid, make_index, update_nx_with_alignment 
+from ddot.utils import time_print, set_node_attributes_from_pandas, nx_to_NdexGraph, parse_ndex_uuid, make_index, update_nx_with_alignment, bubble_layout_nx, split_indices_chunk
+
+#print config
 
 GENE_TERM_ATTR = 'Gene_or_Term'
 
-def bubble_layout_nx(G):
-    from tulip import tlp
-#     from tulip import *
-#     from tulipgui import *
-
-    graph = tlp.newGraph()
-
-    nodes = graph.addNodes(len(G.nodes()))
-    nodes_idx = make_index(G.nodes())
-
-    for x, y in G.edges():
-        graph.addEdge(nodes[nodes_idx[x]], nodes[nodes_idx[y]])
-
-    # apply the 'Bubble Tree' graph layout plugin from Tulip
-    graph.applyLayoutAlgorithm('Bubble Tree')
-
-    viewLayout = graph.getLayoutProperty("viewLayout")
-    return {g : (viewLayout[i].x(), viewLayout[i].y()) for i, g in zip(nodes, G.nodes())}
 
 def read_alignment_file(f, source='Term_1'):
     """Parses an alignment file created from alignOntology's calculateFDRs script
@@ -503,7 +487,6 @@ class Ontology:
 
         """
 
-
         import networkx as nx
         G = nx.DiGraph()
 
@@ -561,6 +544,7 @@ class Ontology:
                    is_mapping=lambda x: x[2]=='gene',
                    parent_col = 0,
                    child_col = 1,
+                   mapping_file=None,                   
                    propagate=False,
                    verbose=False):
         """Create Ontology from a tab-delimited table.
@@ -590,16 +574,27 @@ class Ontology:
 
         # Read table
         df = pd.read_table(table_file, comment='#', header=None)
-        df.loc[:,0] = df.loc[:,0].astype(str)
-        df.loc[:,1] = df.loc[:,1].astype(str)
-        df.loc[:,2] = df.loc[:,2].astype(str)
+        df.loc[:, child_col] = df.loc[:, child_col].astype(str)
+        df.loc[:, parent_col] = df.loc[:, parent_col].astype(str)
+        # df.loc[:,0] = df.loc[:,0].astype(str)
+        # df.loc[:,1] = df.loc[:,1].astype(str)
+        # df.loc[:,2] = df.loc[:,2].astype(str)
 
         # Get gene-term mappings
-        tmp = df.apply(is_mapping, axis=1)
-        mapping = df.loc[tmp, :].loc[:,[child_col, parent_col]].values.tolist()
+        if mapping_file is None:
+            tmp = df.apply(is_mapping, axis=1)
+            mapping = df.loc[tmp, :].loc[:,[child_col, parent_col]].values.tolist()
+            tmp2 = df.loc[~ tmp, :]
+        else:
+            mapping = pd.read_table(mapping_file, comment='#', header=None)
+            mapping.loc[:, child_col] = mapping.loc[:, child_col].astype(str)
+            mapping.loc[:, parent_col] = mapping.loc[:, parent_col].astype(str)
+            mapping = mapping.loc[:,[child_col,parent_col]].values.tolist()
+            print mapping[:10]
+            tmp2 = df
 
         # Get term-term hierarchy and attributes
-        tmp2 = df.loc[~ tmp, :]
+
         if tmp2.shape[1] > 2:
             hierarchy = tmp2.loc[:,[child_col, parent_col]].values.tolist()
             hierarchy_attr = tmp2.loc[:,np.setdiff1d(np.arange(tmp2.shape[1]), [child_col, parent_col])]
@@ -1270,7 +1265,7 @@ class Ontology:
 
         tree_edges = set([(tree.vs[e.source]['name'],
                            tree.vs[e.target]['name']) 
-                          for e in tree.es if e['Is_Tree_Edge']])
+                          for e in tree.es if e['Is_Tree_Edge']=='Tree'])
         return tree_edges
 
     def is_dag(self):
@@ -2094,6 +2089,10 @@ class Ontology:
 
         if layout=='bubble':
             G.pos = bubble_layout_nx(G)
+            print 'nodes:', G.nodes()[:5]
+            print 'layout:', G.pos.items()[:5]
+            nx.set_node_attributes(G, 'x_pos', {n : x for n, (x,y) in G.pos.items()})
+            nx.set_node_attributes(G, 'y_pos', {n : y for n, (x,y) in G.pos.items()})
 
         G = nx_to_NdexGraph(G)
         if name is not None:

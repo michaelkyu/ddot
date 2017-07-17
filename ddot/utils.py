@@ -7,6 +7,49 @@ import simplejson
 import base64
 import time
 
+def bubble_layout_nx(G):
+    from tulip import tlp
+#     from tulip import *
+#     from tulipgui import *
+
+    graph = tlp.newGraph()
+
+    nodes = graph.addNodes(len(G.nodes()))
+    nodes_idx = make_index(G.nodes())
+
+    for x, y in G.edges():
+        graph.addEdge(nodes[nodes_idx[x]], nodes[nodes_idx[y]])
+
+    # apply the 'Bubble Tree' graph layout plugin from Tulip
+    graph.applyLayoutAlgorithm('Bubble Tree')
+
+    viewLayout = graph.getLayoutProperty("viewLayout")
+    return {g : (viewLayout[i].x(), viewLayout[i].y()) for i, g in zip(nodes, G.nodes())}
+
+def split_indices(n, k):
+    try:
+        tmp = iter(n)
+        indices = n
+    except TypeError, te:
+        assert type(n)==type(int(1))
+        indices = range(n)
+
+    from math import ceil
+    chunk_size = int(ceil(float(len(indices)) / k))
+
+    return [(chunk_size * a, min(chunk_size * (a+1), len(indices))) for a in range(int(ceil(float(len(indices)) / chunk_size)))]
+
+def split_indices_chunk(n, k):
+    from math import ceil
+
+    try:
+        iter(n)
+        n = len(n)
+    except TypeError, te:
+        assert isinstance(n, int) or isinstance(n, long)
+
+    return [(k*i, min(k*(i+1), n)) for i in range(int(ceil(float(n) / k)))]
+
 def make_index(it):
     """Create a dictionary mapping elements of an iterable to the index
     position of that element

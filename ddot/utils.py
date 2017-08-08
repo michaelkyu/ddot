@@ -7,7 +7,121 @@ import simplejson
 import base64
 import time
 
-def bubble_layout_nx(G):
+from ddot import config
+
+def invert_dict(dic, sort=True, keymap={}, valmap={}):
+    """Inverts a dictionary of the form
+    key1 : [val1, val2]
+    key2 : [val1]
+
+    to a dictionary of the form
+
+    val1 : [key1, key2]
+    val2 : [key2]
+
+    Parameters
+    -----------
+    dic : dict
+
+    Returns
+    -----------
+    dict
+    
+    """
+
+    dic_inv = {}
+    for k, v_list in dic.items():
+        k = keymap.get(k, k)
+        for v in v_list:
+            v = valmap.get(v, v)
+            if dic_inv.has_key(v):
+                dic_inv[v].append(k)
+            else:
+                dic_inv[v] = [k]
+
+    if sort:
+        for k in dic_inv.keys():
+            dic_inv[k].sort()
+
+    return dic_inv
+
+def transform_pos(pos, xmin=-250, xmax=250, ymin=-250, ymax=250):
+    """Transforms coordinates to fit a bounding box.
+
+    Parameters
+    -----------
+    pos : dict
+        Dictionary mapping node names to (x,y) coordinates
+
+    xmin : float, optional
+       Minimum x-coordinate of the bounding box
+
+    xmax : float, optional
+       Maximum x-coordinate of the bounding box
+
+    ymin : float, optional
+       Minimum y-coordinate of the bounding box
+
+    ymax : float, optional
+       Maximum y-coordinate of the bounding box
+
+    Returns
+    -------
+    dict:
+        New dictionary with transformed coordinates
+    """
+
+    def make_transform(x_list):
+        xmin_old, xmax_old = min(x_list), max(x_list)
+        midpoint_old = (xmin_old + xmax_old) / 2.
+        midpoint_new = (xmin + xmax) / 2.
+        scale = float(xmax - xmin) / (xmax_old - xmin_old)
+
+        def transform_x(x):
+            return (x - midpoint_old) * scale + midpoint_new
+
+        return transform_x
+
+    transform_x = make_transform([x for x, y in pos.values()])
+    transform_y = make_transform([y for x, y in pos.values()])
+    pos = {g : (transform_x(x), transform_y(y)) for g, (x, y) in pos.items()}
+
+    return pos
+
+def bubble_layout_nx(G, xmin=-750, xmax=750, ymin=-750, ymax=750):
+    """Bubble-tree Layout using the Tulip library.
+
+    The input tree must be a graph. The layout is scaled so that it is
+    fit exactly within a bounding box.
+    
+    Grivet, S., Auber, D., Domenger, J. P., & Melancon,
+    G. (2006). Bubble tree drawing algorithm. In Computer Vision and
+    Graphics (pp. 633-641). Springer Netherlands.
+
+    Parameters
+    ----------
+    G : networkx.Graph
+       Tree
+
+    xmin : float, optional
+       Minimum x-coordinate of the bounding box
+
+    xmax : float, optional
+       Maximum x-coordinate of the bounding box
+
+    ymin : float, optional
+       Minimum y-coordinate of the bounding box
+
+    ymax : float, optional
+       Maximum y-coordinate of the bounding box
+
+    Returns
+    -------
+    dict
+       Dictionary mapping nodes to 2D coordinates. pos[node_name] -> (x,y)
+
+    """
+
     from tulip import tlp
 #     from tulip import *
 #     from tulipgui import *
@@ -24,7 +138,11 @@ def bubble_layout_nx(G):
     graph.applyLayoutAlgorithm('Bubble Tree')
 
     viewLayout = graph.getLayoutProperty("viewLayout")
-    return {g : (viewLayout[i].x(), viewLayout[i].y()) for i, g in zip(nodes, G.nodes())}
+    pos = {g : (viewLayout[i].x(), viewLayout[i].y()) for i, g in zip(nodes, G.nodes())}
+
+    pos = transform_pos(pos, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax)
+
+    return pos
 
 def split_indices(n, k):
     try:
@@ -62,7 +180,19 @@ def time_print(*s):
     sys.stdout.flush()
 
 def pivot_square(df, index, columns, values, fill_value=0):
-    """Convert a dataframe into a square compact representation"""
+    """Convert a dataframe into a square compact representation.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+       DataFrame in long-format where every row represents one gene pair
+
+    Returns
+    -------
+    df : pandas.DataFrame
+       DataFrame with gene-by-gene dimensions
+
+    """
 
     df = df.pivot(index=index, columns=columns, values=values)    
     index = df.index.union(df.columns)
@@ -79,7 +209,33 @@ def pivot_square(df, index, columns, values, fill_value=0):
     return df
 
 def melt_square(df, columns=['Gene1', 'Gene2'], similarity='similarity', empty_value=0, upper_triangle=True):
-    """Melts square dataframe into sparse representation"""
+    """Melts square dataframe into sparse representation.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Square-shaped dataframe where df[i,j] is the value of edge (i,j)
+
+    columns : iterable    
+        Column names for nodes in the output dataframe
+
+    similarity : string
+        Column for edge value in the output dataframe
+    
+    empty_value
+        Not yet supported
+
+    upper_triangle : bool
+        Only use the values in the upper-right triangle (including the diagonal) of the input square dataframe
+
+    Returns
+    -------
+    pandas.DataFrame
+        3-column dataframe that provides a sparse representation of
+        the edges. Two of the columns indicate the node name, and the
+        third column indicates the edge value
+
+    """
 
     assert df.shape[0] == df.shape[1]
     
@@ -97,10 +253,12 @@ def melt_square(df, columns=['Gene1', 'Gene2'], similarity='similarity', empty_v
     return tmp.reset_index()
 
 def get_gene_name_converter(genes, scopes='symbol', fields='entrezgene', species='human'):
-    """Query mygene.info to get a dictionary mapping gene names in the ID                                                                                                    
-    namespace scopes to the ID namespace in fields                                                                                                                           
+    """Query mygene.info to get a dictionary mapping gene names in the ID
+    namespace scopes to the ID namespace in fields
 
-    Weird behavior with mygene.info: for Entrez genes, use fields 'entrezgene'. For ENSEMBL genes, use fields "ensembl"
+    Weird behavior with mygene.info: for Entrez genes, use fields
+    'entrezgene'. For ENSEMBL genes, use fields "ensembl"
+
     """
 
     if hasattr(genes, '__iter__') and not isinstance(genes, (str, unicode)):
@@ -143,6 +301,10 @@ def update_nx_with_alignment(G,
 
     term_descriptions : dict
 
+    Returns
+    -------
+    None
+
     """
 
     alignment = alignment.copy()
@@ -178,10 +340,31 @@ def set_node_attributes_from_pandas(G, node_attr):
     node_attr = node_attr.loc[[x for x in node_attr.index if x in G_nodes], :]
     if node_attr is not None:
         for feat in node_attr.columns:
-            nx.set_node_attributes(G, feat, node_attr[feat].to_dict())
+#            nx.set_node_attributes(G, feat, node_attr[feat].to_dict())
+            for n, v in node_attr[feat].dropna().iteritems():
+                try:
+                    v = v.item()
+                except:
+                    pass
+                G.node[n][feat] = v
+#            nx.set_node_attributes(G, feat, node_attr[feat].dropna().to_dict())
 
 def nx_nodes_to_pandas(G, attr_list=None):
-    """Create pandas.DataFrame of node attributes of a NetworkX graph"""
+    """Create pandas.DataFrame of node attributes of a NetworkX graph.
+
+    Parameters
+    ----------
+    G : networkx.Graph
+    
+    attr_list : list, optional
+       Names of node attributes. Default: all node attributes
+
+    Returns
+    -------
+    pandas.DataFrame
+       Dataframe where index is the names of nodes and the columns are node attributes.
+
+    """
 
     if attr_list is None:
         attr_list = list(set([a for d in G.nodes(data=True)
@@ -190,16 +373,47 @@ def nx_nodes_to_pandas(G, attr_list=None):
                      axis=1)
 
 def nx_edges_to_pandas(G, attr_list=None):
-    """Create pandas.DataFrame of edge attributes of a NetworkX graph"""
+    """Create pandas.DataFrame of edge attributes of a NetworkX graph.
+
+    Parameters
+    ----------
+    G : networkx.Graph
+    
+    attr_list : list, optional
+       Names of edge attributes. Default: all edge attributes
+
+    Returns
+    -------
+    pandas.DataFrame
+
+       Dataframe where index is a MultIndex with two levels (u,v)
+       referring to edges and the columns refer to edge
+       attributes. For multi(di)graphs, the MultiIndex have three
+       levels of the form (u, v, key).
+
+    """
 
     if attr_list is None:
         attr_list = list(set([a for d in G.edges(data=True) 
                               for a in d[2].keys()]))
-    return pd.concat([pd.Series(nx.get_edge_attributes(G,a), name=a) for a in attr_list],
-                     axis=1)
+    if len(attr_list) > 0:
+        return pd.concat([pd.Series(nx.get_edge_attributes(G,a), name=a) for a in attr_list],
+                         axis=1)
+    else:
+        return pd.DataFrame(index=pd.MultiIndex.from_tuples(G.edges()))
 
-def nx_to_NdexGraph(G_nx):
-    """Converts a NetworkX into a NdexGraph object"""
+def nx_to_NdexGraph(G_nx, discard_null=True):
+    """Converts a NetworkX into a NdexGraph object.
+
+    Parameters
+    ----------
+    G_nx : networkx.Graph
+
+    Returns
+    -------
+    ndex.networkn.NdexGraph
+
+    """
 
     from ndex.networkn import NdexGraph
     G = NdexGraph()
@@ -207,13 +421,18 @@ def nx_to_NdexGraph(G_nx):
     node_dict = {}
     G.max_edge_id = 0
     for node_name, node_attr in G_nx.nodes_iter(data=True):
+        if discard_null:
+            node_attr = {k:v for k,v in node_attr.items() if not pd.isnull(v)}
+
         if node_attr.has_key('name'):
-            G.add_node(node_id, {k : str(v) for k, v in node_attr.items()})
+            G.add_node(node_id, node_attr)
         else:
-            G.add_node(node_id, {k : str(v) for k, v in node_attr.items()}, name=node_name)
+            G.add_node(node_id, node_attr, name=node_name)
         node_dict[node_name] = node_id
         node_id += 1
     for s, t, edge_attr in G_nx.edges_iter(data=True):
+        if discard_null:
+            edge_attr = {k:v for k,v in edge_attr.items() if not pd.isnull(v)}
         G.add_edge(node_dict[s], node_dict[t], G.max_edge_id, edge_attr)
         G.max_edge_id += 1
 
@@ -225,14 +444,67 @@ def nx_to_NdexGraph(G_nx):
     return G
 
 def NdexGraph_to_nx(G):
+    """Converts a NetworkX into a NdexGraph object.
+
+    Parameters
+    ----------
+    G : ndex.networkn.NdexGraph
+
+    Returns
+    -------
+    networkx.classes.DiGraph
+
+    """
+
     return nx.DiGraph(nx.relabel_nodes(G, nx.get_node_attributes(G, 'name'), copy=True))
 
 def parse_ndex_uuid(ndex_url):
-    # print 'ndex_url:', ndex_url
-    # print 'ndex uuid:', ndex_url.split('v2/network/')[1]
+    """Extracts the NDEx UUID from a URL
+
+    Parameters
+    ----------
+    ndex_url : str
+        URL for a network stored on NDEx
+
+    Returns
+    -------
+    str
+        UUID of the network
+
+    """
     return ndex_url.split('v2/network/')[1]
 
+def parse_ndex_server(ndex_url):
+    tmp = ndex_url.split('//')
+    if len(tmp) == 2:
+        # e.g. 'http://dev2.ndexbio.org/v2/network/8bfa8318-55ed-11e7-a2e2-0660b7976219'
+        return tmp[0] + '//' + tmp[1].split('v2/network/')[0] + 'v2/network/'
+    elif len(tmp) == 1:
+        # e.g. 'dev2.ndexbio.org/v2/network/8bfa8318-55ed-11e7-a2e2-0660b7976219'
+        return tmp[0].split('v2/network/')[0] + 'v2/network/'
+    elif len(tmp) == 0 or len(tmp) > 2:
+        raise Exception()        
+
 def create_edgeMatrix(X, X_cols, X_rows, verbose=True, G=None):
+    """Converts an NumPy array into a NdexGraph with a special CX aspect
+    called "edge_matrix". The array is serialized using base64 encoding.
+    
+    Parameters
+    ----------
+    X : np.ndarray
+    
+    X_cols : list
+        Column names
+
+    X_rows : list
+        Row names
+
+    Returns
+    -------
+    ndex.networkn.NdexGraph        
+
+    """
+
     import ndex.client as nc
     from ndex.networkn import NdexGraph
 
@@ -266,6 +538,38 @@ def load_edgeMatrix(ndex_uuid,
                     ndex=None,
                     json=simplejson,
                     verbose=True):
+    """Loads a NumPy array from a NdexGraph with a special CX aspect
+    called "edge_matrix".
+    
+    Parameters
+    ----------
+    ndex_uuid : str
+        NDEx UUID of ontology
+    
+    ndex_server : str
+        URL of NDEx server
+
+    ndex_user : str
+        NDEx username
+
+    ndex_pass : str
+        NDEx password
+
+    json : module
+        JSON module with "loads" function
+
+    Returns
+    -------
+    X : np.ndarray
+    
+    X_cols : list
+        Column names
+
+    X_rows : list
+        Row names
+
+    """
+
     import ndex.client as nc
     from ndex.networkn import NdexGraph
 
@@ -318,20 +622,24 @@ def sim_matrix_to_NdexGraph(sim, names, similarity, output_fmt, node_attr=None):
 
     Parameters
     -----------
-    sim
+    sim : np.ndarray
         Square-shaped NumPy array representing similarities
-    names
+
+    names : list
         Genes names, in the same order as the rows and columns of sim
-    similarity
+
+    similarity : str
         Edge attribute name for similarities in the resulting NdexGraph object
-    output_fmt
+
+    output_fmt : str
         Either 'cx' (Standard CX format), or 'cx_matrix' (custom edgeMatrix aspect)
-    node_attr
+
+    node_attr : pandas.DataFrame, optional
         Node attributes, as a pandas.DataFrame, to be set in NdexGraph object
 
     Returns
     ---------
-    NdexGraph object
+    ndex.networkn.NdexGraph
 
     """
 
@@ -362,9 +670,9 @@ def sim_matrix_to_NdexGraph(sim, names, similarity, output_fmt, node_attr=None):
         raise Exception('Unsupported output_fmt: %s' % output_fmt)
 
 def ndex_to_sim_matrix(ndex_uuid,
-                       ndex_server,
-                       ndex_user,
-                       ndex_pass,
+                       ndex_server=config.ndex_server,
+                       ndex_user=config.ndex_user,
+                       ndex_pass=config.ndex_pass,
                        similarity='similarity',
                        input_fmt='cx_matrix',
                        output_fmt='matrix',
@@ -372,6 +680,38 @@ def ndex_to_sim_matrix(ndex_uuid,
     """Read a similarity network from NDEx and return it as either a
     square np.array (compact representation) or a pandas.DataFrame of
     the non-zero similarity values (sparse representation)
+
+    Parameters
+    ----------
+    ndex_uuid : str
+        NDEx UUID of ontology
+    
+    ndex_server : str
+        URL of NDEx server
+
+    ndex_user : str
+        NDEx username
+
+    ndex_pass : str
+        NDEx password
+
+    similarity : str
+
+        Name of the edge attribute that represents the
+        similarity/weight between two nodes. If None, then the name of
+        the edge attribute in the output is named 'similarity' and all
+        edges are assumed to have a similarity value of 1.
+
+    input_fmt : str
+    
+    output_fmt : str
+        If 'matrix', return a NumPy array. If 'sparse', return a pandas.DataFrame
+
+    subset : optional
+
+    Returns
+    --------
+    np.ndarray or pandas.DataFrame
 
     """
 
@@ -388,14 +728,18 @@ def ndex_to_sim_matrix(ndex_uuid,
 
         # Create a DataFrame of similarity scores
         G_df = nx_edges_to_pandas(G)
-        G_df.index.rename(['Gene1', 'Gene2'], inplace=True)
+        G_df.index.rename(['Node1', 'Node2'], inplace=True)
         G_df.reset_index(inplace=True)
-        G_df[similarity] = G_df[similarity].astype(np.float64)
+        
+        if similarity is None:
+            G_df['similarity'] = 1.0
+        else:
+            G_df[similarity] = G_df[similarity].astype(np.float64)
 
         nodes_attr = nx_nodes_to_pandas(G)
 
         if output_fmt=='matrix':
-            G_sq = pivot_square(G_df, 'Gene1', 'Gene2', similarity)
+            G_sq = pivot_square(G_df, 'Node1', 'Node2', similarity)
             return G_sq.values, G_sq.index.values
         elif output_fmt=='sparse':
             return G_df, nodes_attr
@@ -427,8 +771,6 @@ def ndex_to_sim_matrix(ndex_uuid,
     else:
         raise Exception('Unsupported input_fmt: %s' % input_fmt)
 
-
-
 def expand_seed(seed,
                 sim,
                 sim_names,
@@ -440,31 +782,83 @@ def expand_seed(seed,
                 expand_size=None,
                 include_seed=True,
                 figure=False):
-    """Take genes that are most similar to the seed set of genes."""
+    """Identify genes that are most similar to a seed set of genes.
 
+    A gene is included in the expanded set only if it meets all of the
+    specified criteria. If include_seed is True, then genes that are
+    seeds will be included regardless of the criteria.
+
+    Parameters
+    ----------
+    seed : list
+
+    sim : np.ndarray
+
+    sim_names : list of str
+
+    agg : str or function
+
+    min_sim : float
+       Minimum similarity to the seed set.
+
+    filter_perc : float
+       
+
+    seed_perc : float
+
+    agg_perc : float
+
+    expand_size : int
+
+    include_seed : bool
+
+    figure : bool
+
+    Returns
+    -------
+    expand
+
+    expand_idx
+    
+    sim_2_seed
+
+    fig
+
+    """
+
+    # Check at least one seed
+    assert len(seed) > 0
+
+    # Check similarity matrix has correct dimensions
     assert sim.shape[0] == sim.shape[1] and sim.shape[0] == len(sim_names)
+
     sim_names = np.array(sim_names)
     
     index = make_index(sim_names)
     seed_idx = np.array([index[g] for g in seed])
     non_seed_idx = np.setdiff1d(np.arange(len(sim_names)), seed_idx)
+        
+    # if seed_idx.size == 1:
+    #     seed_idx = np.array([seed_idx])
+#        sim_slice = np.array([sim_slice])
 
     # Calculate a similarity score between each gene and the seed
     # set of genes
+    sim_slice = sim[seed_idx, :]        
     if agg=='mean':
         # Average similarity to the seed set
-        sim_2_seed = sim[seed_idx, :].mean(0)
+        sim_2_seed = sim_slice.mean(0)
     elif agg=='min':
         # The minimum similarity to any gene in the seed set
-        sim_2_seed = sim[seed_idx, :].min(0)
+        sim_2_seed = sim_slice.min(0)
     elif agg=='max':
         # The maximum similarity to any gene in the seed set
-        sim_2_seed = sim[seed_idx, :].max(0)
+        sim_2_seed = sim_slice.max(0)
     elif agg=='perc':
         # The <agg_perc> percentile of similarities to the seed set.
         # For example, if a gene has similarities of (0, 0.2, 0.4,
         # 0.6, 0.8) to five seed genes, then the 10% similarity is 0.2
-        sim_2_seed = np.percentile(100 * agg_perc, sim[seed_idx, :], axis=0)
+        sim_2_seed = np.percentile(100 * agg_perc, sim_slice, axis=0)
     else:
         raise Exception('Unsupported aggregation method: %s' % agg)
 
@@ -489,10 +883,6 @@ def expand_seed(seed,
         # Filter based on a percentile of similarities between seed set to itself
         if seed_perc is not None:
             min_sim = max(min_sim, np.percentile(sim_2_seed[seed_idx], 100 * seed_perc))
-
-#         print 'sim_2_seed[expand_idx]:', sim_2_seed[expand_idx[:40]]
-#         print 'expand_idx:', expand_idx[:40]
-#         print 'expand_idx size:', expand_idx.size
         print 'min_sim:', min_sim
 
         expand_idx = expand_idx[sim_2_seed[expand_idx] >= min_sim]
@@ -508,19 +898,221 @@ def expand_seed(seed,
             expand_idx = np.append(expand_idx, attach_idx)
             expand_sim = np.append(expand_sim, sim_2_seed[attach_idx])
 
-    if figure:
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-        fig = plt.figure()
-        ax = plt.gca()
-        sns.distplot(sim_2_seed[non_seed_idx],
-                     ax=ax,
-                     axlabel='Similarity to seed set', label='Probability Density')
-        sns.distplot(sim_2_seed[seed_idx],
-                     ax=ax,
-                     axlabel='Similarity to seed set', label='Probability Density')
-    else:
+    try:
+        if figure:
+            import matplotlib.pyplot as plt
+            import seaborn as sns
+            fig = plt.figure()
+            ax = plt.gca()
+            if non_seed_idx.size > 1:
+                sns.distplot(sim_2_seed[non_seed_idx], kde=False, norm_hist=True,
+                             ax=ax,
+                             axlabel='Similarity to seed set', label='Probability Density')
+            if seed_idx.size > 1:
+                sns.distplot(sim_2_seed[seed_idx], kde=False, norm_hist=True,
+                             ax=ax,
+                             axlabel='Similarity to seed set', label='Probability Density')
+        else:
+            fig = None
+    except:
         fig = None
 
     return expand, expand_idx, sim_2_seed, fig
 
+def ddot_pipeline(alpha,
+                  beta,
+                  gene_similarities,
+                  genes,
+                  seed,
+                  ref,
+                  name='Data-driven Ontology',
+                  expand_kwargs={},
+                  align_kwargs={},
+                  ndex_args={'ndex_server' : config.ndex_server,
+                             'ndex_user' : config.ndex_user,
+                             'ndex_pass' : config.ndex_pass},
+                  gene_attr=None,
+                  public=True,
+                  verbose=False):
+    """
+    Assembles and analyzes a data-driven ontology to study a process or disease
+
+    Parameters
+    ----------
+
+    alpha : float
+       alpha parameter to CLIXO
+
+    beta : float
+
+
+    """
+
+    ndex_server = ndex_args['ndex_server']
+    ndex_user = ndex_args['ndex_user']
+    ndex_pass = ndex_args['ndex_pass']
+
+    ################
+    # Expand genes #
+    
+    kwargs = {
+        'agg':'mean',
+        'min_sim':4,
+        'filter_perc':None,
+        'seed_perc':0,
+        'agg_perc':None,
+        'expand_size':200,
+        'figure':True
+    }
+    kwargs.update(expand_kwargs)
+        
+    expand, expand_idx, sim_2_seed, fig = expand_seed(
+        seed,
+        gene_similarities,
+        genes,
+        **kwargs
+    )
+    
+    expand = list(expand)
+    if verbose:
+        print 'Expanded gene set:', len(expand)
+        # import matplotlib.pyplot as plt
+        # from IPython.display import display
+        # display(fig)
+        # plt.close()
+    
+    try:
+        similarity_uuid = gene_similarities
+        gene_similarities, genes = ndex_to_sim_matrix(
+            similarity_uuid,
+            ndex_server,
+            ndex_user,
+            ndex_pass,
+            similarity='similarity',
+            input_fmt='cx_matrix',
+            output_fmt='matrix',
+            subset=None)
+        similarity_from_ndex = True
+    except:
+        similarity_from_ndex = False
+        assert isinstance(gene_similarities, np.ndarray)
+    
+    #############
+    # Run CLIXO #
+    
+    df_sq = pd.DataFrame(gene_similarities[expand_idx, :][:, expand_idx], index=expand, columns=expand)
+    df = melt_square(df_sq)
+
+    from ddot.Ontology import Ontology    
+    ont = Ontology.run_clixo(df, alpha, beta, verbose=verbose)
+
+    try:
+        ref = Ontology.from_ndex(go_uuid, ndex_server, ndex_user, ndex_pass)
+    except:
+        assert isinstance(ref, Ontology)
+    
+    #################
+    # Align with GO #
+    
+    kwargs = {
+        'iterations' : 3,
+        'threads' : 4,        
+    }
+    kwargs.update(align_kwargs)
+        
+    ont_collapsed, ref_collapsed = Ontology.mutual_collapse(ont, ref)
+    alignment = ont_collapsed.align(ref_collapsed, **kwargs)
+    if verbose:
+        print 'Alignment: %s matches' % alignment.shape[0]
+    
+    ##################
+    # Upload to NDEx #
+
+    description = (
+        'Data-driven ontology created by CLIXO '
+        '(parameters: alpha={alpha}, beta={beta}). ').format(
+            alpha=alpha,
+            beta=beta)
+    if similarity_from_ndex:
+        description += (
+            'Created from the similarity network '
+            'at {ndex_server}/{ndex_uuid}').format(
+                ndex_server=ndex_server,
+                ndex_uuid=similarity_uuid)
+    else:
+        description += (
+            'Created from a similarity network '
+            'on a local file')
+    
+#     term_2_uuid = {t : [] for t in ont.terms}
+    term_2_uuid = ont.upload_subnets_ndex(
+        df,
+        ['similarity'],
+        ndex_server,
+        ndex_user,
+        ndex_pass,
+        name,
+        propagate=True,
+        public=public,
+        verbose=False
+    )
+    
+    # Annotate which genes were part of the seed set
+    seed_set = set(seed)
+    seed_attr = pd.DataFrame({'Seed' : [g in seed_set for g in ont.genes]}, index=ont.genes)
+    if gene_attr is None:
+        gene_attr = seed_attr
+    else:
+        gene_attr = pd.concat([gene_attr, seed_attr], axis=1)
+    
+    ont_ndex = ont.to_NdexGraph(
+        name=name,
+        description=description,
+        term_2_uuid=term_2_uuid,
+        layout='bubble',
+        alignment=alignment,
+        represents=True,
+        gene_attr=gene_attr
+    )
+        
+    ont_url = ont_ndex.upload_to(ndex_server, ndex_user, ndex_pass)
+    ont_uuid = parse_ndex_uuid(ont_url)
+
+    if public:
+        make_network_public(ont_uuid)
+
+    # ndex = nc.Ndex(ndex_server, ndex_user, ndex_pass)
+    # while True:
+    #     try:
+    #         ndex.make_network_public(ont_uuid)
+    #         break
+    #     except:
+    #         time.sleep(0.25)
+    
+    return ont_ndex, ont_uuid
+
+
+def make_network_public(uuid,
+                        ndex_server=config.ndex_server,
+                        ndex_user=config.ndex_user,
+                        ndex_pass=config.ndex_pass,
+                        timeout=10,
+                        error=False):
+    import ndex.client as nc
+    ndex = nc.Ndex(ndex_server, ndex_user, ndex_pass)
+
+    start = time.time()
+    while True:
+        if time.time() - start > timeout:
+            import traceback
+            print traceback.print_exc()
+            if error:
+                raise Exception('Could not make the NDEX network %s public' % uuid)
+            else:
+                break
+        else:
+            try:
+                ndex.make_network_public(uuid)
+                break
+            except:
+                time.sleep(0.25)

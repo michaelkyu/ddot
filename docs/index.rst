@@ -12,6 +12,7 @@ Welcome to Data-Driven Ontology Toolkit's documentation!
    intro
    ontology
    utils
+   io_functions
 
    :caption: Contents:
 

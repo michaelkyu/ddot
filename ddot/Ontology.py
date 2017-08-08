@@ -16,12 +16,9 @@ from scipy.sparse import csr_matrix
 
 import ddot
 from ddot import config
-from ddot.utils import time_print, set_node_attributes_from_pandas, nx_to_NdexGraph, parse_ndex_uuid, make_index, update_nx_with_alignment, bubble_layout_nx, split_indices_chunk
-
-#print config
+from ddot.utils import time_print, set_node_attributes_from_pandas, nx_to_NdexGraph, parse_ndex_uuid, make_index, update_nx_with_alignment, bubble_layout_nx, split_indices_chunk, invert_dict
 
 GENE_TERM_ATTR = 'Gene_or_Term'
-
 
 def read_alignment_file(f, source='Term_1'):
     """Parses an alignment file created from alignOntology's calculateFDRs script
@@ -75,11 +72,11 @@ def align_hierarchies(hier1,
 
     Parameters
     ----------
-    
+    p
     hier1 : ddot.Ontology.Ontology
        First ontology
 
-    hier2
+    hier2 : ddot.Ontology.Ontology
        Second ontology
 
     iterations : int
@@ -310,7 +307,7 @@ def parse_gaf(gaf):
     df = pd.read_table(gaf, header=None, comment='!', names=gaf_columns)
 
     # Check that all annotations are to UniProtKB protein IDs
-    assert df['DB'].unique().size == 1 and df['DB'].unique()[0]=='UniProtKB'    
+    # assert df['DB'].unique().size == 1 and df['DB'].unique()[0]=='UniProtKB'    
 
     return df.loc[:, ['DB Object ID', 'GO ID']].values.tolist()
 
@@ -461,9 +458,20 @@ class Ontology:
 
         return sorted(set(self.parent_2_child.keys()) - set([y for x in self.parent_2_child.values() for y in x]))
 
+    def align(self, hier, iterations, threads, calculateFDRs=None, output=None):
+
+        return align_hierarchies(
+            self,
+            hier,
+            iterations,
+            threads,
+            calculateFDRs=calculateFDRs,
+            output=output)
+
     def to_networkx(self,
                     gene_attr=None,
                     term_attr=None,
+                    layout='bubble',
                     spanning_tree=True):
         """Converts Ontology into a NetworkX object
 
@@ -524,8 +532,8 @@ class Ontology:
                            dict(EdgeType='Gene-Term')) \
                           for g in self.genes for t in self.gene_2_term[g]])
 
-        G.add_edges_from([(c, p,
-                           dict(EdgeType='Child-Parent')) \
+        G.add_edges_from([(c, p,  
+                         dict(EdgeType='Child-Parent')) \
                           for p in self.terms for c in self.parent_2_child.get(p, [])])
 
         if spanning_tree:
@@ -536,7 +544,70 @@ class Ontology:
                                    {(s,t) : 'Tree' if ((s,t) in tree_edges) else 'Not_Tree'
                                     for s, t in G.edges_iter(data=False)})
 
+            if layout=='bubble':
+                ont_dummy = self.make_dummy()
+                G_tree = ont_dummy.to_networkx(layout=None, spanning_tree=False)
+                for u, v, data in G.edges(data=True):
+                    if data['Is_Tree_Edge']=='Not_Tree':
+                        if data['EdgeType']=='Gene-Term':
+                            G_tree.remove_edge(u, 'dummy_' + v)
+                        else:
+                            G_tree.remove_edge(u, v)
+
+                G.pos = bubble_layout_nx(G_tree)
+                G.pos = {n : p for n, p in G.pos.items() if 'dummy_' not in n}
+                nx.set_node_attributes(G, 'x_pos', {n : x for n, (x,y) in G.pos.items()})
+                nx.set_node_attributes(G, 'y_pos', {n : y for n, (x,y) in G.pos.items()})
+                
+                # G_tree = G.copy()
+                # for u, v, data in G_tree.edges(data=True):
+                #     if data['Is_Tree_Edge']=='Not_Tree':
+                #         G_tree.remove_edge(u, v)
+                # G.pos = bubble_layout_nx(G_tree)
+                # print 'nodes:', G.nodes()[:5]
+                # print 'layout:', G.pos.items()[:5]
+                # nx.set_node_attributes(G, 'x_pos', {n : x for n, (x,y) in G.pos.items()})
+                # nx.set_node_attributes(G, 'y_pos', {n : y for n, (x,y) in G.pos.items()})
+
         return G
+
+    def make_dummy(self):
+
+        ont = self.propagate_annotations(direction='backward', inplace=False)
+
+        new_gene_2_term = []
+        new_child_2_parent = []
+        for t in ont.terms:
+            if len(ont.term_2_genes[t]) > 0:
+                dummy_term = 'dummy_%s' % t
+                for g in ont.term_2_genes[t]:
+                    new_gene_2_term.append([ont.genes[g], dummy_term])
+                new_child_2_parent.append([dummy_term, t])
+            else:
+                for g in ont.term_2_genes[t]:            
+                    new_gene_2_term.append([ont.genes[g], term])
+            for p in ont.child_2_parent.get(t, []):
+                new_child_2_parent.append([t, p])
+
+        ont_dummy = Ontology(new_child_2_parent, new_gene_2_term)
+        return ont_dummy
+
+    @classmethod
+    def from_pandas(cls,
+                    df,
+                    parent_col='Parent',
+                    child_col='Child',
+                    is_mapping=lambda x: x['Relation']=='gene',
+                    propagate=False,
+                    verbose=False):
+
+        return cls.from_table(df,
+                              is_mapping=is_mapping,
+                              parent_col=parent_col,
+                              child_col=child_col,
+                              mapping_file=None,
+                              propagate=propagate,
+                              verbose=verbose)
 
     @classmethod
     def from_table(cls,
@@ -544,7 +615,7 @@ class Ontology:
                    is_mapping=lambda x: x[2]=='gene',
                    parent_col = 0,
                    child_col = 1,
-                   mapping_file=None,                   
+                   mapping_file=None,
                    propagate=False,
                    verbose=False):
         """Create Ontology from a tab-delimited table.
@@ -557,10 +628,10 @@ class Ontology:
         is_mapping : function
             Function applied on each row to determine if it is 
 
-        parent_col : int
+        parent_col : int or str
             Column for parent terms
         
-        child_col : int
+        child_col : int or str
             Column for child terms and genes
 
         propagate : bool
@@ -572,13 +643,15 @@ class Ontology:
 
         """
 
-        # Read table
-        df = pd.read_table(table_file, comment='#', header=None)
+        # Read table                                                                                                                                                                                                                                                                                                   
+        try:
+            df = pd.read_table(table_file, comment='#', header=None)
+        except:
+            df = table_file
+
+        assert isinstance(df, pd.DataFrame)
         df.loc[:, child_col] = df.loc[:, child_col].astype(str)
-        df.loc[:, parent_col] = df.loc[:, parent_col].astype(str)
-        # df.loc[:,0] = df.loc[:,0].astype(str)
-        # df.loc[:,1] = df.loc[:,1].astype(str)
-        # df.loc[:,2] = df.loc[:,2].astype(str)
+        df.loc[:, parent_col] = df.loc[:, parent_col].astype(str)                                                                                                                                                                                                                         
 
         # Get gene-term mappings
         if mapping_file is None:
@@ -590,14 +663,13 @@ class Ontology:
             mapping.loc[:, child_col] = mapping.loc[:, child_col].astype(str)
             mapping.loc[:, parent_col] = mapping.loc[:, parent_col].astype(str)
             mapping = mapping.loc[:,[child_col,parent_col]].values.tolist()
-            print mapping[:10]
+#            print mapping[:10]
             tmp2 = df
 
-        # Get term-term hierarchy and attributes
-
+        # Get term-term hierarchy and attributes                                                                                                                               
         if tmp2.shape[1] > 2:
             hierarchy = tmp2.loc[:,[child_col, parent_col]].values.tolist()
-            hierarchy_attr = tmp2.loc[:,np.setdiff1d(np.arange(tmp2.shape[1]), [child_col, parent_col])]
+            hierarchy_attr = tmp2.loc[:,np.setdiff1d(tmp2.columns, [child_col, parent_col])]
         else:
             hierarchy = tmp2.values.tolist()
             hierarchy_attr = None
@@ -609,12 +681,88 @@ class Ontology:
                    propagate=propagate,
                    verbose=verbose)
 
+    # @classmethod
+    # def from_table(cls,
+    #                table_file,
+    #                is_mapping=lambda x: x[2]=='gene',
+    #                parent_col = 0,
+    #                child_col = 1,
+    #                mapping_file=None,                   
+    #                propagate=False,
+    #                verbose=False):
+    #     """Create Ontology from a tab-delimited table.
+
+    #     Parameters
+    #     ----------
+    #     table_file : str
+    #         Filename of table
+
+    #     is_mapping : function
+    #         Function applied on each row to determine if it is 
+
+    #     parent_col : int
+    #         Column for parent terms
+        
+    #     child_col : int
+    #         Column for child terms and genes
+
+    #     propagate : bool
+    #         If True, then propagate gene-term mappings
+
+    #     Returns
+    #     -------
+    #     : ddot.Ontology.Ontology
+
+    #     """
+
+    #     # Read table
+    #     try:
+    #         df = pd.read_table(table_file, comment='#', header=None)
+    #     except:
+    #         df = table_file 
+
+    #     assert isinstance(df, pd.DataFrame)
+    #     df.loc[:, child_col] = df.loc[:, child_col].astype(str)
+    #     df.loc[:, parent_col] = df.loc[:, parent_col].astype(str)
+    #     # df.loc[:,0] = df.loc[:,0].astype(str)
+    #     # df.loc[:,1] = df.loc[:,1].astype(str)
+    #     # df.loc[:,2] = df.loc[:,2].astype(str)
+
+    #     # Get gene-term mappings
+    #     if mapping_file is None:
+    #         tmp = df.apply(is_mapping, axis=1)
+    #         mapping = df.loc[tmp, :].loc[:,[child_col, parent_col]].values.tolist()
+    #         tmp2 = df.loc[~ tmp, :]
+    #     else:
+    #         mapping = pd.read_table(mapping_file, comment='#', header=None)
+    #         mapping.loc[:, child_col] = mapping.loc[:, child_col].astype(str)
+    #         mapping.loc[:, parent_col] = mapping.loc[:, parent_col].astype(str)
+    #         mapping = mapping.loc[:,[child_col,parent_col]].values.tolist()
+    #         print mapping[:10]
+    #         tmp2 = df
+
+    #     # Get term-term hierarchy and attributes
+
+    #     if tmp2.shape[1] > 2:
+    #         hierarchy = tmp2.loc[:,[child_col, parent_col]].values.tolist()
+    #         hierarchy_attr = tmp2.loc[:,np.setdiff1d(np.arange(tmp2.shape[1]), [child_col, parent_col])]
+    #     else:
+    #         hierarchy = tmp2.values.tolist()
+    #         hierarchy_attr = None
+
+    #     return cls(hierarchy,
+    #                mapping,
+    #                parent_child=False,
+    #                hierarchy_attr=hierarchy_attr,
+    #                propagate=propagate,
+    #                verbose=verbose)
+
     @classmethod
     def from_ndex(cls,
                   ndex_uuid,
-                  ndex_server,
-                  ndex_user,
-                  ndex_pass,
+                  ndex_user=config.ndex_user,
+                  ndex_pass=config.ndex_pass,
+                  ndex_server=config.ndex_server,
                   edgetype_attr='EdgeType',
                   edgetype_value='Gene-Term'):
         """Reads an Ontology stored on NDEx. Gene and terms are distinguished
@@ -639,6 +787,10 @@ class Ontology:
         : ddot.Ontology.Ontology
 
         """
+
+        if '/' in ndex_uuid:
+            ndex_server = parse_ndex_server(ndex_uuid)
+            ndex_uuid = parse_ndex_uuid(ndex_uuid)
 
         from ndex.networkn import NdexGraph
         G = NdexGraph(
@@ -1218,13 +1370,27 @@ class Ontology:
 
             # Dict: (g1,g2) gene pairs --> list of term indices
             return {(g1,g2) : x for (g1, g2), x in zip(combinations(genes_subset, 2), sca_list)}
-
+        
     def _get_term_2_genes(self, verbose=False): 
         if verbose: print 'Calculating term_2_genes'
-        term_2_genes = {self.terms[c]: [self.genes_index[x[0]] for x in d] \
-                        for c, d in itertools.groupby(sorted([(a,t) for a, terms in self.gene_2_term.items() for t in terms],
-                                                             key=lambda x:x[1]),
-                                                      key=lambda x:x[1])}
+
+        term_2_genes = invert_dict(
+            self.gene_2_term,
+            keymap=make_index(self.genes),
+            valmap=dict(enumerate(self.terms)))
+
+        # term_2_genes = {t : [] for t in self.terms}
+        # for g, t_list in self.gene_2_term.items():
+        #     for t in t_list:
+        #         term_2_genes[t].append(g)
+        # for t in self.terms:
+        #     term_2_genes[t].sort()
+
+        # term_2_genes = {self.terms[c]: [self.genes_index[x[0]] for x in d] \
+        #                 for c, d in itertools.groupby(sorted([(a,t) for a, terms in self.gene_2_term.items() for t in terms],
+        #                                                      key=lambda x:x[1]),
+        #                                               key=lambda x:x[1])}
+
         for t in self.terms:
             if not term_2_genes.has_key(t):
                 term_2_genes[t] = []
@@ -1457,7 +1623,6 @@ class Ontology:
 
     def propagate_annotations(self,
                               direction='forward',
-                              method='iterative_union',
                               verbose=False,
                               inplace=True):
         """Propagates gene-term annotations through the ontology"""
@@ -1468,50 +1633,74 @@ class Ontology:
             ont = self.copy()
 
         if direction=='forward':
-            if method=='iterative_union':
+            # if method=='iterative_union':
 
-                child_2_parent_idx = {
-                    ont.terms_index[c] : [ont.terms_index[p] for p in p_list]
-                    for c, p_list in ont.child_2_parent.items()
-                }
-                gene_2_term_set = {
-                    g : set(t_list)
-                    for g, t_list in ont.gene_2_term.items()
-                }
+            child_2_parent_idx = {
+                ont.terms_index[c] : [ont.terms_index[p] for p in p_list]
+                for c, p_list in ont.child_2_parent.items()
+            }
+            gene_2_term_set = {
+                g : set(t_list)
+                for g, t_list in ont.gene_2_term.items()
+            }
 
-                genes_to_update = set(ont.gene_2_term.keys())
-                count = 0
-                while len(genes_to_update) > 0:
-                    # Iterate over a copy of genes_to_update
-                    for g in genes_to_update.copy():
-                        curr_terms = gene_2_term_set[g]
-                        num_old = len(curr_terms)
-                        curr_terms.update(
-                            set([p for t in curr_terms 
-                                 for p in child_2_parent_idx.get(t, [])]))
-                        if len(curr_terms) == num_old:
-                            genes_to_update.remove(g)                        
+            genes_to_update = set(ont.gene_2_term.keys())
+            count = 0
+            while len(genes_to_update) > 0:
+                # Iterate over a copy of genes_to_update
+                for g in genes_to_update.copy():
+                    curr_terms = gene_2_term_set[g]
+                    num_old = len(curr_terms)
+                    curr_terms.update(
+                        set([p for t in curr_terms 
+                             for p in child_2_parent_idx.get(t, [])]))
+                    if len(curr_terms) == num_old:
+                        genes_to_update.remove(g)                        
 
-                    if verbose: print count,
-                    count +=1
-                    if count == 1000:
-                        raise Exception('ERROR: Ontology depth >1000. Stopping in case of bug in code')
-                if verbose: print
-                ont.gene_2_term = {g : sorted(t_set) for g, t_set in gene_2_term_set.items()}
-            else:
-                ancestor_matrix = np.array(ont.get_connectivity_matrix(), dtype=np.int32)
-                ont.gene_2_term = {g : ancestor_matrix[t, :].sum(0).nonzero()[0].tolist() for g, t in ont.gene_2_term.items()}
+                if verbose: print count,
+                count +=1
+                if count == 1000:
+                    raise Exception('ERROR: Ontology depth >1000. Stopping in case of bug in code')
+            if verbose: print
+            ont.gene_2_term = {g : sorted(t_set) for g, t_set in gene_2_term_set.items()}
+
+            # else:
+            #     ancestor_matrix = np.array(ont.get_connectivity_matrix(), dtype=np.int32)
+            #     ont.gene_2_term = {g : ancestor_matrix[t, :].sum(0).nonzero()[0].tolist() for g, t in ont.gene_2_term.items()}
             
             self._update_fields()
 
         elif direction=='backward':
-            raise Exception('Unsupported propagation direction: %s' % direction)
+            # raise Exception('Unsupported propagation direction: %s' % direction)
 
             # print 'WARNING: assumes that annotations are already forward propagated'
 
-            # parent_2_children_idx = {ont.terms_index[p] : [ont.terms_index[c] for c in c_list] for p, c_list in ont.parent_2_child.items()}
-            # gene_2_term_set = {g : set(t_list) for g, t_list in ont.gene_2_term.items()}
+            ont.propagate_annotations(direction='forward', inplace=True)
 
+            term_2_genes_set = {}
+            for t, g in ont.term_2_genes.items():
+                term_2_genes_set[t] = set(g)
+
+            graph = ont.to_igraph(spanning_tree=False)
+
+            for c_idx in graph.topological_sorting(mode='in'):
+                child = graph.vs[c_idx]['name']
+                for parent in ont.child_2_parent.get(child, []):
+                    term_2_genes_set[parent] -= term_2_genes_set[child]
+
+            ont.gene_2_term = invert_dict(term_2_genes_set,
+                                          keymap=make_index(ont.terms),
+                                          valmap=dict(enumerate(ont.genes)))
+            ont.term_2_genes = {a : list(b) for a, b in term_2_genes_set.items()}
+
+            # parent_2_children_idx = {}
+            # for p, c_list in ont.parent_2_child.items():                
+            #     parent_2_children_idx[ont.terms_index[p]] = [ont.terms_index[c] for c in c_list]
+
+            # gene_2_term_set = {}
+            # for g, t_list in ont.gene_2_term.items():
+            #     gene_2_term_set[g] = set(t_list)
+                
             # graph = ont.to_igraph()
             # for parent in graph.vs[graph.topological_sorting(mode='in')]['name']:
             #     for c in parent_2_children_idx[parent]
@@ -2058,6 +2247,7 @@ class Ontology:
                      description=None,
                      term_2_uuid=None,
                      layout='bubble',
+                     alignment=None,
                      represents=False,
                      gene_attr=None,
                      term_attr=None,
@@ -2071,6 +2261,7 @@ class Ontology:
         # Convert to NetworkX
         G = self.to_networkx(gene_attr=gene_attr,
                              term_attr=term_attr,
+                             layout=layout,
                              spanning_tree=True)
 
         set_term_label = term_attr is None or ('Label' not in term_attr.columns)
@@ -2087,12 +2278,8 @@ class Ontology:
             if set_gene_label:
                 G.node[g]['Label'] = '%s%s' % (gene_prefix, g)
 
-        if layout=='bubble':
-            G.pos = bubble_layout_nx(G)
-            print 'nodes:', G.nodes()[:5]
-            print 'layout:', G.pos.items()[:5]
-            nx.set_node_attributes(G, 'x_pos', {n : x for n, (x,y) in G.pos.items()})
-            nx.set_node_attributes(G, 'y_pos', {n : y for n, (x,y) in G.pos.items()})
+        if alignment is not None:
+            update_nx_with_alignment(G, alignment, use_node_name=False)
 
         G = nx_to_NdexGraph(G)
         if name is not None:
@@ -2100,6 +2287,13 @@ class Ontology:
         if description is not None:
             G.set_network_attribute('Description', description)
 
+        try:
+            for x, n in ont_ndex.nodes(data=True):
+                n['x_pos'] = float(n['x_pos'])
+                n['y_pos'] = float(n['y_pos'])
+        except:
+            pass
+    
         return G
 
     def _force_directed_layout(self, G):
@@ -2153,8 +2347,9 @@ class Ontology:
         start = time.time()
         g1, g2 = gene_columns[0] + '_lex', gene_columns[1] + '_lex'
 
-        print 'features:', features
-        print 'gene_columns:', gene_columns
+        if verbose:
+            print 'features:', features
+            print 'gene_columns:', gene_columns
 
         sim = sim[features + gene_columns].copy()
 
@@ -2172,7 +2367,8 @@ class Ontology:
         sim[g2] = sim[gene_columns].max(axis=1)
         sim_idx = {x : i for i, x in enumerate(zip(sim[g1], sim[g2]))}
 
-        print 'Setup time:', time.time() - start
+        if verbose:
+            print 'Setup time:', time.time() - start
 
         # Normalize features into z-scores
         tmp = sim[features]

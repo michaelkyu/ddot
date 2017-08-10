@@ -20,9 +20,11 @@ Note that the focus of DDOT is not on semantic tasks (the typical focus of other
 
 # Installation
 
-TODO: installation through PyPI.
+Download the repository and then run
 
-`pip install ddot`
+`python setup.py install --user`
+
+TODO: installation through pip.
 
 # DDOT as Python package
 DDOT can be invoked in two ways. The first way is as a Python package. DDOT takes advantage of an expansive data analysis ecosystem, including numerical and statistical libraries (NumPy, SciPy, and pandas), machine learning libraries (scikit-learn), general network analysis (NetworkX, igraph), plotting libraries (matplotlib), and iPython notebooks. The core of this package is an “Ontology” class that mediates analyses with a minimal number of lines of code in an object-oriented fashion. For example, the function Ontology.run_CLiXO() will execute the CLiXO algorithm and return an Ontology object. Further analysis of this ontology can be easily done using other methods, such Ontology.align_hierarchies() for comparison with a reference hierarchy. These two functions provide convenient Python wrappers of C++ implementations that we have developed previously. Some of our code has existed as C++ libraries and others as iPython notebooks, requiring a lot of extra boilerplate code to interface between C++ and Python.

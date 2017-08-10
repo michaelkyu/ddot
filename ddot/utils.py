@@ -513,10 +513,10 @@ def parse_ndex_server(ndex_url):
     tmp = ndex_url.split('//')
     if len(tmp) == 2:
         # e.g. 'http://dev2.ndexbio.org/v2/network/8bfa8318-55ed-11e7-a2e2-0660b7976219'
-        return tmp[0] + '//' + tmp[1].split('v2/network/')[0] + 'v2/network/'
+        return tmp[0] + '//' + tmp[1].split('v2/network/')[0]
     elif len(tmp) == 1:
         # e.g. 'dev2.ndexbio.org/v2/network/8bfa8318-55ed-11e7-a2e2-0660b7976219'
-        return tmp[0].split('v2/network/')[0] + 'v2/network/'
+        return tmp[0].split('v2/network/')[0]
     elif len(tmp) == 0 or len(tmp) > 2:
         raise Exception()        
 

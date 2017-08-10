@@ -16,7 +16,7 @@ from scipy.sparse import csr_matrix
 
 import ddot
 import ddot.config
-from ddot.utils import time_print, set_node_attributes_from_pandas, set_edge_attributes_from_pandas, nx_to_NdexGraph, parse_ndex_uuid, make_index, update_nx_with_alignment, bubble_layout_nx, split_indices_chunk, invert_dict
+from ddot.utils import time_print, set_node_attributes_from_pandas, set_edge_attributes_from_pandas, nx_to_NdexGraph, parse_ndex_uuid, parse_ndex_server, make_index, update_nx_with_alignment, bubble_layout_nx, split_indices_chunk, invert_dict, make_network_public
 
 GENE_TERM_ATTR = 'Gene_or_Term'
 
@@ -71,42 +71,12 @@ def align_hierarchies(hier1,
                       calculateFDRs=None,
                       mutual_collapse=True,
                       output=None):
-    """Align two hierarchies using alignOntology's calculateFDRs script
-
-    Parameters
-    ----------
-
-    hier1 : ddot.Ontology.Ontology
-       First ontology
-
-    hier2 : ddot.Ontology.Ontology
-       Second ontology
-
-    iterations : int
-       Number of randomized iterations
-
-    threads : int
-       Number of CPU threads
-
-    calculateFDRs : str
-
-       Filename of calculateFDRs script from alignOntology package. If
-       None, then it is inferred based on ddot.config.
-       
-    output
-       Filename to write alignment. If None, then don't write.
-    
-    Returns
-    --------
-
-    """
-
     if output is None:
         with tempfile.NamedTemporaryFile('w', delete=True) as output_file:
             return align_hierarchies(hier1, hier2, iterations, threads,
                                      update_hier1=update_hier1, update_hier2=update_hier2,
                                      mutual_collapse=mutual_collapse,
-                                     output=output_file.name,                                     
+                                     output=output_file.name,
                                      calculateFDRs=calculateFDRs)
 
     hier1_orig, hier2_orig = hier1, hier2
@@ -126,8 +96,11 @@ def align_hierarchies(hier1,
     hier2 = to_file(hier2)
 
     if calculateFDRs is None:
-        assert os.path.isdir(ddot.config.alignOntology)
-        calculateFDRs = os.path.join(ddot.config.alignOntology, 'calculateFDRs')
+        top_level = os.path.dirname(os.path.abspath(inspect.getfile(ddot)))
+        calculateFDRs = os.path.join(top_level, 'alignOntology', 'calculateFDRs')
+
+        #assert os.path.isdir(ddot.config.alignOntology)
+        #calculateFDRs = os.path.join(ddot.config.alignOntology, 'calculateFDRs')
     assert os.path.isfile(calculateFDRs)
 
     output_dir = tempfile.mkdtemp(prefix='tmp')
@@ -135,8 +108,9 @@ def align_hierarchies(hier1,
               hier1, hier2, output_dir, iterations, threads, calculateFDRs)
     print 'Alignment command:', cmd
 
-    try:
-        p = Popen(shlex.split(cmd), shell=False)
+    p = Popen(shlex.split(cmd), shell=False)
+    
+    try:        
         p.wait()
         shutil.copy(os.path.join(output_dir, 'alignments_FDR_0.1_t_0.1'), output)
     finally:
@@ -147,24 +121,136 @@ def align_hierarchies(hier1,
             if verbose: time_print('Killing alignment process %s. Output: %s' % (p.pid, output))
             p.kill()  # Kill the process
 
-        alignment = read_alignment_file(output)
-
-        print update_hier1, update_hier2
-
+        align1 = read_alignment_file(output)[['Term', 'Similarity', 'FDR']]
+        align2 = align1.copy()
+        align2.index, align2['Term'] = align2['Term'].values.copy(), align2.index.values.copy()
+        
+        append_prefix = lambda x: 'Aligned_%s' % x
+        
+        hier2_import = pd.merge(pd.DataFrame(index=align2.index), hier2_orig.node_attr, left_index=True, right_index=True, how='left')
+        assert (hier2_import.index == align2.index).all()
+        # Change index to terms in hier1
+        hier2_import.index = align2['Term'].copy()
+        hier2_import.rename(columns=append_prefix, inplace=True)
+        
+        hier1_import = pd.merge(pd.DataFrame(index=align1.index), hier1_orig.node_attr, left_index=True, right_index=True, how='left')
+        assert (hier1_import.index == align1.index).all()
+        # Change index to terms in hier1
+        hier1_import.index = align1['Term'].copy()
+        hier1_import.rename(columns=append_prefix, inplace=True)
+        
         if update_hier1:
-            print 'Updating hier1'
-            tmp = alignment.copy()[['Term', 'FDR', 'Similarity']]
-            tmp.columns = ['Aligned_%s' % x for x in tmp.columns]            
-            hier1_orig.update_node_attr(tmp)
-            
+            hier1_orig.update_node_attr(align1.rename(columns=append_prefix))
+            hier1_orig.update_node_attr(hier2_import)
         if update_hier2:
-            print 'Updating hier2'
-            tmp = alignment.copy()[['Term', 'FDR', 'Similarity']]
-            tmp.index, tmp['Term'] = tmp['Term'], tmp.index
-            tmp.columns = ['Aligned_%s' % x for x in tmp.columns]            
-            hier2_orig.update_node_attr(tmp)
+            hier2_orig.update_node_attr(align2.rename(columns=append_prefix))
+            hier2_orig.update_node_attr(hier1_import)
+            
+        return align1        
 
-        return alignment
+# def align_hierarchies(hier1,
+#                       hier2,
+#                       iterations,
+#                       threads,
+#                       update_hier1=False,
+#                       update_hier2=False,
+#                       calculateFDRs=None,
+#                       mutual_collapse=True,
+#                       output=None):
+#     """Align two hierarchies using alignOntology's calculateFDRs script
+
+#     Parameters
+#     ----------
+
+#     hier1 : ddot.Ontology.Ontology
+#        First ontology
+
+#     hier2 : ddot.Ontology.Ontology
+#        Second ontology
+
+#     iterations : int
+#        Number of randomized iterations
+
+#     threads : int
+#        Number of CPU threads
+
+#     calculateFDRs : str
+
+#        Filename of calculateFDRs script from alignOntology package. If
+#        None, then it is inferred based on ddot.config.
+       
+#     output
+#        Filename to write alignment. If None, then don't write.
+    
+#     Returns
+#     --------
+
+#     """
+
+#     if output is None:
+#         with tempfile.NamedTemporaryFile('w', delete=True) as output_file:
+#             return align_hierarchies(hier1, hier2, iterations, threads,
+#                                      update_hier1=update_hier1, update_hier2=update_hier2,
+#                                      mutual_collapse=mutual_collapse,
+#                                      output=output_file.name,                                     
+#                                      calculateFDRs=calculateFDRs)
+
+#     hier1_orig, hier2_orig = hier1, hier2
+#     if mutual_collapse:
+#         hier1, hier2 = Ontology.mutual_collapse(hier1, hier2)
+
+#     def to_file(hier):
+#         if isinstance(hier, Ontology):
+#             with tempfile.NamedTemporaryFile('w', delete=False) as f:
+#                 hier.to_3col_table(f, parent_child=True)
+#             hier = f.name
+#         else:
+#             assert isinstance(hier, file) or os.path.exists(hier)
+#         return hier
+
+#     hier1 = to_file(hier1)
+#     hier2 = to_file(hier2)
+
+#     if calculateFDRs is None:
+#         assert os.path.isdir(ddot.config.alignOntology)
+#         calculateFDRs = os.path.join(ddot.config.alignOntology, 'calculateFDRs')
+#     assert os.path.isfile(calculateFDRs)
+
+#     output_dir = tempfile.mkdtemp(prefix='tmp')
+#     cmd = '{5} {0} {1} 0.05 criss_cross {2} {3} {4} gene'.format(
+#               hier1, hier2, output_dir, iterations, threads, calculateFDRs)
+#     print 'Alignment command:', cmd
+
+#     try:
+#         p = Popen(shlex.split(cmd), shell=False)
+#         p.wait()
+#         shutil.copy(os.path.join(output_dir, 'alignments_FDR_0.1_t_0.1'), output)
+#     finally:
+#         if os.path.isdir(output_dir):
+#             shutil.rmtree(output_dir)
+
+#         if p.poll() is None:
+#             if verbose: time_print('Killing alignment process %s. Output: %s' % (p.pid, output))
+#             p.kill()  # Kill the process
+
+#         alignment = read_alignment_file(output)
+
+#         print update_hier1, update_hier2
+
+#         if update_hier1:
+#             print 'Updating hier1'
+#             tmp = alignment.copy()[['Term', 'FDR', 'Similarity']]
+#             tmp.columns = ['Aligned_%s' % x for x in tmp.columns]            
+#             hier1_orig.update_node_attr(tmp)
+            
+#         if update_hier2:
+#             print 'Updating hier2'
+#             tmp = alignment.copy()[['Term', 'FDR', 'Similarity']]
+#             tmp.index, tmp['Term'] = tmp['Term'], tmp.index
+#             tmp.columns = ['Aligned_%s' % x for x in tmp.columns]            
+#             hier2_orig.update_node_attr(tmp)
+
+#         return alignment
 
 def read_term_descriptions(description_table):
     """Read mapping of GO term ID to their term descriptions
@@ -2298,36 +2384,33 @@ class Ontology:
             assert sim is not None, 'Must specify similarity dataframe'
             assert len(features)>0, 'Must specify features to upload'
 
-            term_2_uuid = ont.upload_subnets_ndex(
-                df,
+            term_2_uuid = self.upload_subnets_ndex(
+                sim,
                 features,
                 name,
                 ndex_server=ndex_server,
                 ndex_user=ndex_user,
                 ndex_pass=ndex_pass,
-                propagate=True,
                 public=public,
-                verbose=False
+                verbose=verbose
             )
         else:
             term_2_uuid = {}
 
         G = self.to_NdexGraph(
-                name=None,
-                description=None,
-                term_2_uuid=False,
-                layout='bubble',
-                represents=False,
-                node_attr=None,
-                edge_attr=None)
+                name=name,
+                description=description,
+                term_2_uuid=term_2_uuid,
+                node_attr=node_attr,
+                edge_attr=edge_attr)
 
-        ont_url = ont_ndex.upload_to(ndex_server, ndex_user, ndex_pass)
+        ont_url = G.upload_to(ndex_server, ndex_user, ndex_pass)
 
         if public:
             ont_uuid = parse_ndex_uuid(ont_url)
             make_network_public(ont_uuid)
         
-        return ont_url
+        return ont_url, G
             
     def to_NdexGraph(self,
                      name=None,
@@ -2348,8 +2431,8 @@ class Ontology:
                              layout=layout,
                              spanning_tree=True)
 
-        set_label = (self.node_attr is not None) or ('Label' not in self.node_attr.columns)
-        set_label = set_label and ((node_attr is not None) or ('Label' not in node_attr.columns)
+        set_label = (node_attr is None) or ('Label' not in node_attr.columns)
+        set_label = set_label and ((self.node_attr is None) or ('Label' not in self.node_attr.columns))
         
         for t in self.terms:        
             if set_label:
@@ -2361,9 +2444,6 @@ class Ontology:
         for g in self.genes:
             if set_label:
                 G.node[g]['Label'] = g
-
-        # if alignment is not None:
-        #     update_nx_with_alignment(G, alignment, use_node_name=False)
 
         G = nx_to_NdexGraph(G)
         if name is not None:

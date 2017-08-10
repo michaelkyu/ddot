@@ -1115,13 +1115,6 @@ def ddot_pipeline(alpha,
     if public:
         make_network_public(ont_uuid)
 
-    # ndex = nc.Ndex(ndex_server, ndex_user, ndex_pass)
-    # while True:
-    #     try:
-    #         ndex.make_network_public(ont_uuid)
-    #         break
-    #     except:
-    #         time.sleep(0.25)
     
     return ont, alignment, ont_ndex
 

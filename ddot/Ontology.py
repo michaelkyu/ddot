@@ -599,9 +599,11 @@ class Ontology:
         root = self.get_roots()[0]
         G.node[root]['isRoot'] = True
 
+        set_node_attributes_from_pandas(G, self.node_attr)
         if node_attr is not None:
             set_node_attributes_from_pandas(G, node_attr)
 
+        set_edge_attributes_from_pandas(G, self.edge_attr)
         if edge_attr is not None:
             set_edge_attributes_from_pandas(G, edge_attr)
             
@@ -2276,17 +2278,65 @@ class Ontology:
 
         return ont
 
+    def to_ndex(self,
+                name=None,
+                description=None,
+                ndex_server=ddot.config.ndex_server,
+                ndex_user=ddot.config.ndex_user,
+                ndex_pass=ddot.config.ndex_pass,
+                term_2_uuid=True,
+                sim=None,
+                features=[],
+                layout='bubble',
+                represents=False,
+                node_attr=None,
+                edge_attr=None,                
+                public=False,
+                verbose=False):
+
+        if term_2_uuid is True:
+            assert sim is not None, 'Must specify similarity dataframe'
+            assert len(features)>0, 'Must specify features to upload'
+
+            term_2_uuid = ont.upload_subnets_ndex(
+                df,
+                features,
+                name,
+                ndex_server=ndex_server,
+                ndex_user=ndex_user,
+                ndex_pass=ndex_pass,
+                propagate=True,
+                public=public,
+                verbose=False
+            )
+        else:
+            term_2_uuid = {}
+
+        G = self.to_NdexGraph(
+                name=None,
+                description=None,
+                term_2_uuid=False,
+                layout='bubble',
+                represents=False,
+                node_attr=None,
+                edge_attr=None)
+
+        ont_url = ont_ndex.upload_to(ndex_server, ndex_user, ndex_pass)
+
+        if public:
+            ont_uuid = parse_ndex_uuid(ont_url)
+            make_network_public(ont_uuid)
+        
+        return ont_url
+            
     def to_NdexGraph(self,
                      name=None,
                      description=None,
                      term_2_uuid=False,
                      layout='bubble',
-                     alignment=None,
                      represents=False,
                      node_attr=None,
-                     edge_attr=None,
-                     gene_prefix='',
-                     term_prefix=''):
+                     edge_attr=None):
         """Formats an Ontology object into a NetworkX object with extra node
         attributes that are accessed by the hierarchical viewer.
 
@@ -2298,21 +2348,22 @@ class Ontology:
                              layout=layout,
                              spanning_tree=True)
 
-        set_label = (node_attr is None) or ('Label' not in node_attr.columns)
+        set_label = (self.node_attr is not None) or ('Label' not in self.node_attr.columns)
+        set_label = set_label and ((node_attr is not None) or ('Label' not in node_attr.columns)
         
         for t in self.terms:        
             if set_label:
-                G.node[t]['Label'] = '%s%s' % (term_prefix, t)
+                G.node[t]['Label'] = t
             if represents:
                 G.node[t]['represents'] = t
             if term_2_uuid:
                 G.node[t]['ndex:internalLink'] = '[%s](%s)' % (G.node[t]['Label'], term_2_uuid[t])
         for g in self.genes:
             if set_label:
-                G.node[g]['Label'] = '%s%s' % (gene_prefix, g)
+                G.node[g]['Label'] = g
 
-        if alignment is not None:
-            update_nx_with_alignment(G, alignment, use_node_name=False)
+        # if alignment is not None:
+        #     update_nx_with_alignment(G, alignment, use_node_name=False)
 
         G = nx_to_NdexGraph(G)
         if name is not None:

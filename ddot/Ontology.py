@@ -146,111 +146,7 @@ def align_hierarchies(hier1,
             hier2_orig.update_node_attr(align2.rename(columns=append_prefix))
             hier2_orig.update_node_attr(hier1_import)
             
-        return align1        
-
-# def align_hierarchies(hier1,
-#                       hier2,
-#                       iterations,
-#                       threads,
-#                       update_hier1=False,
-#                       update_hier2=False,
-#                       calculateFDRs=None,
-#                       mutual_collapse=True,
-#                       output=None):
-#     """Align two hierarchies using alignOntology's calculateFDRs script
-
-#     Parameters
-#     ----------
-
-#     hier1 : ddot.Ontology.Ontology
-#        First ontology
-
-#     hier2 : ddot.Ontology.Ontology
-#        Second ontology
-
-#     iterations : int
-#        Number of randomized iterations
-
-#     threads : int
-#        Number of CPU threads
-
-#     calculateFDRs : str
-
-#        Filename of calculateFDRs script from alignOntology package. If
-#        None, then it is inferred based on ddot.config.
-       
-#     output
-#        Filename to write alignment. If None, then don't write.
-    
-#     Returns
-#     --------
-
-#     """
-
-#     if output is None:
-#         with tempfile.NamedTemporaryFile('w', delete=True) as output_file:
-#             return align_hierarchies(hier1, hier2, iterations, threads,
-#                                      update_hier1=update_hier1, update_hier2=update_hier2,
-#                                      mutual_collapse=mutual_collapse,
-#                                      output=output_file.name,                                     
-#                                      calculateFDRs=calculateFDRs)
-
-#     hier1_orig, hier2_orig = hier1, hier2
-#     if mutual_collapse:
-#         hier1, hier2 = Ontology.mutual_collapse(hier1, hier2)
-
-#     def to_file(hier):
-#         if isinstance(hier, Ontology):
-#             with tempfile.NamedTemporaryFile('w', delete=False) as f:
-#                 hier.to_3col_table(f, parent_child=True)
-#             hier = f.name
-#         else:
-#             assert isinstance(hier, file) or os.path.exists(hier)
-#         return hier
-
-#     hier1 = to_file(hier1)
-#     hier2 = to_file(hier2)
-
-#     if calculateFDRs is None:
-#         assert os.path.isdir(ddot.config.alignOntology)
-#         calculateFDRs = os.path.join(ddot.config.alignOntology, 'calculateFDRs')
-#     assert os.path.isfile(calculateFDRs)
-
-#     output_dir = tempfile.mkdtemp(prefix='tmp')
-#     cmd = '{5} {0} {1} 0.05 criss_cross {2} {3} {4} gene'.format(
-#               hier1, hier2, output_dir, iterations, threads, calculateFDRs)
-#     print 'Alignment command:', cmd
-
-#     try:
-#         p = Popen(shlex.split(cmd), shell=False)
-#         p.wait()
-#         shutil.copy(os.path.join(output_dir, 'alignments_FDR_0.1_t_0.1'), output)
-#     finally:
-#         if os.path.isdir(output_dir):
-#             shutil.rmtree(output_dir)
-
-#         if p.poll() is None:
-#             if verbose: time_print('Killing alignment process %s. Output: %s' % (p.pid, output))
-#             p.kill()  # Kill the process
-
-#         alignment = read_alignment_file(output)
-
-#         print update_hier1, update_hier2
-
-#         if update_hier1:
-#             print 'Updating hier1'
-#             tmp = alignment.copy()[['Term', 'FDR', 'Similarity']]
-#             tmp.columns = ['Aligned_%s' % x for x in tmp.columns]            
-#             hier1_orig.update_node_attr(tmp)
-            
-#         if update_hier2:
-#             print 'Updating hier2'
-#             tmp = alignment.copy()[['Term', 'FDR', 'Similarity']]
-#             tmp.index, tmp['Term'] = tmp['Term'], tmp.index
-#             tmp.columns = ['Aligned_%s' % x for x in tmp.columns]            
-#             hier2_orig.update_node_attr(tmp)
-
-#         return alignment
+        return align1
 
 def read_term_descriptions(description_table):
     """Read mapping of GO term ID to their term descriptions
@@ -741,7 +637,7 @@ class Ontology:
 
     def make_dummy(self):
 
-        ont = self.propagate_annotations(direction='backward', inplace=False)
+        ont = self.propagate_annotations(direction='reverse', inplace=False)
 
         new_gene_2_term = []
         new_child_2_parent = []
@@ -964,7 +860,7 @@ class Ontology:
         if method=='mhkramer':
 
             # Propagate forward and then backwards
-            ont = self.propagate_annotations(direction='backward', inplace=False)
+            ont = self.propagate_annotations(direction='reverse', inplace=False)
             ont.propagate_annotations(direction='forward', inplace=True)
 
             # if propagate:
@@ -1762,17 +1658,17 @@ class Ontology:
         g --> t2
 
         In 'forward' propagation, a new relation g --> t3 is added. In
-        'backward' propagation, the relation g --> t2 is deleted
+        'reverse' propagation, the relation g --> t2 is deleted
         because it is an indirect relation inferred from g --> t1 and
         t1 --> t2.
 
-        TODO: consider 'reverse' instead of 'backward'
+        TODO: consider 'reverse' instead of 'reverse'
         
         Parameters
         ----------
         direction : str
 
-            The direction of propgation. Either 'forward' or 'backward'
+            The direction of propgation. Either 'forward' or 'reverse'
 
         inplace : bool
 
@@ -1822,7 +1718,7 @@ class Ontology:
             
             self._update_fields()
 
-        elif direction=='backward':
+        elif direction=='reverse':
             ont.propagate_annotations(direction='forward', inplace=True)
 
             term_2_genes_set = {}
@@ -2258,7 +2154,7 @@ class Ontology:
             if verbose:
                 print 'temp graph:', graph
             rerun, delete_graph = True, True
-
+                                         
         if not (isinstance(output_log, str) and os.path.exists(output_log)):
             output_log_file = tempfile.NamedTemporaryFile('w', delete=False)
             output_log = output_log_file.name
@@ -2376,15 +2272,21 @@ class Ontology:
                 layout='bubble',
                 represents=False,
                 node_attr=None,
-                edge_attr=None,                
+                edge_attr=None,
+                propagate='backward',
                 public=False,
                 verbose=False):
+
+        if propagate is not None:
+            ont = self.propagate_annotations(direction=propagate)
+        else:
+            ont = self
 
         if term_2_uuid is True:
             assert sim is not None, 'Must specify similarity dataframe'
             assert len(features)>0, 'Must specify features to upload'
 
-            term_2_uuid = self.upload_subnets_ndex(
+            term_2_uuid = ont.upload_subnets_ndex(
                 sim,
                 features,
                 name,
@@ -2397,7 +2299,7 @@ class Ontology:
         else:
             term_2_uuid = {}
 
-        G = self.to_NdexGraph(
+        G = ont.to_NdexGraph(
                 name=name,
                 description=description,
                 term_2_uuid=term_2_uuid,

@@ -336,18 +336,53 @@ def update_nx_with_alignment(G,
 ###################################################
 
 def set_node_attributes_from_pandas(G, node_attr):
+    """Modify node attributes according to a pandas.DataFrame.
+
+    Parameters
+    ----------
+
+    G : networkx.Graph
+
+    node_attr : pandas.DataFrame
+
+    """
+    
     G_nodes = set(G.nodes())
     node_attr = node_attr.loc[[x for x in node_attr.index if x in G_nodes], :]
     if node_attr is not None:
-        for feat in node_attr.columns:
-#            nx.set_node_attributes(G, feat, node_attr[feat].to_dict())
-            for n, v in node_attr[feat].dropna().iteritems():
+        for feature_name, feature in node_attr.iteritems():
+            for n, v in feature.dropna().iteritems():
+                try:
+                    # If v is actually a NumPy scalar type,
+                    # e.g. np.float or np.int, then convert it to a
+                    # fundamental Python type, e.g. int or float
+                    v = v.item()
+                except:
+                    pass
+                G.node[n][feature_name] = v
+
+def set_edge_attributes_from_pandas(G, edge_attr):
+    """Modify edge attributes according to a pandas.DataFrame.
+
+    Parameters
+    ----------
+
+    G : networkx.Graph
+
+    edge_attr : pandas.DataFrame
+
+    """
+
+    G_edges = set(G.edges())
+    edge_attr = edge_attr.loc[[x for x in edge_attr.index if x in G_edges], :]
+    if edge_attr is not None:
+        for feature_name, feature in edge_attr.iteritems():
+            for (e1,e2), v in feature.dropna().iteritems():
                 try:
                     v = v.item()
                 except:
                     pass
-                G.node[n][feat] = v
-#            nx.set_node_attributes(G, feat, node_attr[feat].dropna().to_dict())
+                G.edge[(e1,e2)][feature_name] = v
 
 def nx_nodes_to_pandas(G, attr_list=None):
     """Create pandas.DataFrame of node attributes of a NetworkX graph.
@@ -931,7 +966,7 @@ def ddot_pipeline(alpha,
                   ndex_args={'ndex_server' : config.ndex_server,
                              'ndex_user' : config.ndex_user,
                              'ndex_pass' : config.ndex_pass},
-                  gene_attr=None,
+                  node_attr=None,
                   public=True,
                   verbose=False):
     """
@@ -1020,8 +1055,7 @@ def ddot_pipeline(alpha,
     }
     kwargs.update(align_kwargs)
         
-    ont_collapsed, ref_collapsed = Ontology.mutual_collapse(ont, ref)
-    alignment = ont_collapsed.align(ref_collapsed, **kwargs)
+    alignment = ont.align(ref, **kwargs)
     if verbose:
         print 'Alignment: %s matches' % alignment.shape[0]
     
@@ -1048,10 +1082,10 @@ def ddot_pipeline(alpha,
     term_2_uuid = ont.upload_subnets_ndex(
         df,
         ['similarity'],
-        ndex_server,
-        ndex_user,
-        ndex_pass,
         name,
+        ndex_server=ndex_server,
+        ndex_user=ndex_user,
+        ndex_pass=ndex_pass,
         propagate=True,
         public=public,
         verbose=False
@@ -1060,10 +1094,10 @@ def ddot_pipeline(alpha,
     # Annotate which genes were part of the seed set
     seed_set = set(seed)
     seed_attr = pd.DataFrame({'Seed' : [g in seed_set for g in ont.genes]}, index=ont.genes)
-    if gene_attr is None:
-        gene_attr = seed_attr
+    if node_attr is None:
+        node_attr = seed_attr
     else:
-        gene_attr = pd.concat([gene_attr, seed_attr], axis=1)
+        node_attr = pd.concat([node_attr, seed_attr], axis=1)
     
     ont_ndex = ont.to_NdexGraph(
         name=name,
@@ -1072,7 +1106,7 @@ def ddot_pipeline(alpha,
         layout='bubble',
         alignment=alignment,
         represents=True,
-        gene_attr=gene_attr
+        node_attr=node_attr
     )
         
     ont_url = ont_ndex.upload_to(ndex_server, ndex_user, ndex_pass)
@@ -1089,8 +1123,7 @@ def ddot_pipeline(alpha,
     #     except:
     #         time.sleep(0.25)
     
-    return ont_ndex, ont_uuid
-
+    return ont, alignment, ont_ndex
 
 def make_network_public(uuid,
                         ndex_server=config.ndex_server,

@@ -1,5 +1,6 @@
-Analyzing and Manipulating Ontologies
-========================================================
+Ontology class
+--------------
 
-.. automodule:: ddot.Ontology
+.. autoclass:: ddot.Ontology
    :members:
+   :special-members:

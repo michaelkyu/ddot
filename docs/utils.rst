@@ -1,5 +1,5 @@
-Utility methods for analysis
-============================
+Utility Functions
+=======================
 
 .. automodule:: ddot.utils
    :members:

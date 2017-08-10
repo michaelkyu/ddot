@@ -8,12 +8,19 @@ Welcome to Data-Driven Ontology Toolkit's documentation!
 
 .. toctree::
    :maxdepth: 2
-   
+
    intro
+   tutorial
    ontology
+   ddot_pipeline
    utils
    io_functions
 
+.. TODO: tutorial, include small tables to read in as ontologies for
+   tutorial, write intro about Ontology fields (genes, terms,
+   gene_2_term, etc.),
+
+..
    :caption: Contents:
 
 Indices and tables

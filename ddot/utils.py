@@ -7,7 +7,14 @@ import simplejson
 import base64
 import time
 
-from ddot import config
+import ddot.config
+
+def print_time(*s):
+    from datetime import datetime
+    print ' '.join(map(str, s)), datetime.today()
+#    print s, datetime.today()
+    import sys
+    sys.stdout.flush()
 
 def invert_dict(dic, sort=True, keymap={}, valmap={}):
     """Inverts a dictionary of the form
@@ -473,8 +480,8 @@ def nx_to_NdexGraph(G_nx, discard_null=True):
 
     if hasattr(G_nx, 'pos'):
         G.pos = {node_dict[a] : b for a, b in G_nx.pos.items()}
-        G.subnetwork_id = 1
-        G.view_id = 1
+        # G.subnetwork_id = 1
+        # G.view_id = 1
 
     return G
 
@@ -705,9 +712,9 @@ def sim_matrix_to_NdexGraph(sim, names, similarity, output_fmt, node_attr=None):
         raise Exception('Unsupported output_fmt: %s' % output_fmt)
 
 def ndex_to_sim_matrix(ndex_uuid,
-                       ndex_server=config.ndex_server,
-                       ndex_user=config.ndex_user,
-                       ndex_pass=config.ndex_pass,
+                       ndex_server=ddot.config.ndex_server,
+                       ndex_user=ddot.config.ndex_user,
+                       ndex_pass=ddot.config.ndex_pass,
                        similarity='similarity',
                        input_fmt='cx_matrix',
                        output_fmt='matrix',
@@ -837,8 +844,7 @@ def expand_seed(seed,
        Minimum similarity to the seed set.
 
     filter_perc : float
-       
-
+    
     seed_perc : float
 
     agg_perc : float
@@ -963,41 +969,45 @@ def ddot_pipeline(alpha,
                   name='Data-driven Ontology',
                   expand_kwargs={},
                   align_kwargs={},
-                  ndex_args={'ndex_server' : config.ndex_server,
-                             'ndex_user' : config.ndex_user,
-                             'ndex_pass' : config.ndex_pass},
+                  ndex_kwargs={'ndex_server' : ddot.config.ndex_server,
+                               'ndex_user' : ddot.config.ndex_user,
+                               'ndex_pass' : ddot.config.ndex_pass},                
+                  subnet_max_term_size=None,
                   node_attr=None,
                   public=True,
-                  verbose=False):
-    """
-    Assembles and analyzes a data-driven ontology to study a process or disease
+                  verbose=False,
+                  ndex=True):
+    """Assembles and analyzes a data-driven ontology to study a process or disease
 
     Parameters
     ----------
 
     alpha : float
+    
        alpha parameter to CLIXO
 
     beta : float
-
+    
+       beta parameter to CLIXO
 
     """
 
-    ndex_server = ndex_args['ndex_server']
-    ndex_user = ndex_args['ndex_user']
-    ndex_pass = ndex_args['ndex_pass']
+    ndex_server = ndex_kwargs['ndex_server']
+    ndex_user = ndex_kwargs['ndex_user']
+    ndex_pass = ndex_kwargs['ndex_pass']
 
     ################
     # Expand genes #
+    ################
     
     kwargs = {
         'agg':'mean',
-        'min_sim':4,
+        'min_sim':None,
         'filter_perc':None,
         'seed_perc':0,
         'agg_perc':None,
-        'expand_size':200,
-        'figure':True
+        'figure':True,
+        'include_seed':True,
     }
     kwargs.update(expand_kwargs)
         
@@ -1034,6 +1044,7 @@ def ddot_pipeline(alpha,
     
     #############
     # Run CLIXO #
+    #############
     
     df_sq = pd.DataFrame(gene_similarities[expand_idx, :][:, expand_idx], index=expand, columns=expand)
     df = melt_square(df_sq)
@@ -1046,21 +1057,47 @@ def ddot_pipeline(alpha,
     except:
         assert isinstance(ref, Ontology)
     
-    #################
-    # Align with GO #
+    ###############################
+    # Align to Reference Ontology #
+    ###############################
     
     kwargs = {
         'iterations' : 3,
-        'threads' : 4,        
+        'threads' : 4,
+        'update_self' : [x for x in ['Term_Description', 'Size'] if x in ref.node_attr.columns]
     }
     kwargs.update(align_kwargs)
         
     alignment = ont.align(ref, **kwargs)
     if verbose:
         print 'Alignment: %s matches' % alignment.shape[0]
+
+    # Set labels based on ontology alignment
+    if 'Aligned_Term_Description' in ont.node_attr.columns:
+        def make_label(x):
+            if pd.isnull(x['Aligned_Term_Description']):
+                return x.name
+            else:
+                return '%s\n%s' % (x.name, x['Aligned_Term_Description'])
+
+        ont.node_attr = ont.node_attr.reindex(set(ont.genes) | set(ont.terms))
+        ont.node_attr['Label'] = ont.node_attr.apply(make_label, axis=1)
+
+    #############################
+    # Set other node attributes #
+    #############################
     
+    # Annotate which genes were part of the seed set
+    seed_set = set(seed)
+    seed_attr = pd.DataFrame({'Seed' : [g in seed_set for g in ont.genes]}, index=ont.genes)
+    ont.update_node_attr(seed_attr)
+                    
+    if node_attr is not None:
+        ont.update_node_attr(node_attr)
+
     ##################
     # Upload to NDEx #
+    ##################
 
     description = (
         'Data-driven ontology created by CLIXO '
@@ -1078,59 +1115,39 @@ def ddot_pipeline(alpha,
             'Created from a similarity network '
             'on a local file')
     
-#     term_2_uuid = {t : [] for t in ont.terms}
-    term_2_uuid = ont.upload_subnets_ndex(
-        df,
-        ['similarity'],
-        name,
-        ndex_server=ndex_server,
-        ndex_user=ndex_user,
-        ndex_pass=ndex_pass,
-        propagate=True,
-        public=public,
-        verbose=False
-    )
-    
-    # Annotate which genes were part of the seed set
-    seed_set = set(seed)
-    seed_attr = pd.DataFrame({'Seed' : [g in seed_set for g in ont.genes]}, index=ont.genes)
-    if node_attr is None:
-        node_attr = seed_attr
+    if ndex:
+        ont_url, ont_ndexgraph = ont.to_ndex(
+            name=name,
+            description=description,
+            sim=df,
+            ndex_server=ndex_server,
+            ndex_user=ndex_user,
+            ndex_pass=ndex_pass,
+            features=['similarity'],
+            subnet_max_term_size=subnet_max_term_size,
+            public=public
+        )
     else:
-        node_attr = pd.concat([node_attr, seed_attr], axis=1)
-    
-    ont_ndex = ont.to_NdexGraph(
-        name=name,
-        description=description,
-        term_2_uuid=term_2_uuid,
-        layout='bubble',
-        alignment=alignment,
-        represents=True,
-        node_attr=node_attr
-    )
-        
-    ont_url = ont_ndex.upload_to(ndex_server, ndex_user, ndex_pass)
-    ont_uuid = parse_ndex_uuid(ont_url)
+        ont_url, ont_ndexgraph = None, None
 
-    if public:
-        make_network_public(ont_uuid)
-
-    
-    return ont, alignment, ont_ndex
+    return ont, ont_url, ont_ndexgraph
 
 def make_network_public(uuid,
-                        ndex_server=config.ndex_server,
-                        ndex_user=config.ndex_user,
-                        ndex_pass=config.ndex_pass,
-                        timeout=10,
+                        ndex_server=ddot.config.ndex_server,
+                        ndex_user=ddot.config.ndex_user,
+                        ndex_pass=ddot.config.ndex_pass,
+                        timeout=60,
                         error=False):
     import ndex.client as nc
     ndex = nc.Ndex(ndex_server, ndex_user, ndex_pass)
 
+    sleep_time = 0.25
+    
     start = time.time()
     while True:
         if time.time() - start > timeout:
             import traceback
+            print 'Failed to make network public: error message:'
             print traceback.print_exc()
             if error:
                 raise Exception('Could not make the NDEX network %s public' % uuid)
@@ -1141,4 +1158,5 @@ def make_network_public(uuid,
                 ndex.make_network_public(uuid)
                 break
             except:
-                time.sleep(0.25)
+                time.sleep(sleep_time)
+                sleep_time = min(5, 2 * sleep_time)

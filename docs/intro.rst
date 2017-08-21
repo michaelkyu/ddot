@@ -101,8 +101,6 @@ Major Features
    b. Conversion to and from flat table files, NetworkX, igraph
    c. Interface with the Network Database Exchange (NDEx). 
 
-.. _NDEx: http://public.ndexbio.org
-
 2. Construction of data-driven ontologies using the CLIXO algorithm
 
 3. Alignment of two ontologies
@@ -127,7 +125,8 @@ The recommended method of installation is by 'pip'::
    pip install ddot
 
 Dependencies
-************
+-------------
+
 1. `cxmate <https://pypi.python.org/pypi/cxmate>`_ (optional for web services)
 2. `networkx <https://networkx.github.io/>`_
 3. `python-igraph <http://igraph.org/python/>`_

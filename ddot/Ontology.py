@@ -339,6 +339,20 @@ class Ontology:
     This class's attributes and methods are focused on the ontology's
     hierarchical structure, i.e. a directed acyclic graph.
 
+    Object fields
+    -------------
+    genes : list
+        Names of genes
+    
+    terms : list
+        Names of terms
+
+    gene_2_term
+        gene_2_term[<gene_name>] --> list of terms that <gene_name> is mapped to
+
+    term_2_genes
+        term_2_genes[<gene_name>] --> list of terms that <gene_name> is mapped to
+
     """
 
     def __init__(self,
@@ -1972,185 +1986,242 @@ class Ontology:
 
                 return ontotypes
 
-    def get_ontotype(self, gset_sample, prop='genes', format='dict', dtype=np.int8, gene_ordering=None):
-        """Calculates the ontotypes of genotypes. 
+    def get_ontotype(self,
+                     genotypes,
+                     input_format='gene_list',
+                     output_format='sparse',
+                     matrix_columns=None):
+        """Transform genotypes to ontotypes.
 
         Parameters
         ----------
-        gset_sample : list
+        genotypes : list, np.ndarray, scipy.sparse.spmatrix, pd.DataFrame
 
-            List of gene sets (i.e. gsets) A "gset" is a set of genes,
-            represented as a tuple
+        input_format : str
 
-        prop : str
+            If 'gene_list', then genotypes is interpreted a list,
+            where each element of the list is represents an individual
+            genotype as a list of genes.
 
-            If 'genes', then the value of a term is the number of
-            genes in the term which are deleted.
+            If 'matrix', then genotypes is interpreted as a
+            genotype-by-gene matrix where (i,j) element is the
+            mutation value of gene j in genotype i.
 
-        format : str
+        output_format : str
 
-            The data format of the ontotype. Supported formats are
-            'dict', 'scipy.coo'
+            If 'sparse', then return a sparse matrix as a
+            scipy.sparse.csr_matrix object. 
+
+            If 'dataframe', then return a pandas.DataFrame
+
+        matrix_columns : list
+            
+            Must be set when input_format is 'matrix' and genotypes is
+            a NumPy array or SciPy sparse matrix. In this case,
+            matrix_columns is a list of the genes that are represented
+            by the columns in genotypes.
 
         Returns
         -------
+        : scipy.sparse.csr_matrix, pandas.DataFrame
 
-        If format=='dict', then return a list, where each element is a
-        dictionary representation of an ontotype.
-
-        If format=='scipy.coo', then return a genotype-by-term matrix
-        as a scipy.sparse.coo_matrix
+            genotype-by-term matrix. The ordering of genotypes is the
+            same as the input. The ordering of terms is the same as
+            self.terms.
 
         """
+
+        if input_format=='gene_list':
+            gene_2_term = {k: np.array(v) for k, v in self.gene_2_term.items()}
+            genotypes_x = [np.concatenate([gene_2_term[g] for g in gset]) if len(gset)>0 else np.array([]) for gset in genotypes]
+            indices = np.concatenate(genotypes_x)
+            indptr = np.append(0,
+                               np.cumsum([gset.size for gset in genotypes_x]))
+            data = np.ones((indices.size, ), dtype=np.int64)
+
+            ontotypes = scipy.sparse.csr_matrix(
+                (data, indices, indptr),
+                (len(genotypes), len(self.terms))
+            )
+            ontotypes.sum_duplicates()
         
-        if prop=='genes':
-
-            time_print('Creating features')
-            print format, format=='scipy.csr'
-            
-            if format=='dict':
-                from collections import Counter                
-                onto_sample = [reduce(add, [self.gene_2_term[g] for g in gset]) for gset in gset_sample]                
-                onto_sample = [dict(Counter(idxs)) for idxs in onto_sample]
-                
-            elif format=='scipy.coo':
-                time_print('Making i, j, data')
-
-                gene_2_term = {k: np.array(v) for k, v in self.gene_2_term.items()}
-                i = np.repeat(np.arange(len(gset_sample)), [sum(gene_2_term[g].size for g in gset) for gset in gset_sample])
-                j = np.concatenate([gene_2_term[g] for gset in gset_sample for g in gset])
-
-                #ij = np.array([(a, t) for a, gset in enumerate(gset_sample) for g in gset for t in self.gene_2_term[g]])
-                #data = np.ones((ij.shape[0], ))
-                data = np.ones((i.size, ))
-                time_print('Making sparse COO matrix')
-                #onto_sample = scipy.sparse.coo_matrix((data, (ij[:,0], ij[:,1])), (len(gset_sample), len(self.terms)), dtype=dtype)
-                onto_sample = scipy.sparse.coo_matrix((data, (i, j)), (len(gset_sample), len(self.terms)), dtype=dtype)
-
-            elif format=='scipy.csr':
-                time_print('Making indices, indptr, data')
-                gene_2_term = {k: np.array(v) for k, v in self.gene_2_term.items()}
-                gset_sample_x = [np.concatenate([gene_2_term[g] for g in gset]) if len(gset)>0 else np.array([]) for gset in gset_sample]
-                indices = np.concatenate(gset_sample_x)
-                indptr = np.concatenate((np.array([0]),
-                                         np.cumsum([gset.size for gset in gset_sample_x])))
-                data = np.ones((len(indices), ), dtype=dtype)
-
-                time_print('Making sparse CSR matrix')
-                onto_sample = scipy.sparse.csr_matrix((data, indices, indptr), (len(gset_sample), len(self.terms)), dtype=dtype)
-
-            elif format=='dense':
-                dim = len(gset_sample[0])
-                assert dim <= 127, "Gset dimension must be <= 127 to create an np.int8 array"
-
-                # Check that all genes in gset_sample are in gset_2_terms
-                assert set.union(*[set(x) for x in gset_sample]).issubset(set(self.gene_2_term.keys()))
-
-                # Convert gene_2_term to a numpy genes-by-terms boolean matrix
-                time_print('Creating gene_2_term matrix')
-                gene_2_term_arr = np.zeros((len(self.genes), len(self.terms)), dtype=np.int8)
-                for g, terms in self.gene_2_term.items():
-                    gene_2_term_arr[self.genes_index[g], terms] = 1
-
-                time_print('Converting gset_sample into matrix')
-                gset_sample_arr = np.array([[self.genes_index[g] for g in gset] for gset in gset_sample])
-
-                time_print('Creating gset_2_terms matrix')
-                onto_sample = np.zeros((len(gset_sample), len(self.terms)), dtype=np.int8)
-                for d in range(dim):
-                    onto_sample += np.take(gene_2_term_arr,
-                                           gset_sample_arr[:,d],
-                                           axis=0)
-
-            time_print('Done creating features')
-
-            return onto_sample
-
-        elif prop=='or':
-
-            onto_sample = self.get_ontotypes(gset_sample, prop='genes', format=format)
-
-            if format=='dict':
-                # Set all values to 1
-                onto_sample = [{k: 1 for k, v in d.items()} for d in onto_sample]
-            elif format in ['scipy.coo', 'scipy.csr', 'dense']:
-                # Do this to preserve data type of onto_sample,
-                # instead of onto_sample = (onto_sample >= 1), which
-                # would create a boolean
-                onto_sample[ onto_sample >= 1 ] = 1
+        elif input_format=='matrix':
+            if isinstance(genotypes, pd.DataFrame):
+                matrix_columns = genotypes.columns
+                genotypes = genotypes.values
+            elif isinstance(genotypes, np.ndarray) or scipy.sparse.issparse(genotypes):
+                assert matrix_columns is not None
             else:
-                raise Exception('Format %s not supported for prop' % (format, prop))
-
-            return onto_sample
-
-        elif prop=='children':
-
-            import igraph, numpy, collections
-
-            graph = igraph.Graph.Read_Ncol(self.ontology_prefix)
-            g_vs_index = {b:a for a,b in enumerate(graph.vs['name'])}                
-            gene_2_term = self.gene_2_term
+                raise Exception('<genotypes> must be a genotype-by-gene matrix or pd.DataFrame')
             
-            # For each gset, create a dictionary mapping a perturbed term
-            # (i.e. its index in self.terms) to the number of genes
-            # perturbed
-            genes_features = [dict(collections.Counter([term for g in gset for term in gene_2_term[g]])) for gset in gset_sample]      
+            contained = np.array([self.genes_index.has_key(g) for g in matrix_columns])
             
-            for term_count in genes_features:
-                parent_perturbations = [self.terms_index[x] for \
-                                        x in graph.vs[[p for term in term_count.keys() for \
-                                                       p in graph.neighbors(g_vs_index[self.terms[term]], mode='out')]]['name']]
-                parent_perturbations = dict(Counter(parent_perturbations))                    
-                term_count.update(parent_perturbations)
-            perturbations = genes_features
+            genotypes = scipy.sparse.csc_matrix(genotypes)[:,contained]
+            
+            annotation_matrix = scipy.sparse.csr_matrix(self.get_annotation_matrix())
+            annotation_matrix = scipy.sparse.csr_matrix(annotation_matrix)[contained,:]
 
-            return perturbations
-
-        elif prop=='min_cut':
-            # TODO
-            raise Exception('Not supported')
-
-        elif prop=='gene_identity':
-            tmp = [(i, self.genes_index[g]) for i, gset in enumerate(gset_sample) for g in gset]
-            i, j = zip(*tmp)            
-            data = np.ones(len(i), dtype=dtype)
-            onto_sample = scipy.sparse.coo_matrix((data, (np.array(i), np.array(j))), (len(gset_sample), len(self.genes)))
-
-            if format=='scipy.csr':
-                onto_sample = scipy.sparse.csr_matrix(onto_sample)
-
-            assert format in ['scipy.coo', 'scipy.csr']
-
-            return onto_sample
-
-        elif prop=='matrix_mult':
-            assert isinstance(gset_sample, (np.ndarray, pd.DataFrame)) or scipy.sparse.issparse(gset_sample), 'gset_sample must be a sample-by-gene matrix'
-
-            if isinstance(gset_sample, pd.DataFrame):
-                gene_ordering = gset_sample.columns
-                gset_sample = np.array(gset_sample)
-
-            gset_sample = scipy.sparse.coo_matrix(gset_sample)
-            annotation_matrix = self.get_annotation_matrix()
-
-            if gene_ordering is not None:
-                contained = np.array([self.genes_index.has_key(g) for g in gene_ordering])
-                gset_sample = scipy.sparse.coo_matrix(scipy.sparse.csc_matrix(gset_sample)[:,contained])
-                subset = np.array([self.genes_index[g] for g in gene_ordering if self.genes_index.has_key(g)])
-                annotation_matrix = scipy.sparse.csc_matrix(scipy.sparse.csr_matrix(annotation_matrix)[subset,:])
-
-            onto_sample = gset_sample * annotation_matrix
-
-            if format==pd.DataFrame:
-                # Create dataframe
-                unused_terms = (onto_sample!=0).toarray().sum(0) == 0
-                print 'Removing %s terms with no mutations among samples' % unused_terms.sum()
-                onto_sample = pd.DataFrame(onto_sample.toarray()[:,~unused_terms], columns=np.array(self.terms)[~unused_terms])
-
-            return onto_sample
-
+            ontotypes = genotypes.dot(annotation_matrix)
         else:
-            raise Exception('Invalid perturbation type')
+            raise Exception('Invalid input format')
+
+        if output_format=='dataframe':
+            ontotypes = pd.DataFrame(ontotypes.toarray(), columns=self.terms)
+        elif output_format=='sparse':
+            pass
+        else:
+            raise Exception('Invalid output format')
+            
+        return ontotypes
+
+        # if prop=='genes':
+
+        #     time_print('Creating features')
+        #     print format, format=='scipy.csr'
+            
+        #     if format=='dict':
+        #         from collections import Counter                
+        #         onto_sample = [reduce(add, [self.gene_2_term[g] for g in gset]) for gset in gset_sample]                
+        #         onto_sample = [dict(Counter(idxs)) for idxs in onto_sample]
+                
+        #     elif format=='scipy.coo':
+        #         time_print('Making i, j, data')
+
+        #         gene_2_term = {k: np.array(v) for k, v in self.gene_2_term.items()}
+        #         i = np.repeat(np.arange(len(gset_sample)), [sum(gene_2_term[g].size for g in gset) for gset in gset_sample])
+        #         j = np.concatenate([gene_2_term[g] for gset in gset_sample for g in gset])
+
+        #         #ij = np.array([(a, t) for a, gset in enumerate(gset_sample) for g in gset for t in self.gene_2_term[g]])
+        #         #data = np.ones((ij.shape[0], ))
+        #         data = np.ones((i.size, ))
+        #         time_print('Making sparse COO matrix')
+        #         #onto_sample = scipy.sparse.coo_matrix((data, (ij[:,0], ij[:,1])), (len(gset_sample), len(self.terms)), dtype=dtype)
+        #         onto_sample = scipy.sparse.coo_matrix((data, (i, j)), (len(gset_sample), len(self.terms)), dtype=dtype)
+
+        #     elif format=='scipy.csr':
+        #         time_print('Making indices, indptr, data')
+        #         gene_2_term = {k: np.array(v) for k, v in self.gene_2_term.items()}
+        #         gset_sample_x = [np.concatenate([gene_2_term[g] for g in gset]) if len(gset)>0 else np.array([]) for gset in gset_sample]
+        #         indices = np.concatenate(gset_sample_x)
+        #         indptr = np.concatenate((np.array([0]),
+        #                                  np.cumsum([gset.size for gset in gset_sample_x])))
+        #         data = np.ones((len(indices), ), dtype=dtype)
+
+        #         time_print('Making sparse CSR matrix')
+        #         onto_sample = scipy.sparse.csr_matrix((data, indices, indptr), (len(gset_sample), len(self.terms)), dtype=dtype)
+
+        #     elif format=='dense':
+        #         dim = len(gset_sample[0])
+        #         assert dim <= 127, "Gset dimension must be <= 127 to create an np.int8 array"
+
+        #         # Check that all genes in gset_sample are in gset_2_terms
+        #         assert set.union(*[set(x) for x in gset_sample]).issubset(set(self.gene_2_term.keys()))
+
+        #         # Convert gene_2_term to a numpy genes-by-terms boolean matrix
+        #         time_print('Creating gene_2_term matrix')
+        #         gene_2_term_arr = np.zeros((len(self.genes), len(self.terms)), dtype=np.int8)
+        #         for g, terms in self.gene_2_term.items():
+        #             gene_2_term_arr[self.genes_index[g], terms] = 1
+
+        #         time_print('Converting gset_sample into matrix')
+        #         gset_sample_arr = np.array([[self.genes_index[g] for g in gset] for gset in gset_sample])
+
+        #         time_print('Creating gset_2_terms matrix')
+        #         onto_sample = np.zeros((len(gset_sample), len(self.terms)), dtype=np.int8)
+        #         for d in range(dim):
+        #             onto_sample += np.take(gene_2_term_arr,
+        #                                    gset_sample_arr[:,d],
+        #                                    axis=0)
+
+        #     time_print('Done creating features')
+
+        #     return onto_sample
+
+        # elif prop=='or':
+
+        #     onto_sample = self.get_ontotypes(gset_sample, prop='genes', format=format)
+
+        #     if format=='dict':
+        #         # Set all values to 1
+        #         onto_sample = [{k: 1 for k, v in d.items()} for d in onto_sample]
+        #     elif format in ['scipy.coo', 'scipy.csr', 'dense']:
+        #         # Do this to preserve data type of onto_sample,
+        #         # instead of onto_sample = (onto_sample >= 1), which
+        #         # would create a boolean
+        #         onto_sample[ onto_sample >= 1 ] = 1
+        #     else:
+        #         raise Exception('Format %s not supported for prop' % (format, prop))
+
+        #     return onto_sample
+
+        # elif prop=='children':
+
+        #     import igraph, numpy, collections
+
+        #     graph = igraph.Graph.Read_Ncol(self.ontology_prefix)
+        #     g_vs_index = {b:a for a,b in enumerate(graph.vs['name'])}                
+        #     gene_2_term = self.gene_2_term
+            
+        #     # For each gset, create a dictionary mapping a perturbed term
+        #     # (i.e. its index in self.terms) to the number of genes
+        #     # perturbed
+        #     genes_features = [dict(collections.Counter([term for g in gset for term in gene_2_term[g]])) for gset in gset_sample]      
+            
+        #     for term_count in genes_features:
+        #         parent_perturbations = [self.terms_index[x] for \
+        #                                 x in graph.vs[[p for term in term_count.keys() for \
+        #                                                p in graph.neighbors(g_vs_index[self.terms[term]], mode='out')]]['name']]
+        #         parent_perturbations = dict(Counter(parent_perturbations))                    
+        #         term_count.update(parent_perturbations)
+        #     perturbations = genes_features
+
+        #     return perturbations
+
+        # elif prop=='min_cut':
+        #     # TODO
+        #     raise Exception('Not supported')
+
+        # elif prop=='gene_identity':
+        #     tmp = [(i, self.genes_index[g]) for i, gset in enumerate(gset_sample) for g in gset]
+        #     i, j = zip(*tmp)            
+        #     data = np.ones(len(i), dtype=dtype)
+        #     onto_sample = scipy.sparse.coo_matrix((data, (np.array(i), np.array(j))), (len(gset_sample), len(self.genes)))
+
+        #     if format=='scipy.csr':
+        #         onto_sample = scipy.sparse.csr_matrix(onto_sample)
+
+        #     assert format in ['scipy.coo', 'scipy.csr']
+
+        #     return onto_sample
+
+        # elif prop=='matrix_mult':
+        #     assert isinstance(gset_sample, (np.ndarray, pd.DataFrame)) or scipy.sparse.issparse(gset_sample), 'gset_sample must be a sample-by-gene matrix'
+
+        #     if isinstance(gset_sample, pd.DataFrame):
+        #         gene_ordering = gset_sample.columns
+        #         gset_sample = np.array(gset_sample)
+
+        #     gset_sample = scipy.sparse.coo_matrix(gset_sample)
+        #     annotation_matrix = self.get_annotation_matrix()
+
+        #     if gene_ordering is not None:
+        #         contained = np.array([self.genes_index.has_key(g) for g in gene_ordering])
+        #         gset_sample = scipy.sparse.coo_matrix(scipy.sparse.csc_matrix(gset_sample)[:,contained])
+        #         subset = np.array([self.genes_index[g] for g in gene_ordering if self.genes_index.has_key(g)])
+        #         annotation_matrix = scipy.sparse.csc_matrix(scipy.sparse.csr_matrix(annotation_matrix)[subset,:])
+
+        #     onto_sample = gset_sample * annotation_matrix
+
+        #     if format==pd.DataFrame:
+        #         # Create dataframe
+        #         unused_terms = (onto_sample!=0).toarray().sum(0) == 0
+        #         print 'Removing %s terms with no mutations among samples' % unused_terms.sum()
+        #         onto_sample = pd.DataFrame(onto_sample.toarray()[:,~unused_terms], columns=np.array(self.terms)[~unused_terms])
+
+        #     return onto_sample
+
+        # else:
+        #     raise Exception('Invalid perturbation type')
 
     def get_annotation_matrix(self):
         """Returns a gene-by-term matrix stored as a scipy.sparse.coo_matrix

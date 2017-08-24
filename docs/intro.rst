@@ -49,7 +49,12 @@ Features
    #. Tables: Pandas and CSV files
       
 #. RESTful web services
-
+   
+   #. Expand Gene Set: Identify genes whose functions are highly similar to a seed set of genes.
+   #. Build Data-driven Hierarchy: Run the CLiXO algorithm to derive a hierarchy relating
+   #. Hierarchical Alignment: Identify terms in a hierarchy that highly match terms in a reference hierarchy, such as the Gene Ontology.
+   #. Hierarchical Viewer: Interactively browse the structure of a hierarchy, including the data that supports the existence of each term in the hierarchy.
+   
 Sharing results with the Network Database Exchange (NDEx)
 ---------------------------------------------------------
 

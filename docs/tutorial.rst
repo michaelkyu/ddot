@@ -1,4 +1,4 @@
-Quick Tutorial
+Tutorial
 ==============
 
 Instantiating an Ontology object
@@ -8,23 +8,24 @@ Ontology objects can be created in several ways
 
 1. Through the __init__ constructor::
      
-     ont = Ontology(hierarchy, mapping)
+     ont = Ontology(...)
 
-2. Loading from NDEx::
+2. Loading from the Network DataBase Exchange (NDEx)::
 
-     ont = Ontology.from_ndex('8bfa8318-55ed-11e7-a2e2-0660b7976219')
+     ont = Ontology.from_ndex(uuid)
 
-3. Loading from text-based tables::
+   where `uuid` is a specific the unique identifier (UUID) of a
+   network on an NDEX server.
+
+3. Loading from a tab-delimited table or pandas DataFrame::
 
      ont = Ontology.from_table('example.txt')
 
 4. Assembly from a similarity network using the CLIXO algorithm::
     
-     # load table
-     similarity = blah
-     ont = Ontology.run_clixo(ont)
+     ont = Ontology.run_clixo(similarity, ...)
 
-Inspecting and manipulating the contents of an ontology
+Inspecting the Hierarchical Structure of an Ontology
 -------------------------------------------------------
 
 An Ontology stores four fundamental types of information
@@ -36,13 +37,13 @@ An Ontology stores four fundamental types of information
 
 Alternatively, the hierarchical connections can be viewed as a matrix::
 
-  Ontology.get_connectivity_matrix
+  Ontology.get_connectivity_matrix()
 
 A summary of an Ontology's object, i.e. the number of genes, terms, and connections, can be printed by `Ontology.summary()`
 
 Other functions for manipulating the contents of the Ontology
 
-1. rename
+1. .. class:: ddot.Ontology.rename
 2. collapse_node
 3. delete_genes
 4. delete_terms

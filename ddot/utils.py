@@ -1,19 +1,24 @@
-import numpy as np
+from __future__ import absolute_import
+
 import sys
-from datetime import datetime
-import pandas as pd
-import networkx as nx
-import simplejson
 import base64
 import time
+import traceback
+from math import ceil
+from datetime import datetime
 
+import pandas as pd
+import networkx as nx
+import numpy as np
+
+import ndex.client as nc
+from ndex.networkn import NdexGraph
+    
 import ddot.config
 
 def print_time(*s):
-    from datetime import datetime
-    print ' '.join(map(str, s)), datetime.today()
+    print(' '.join(map(str, s)), datetime.today())
 #    print s, datetime.today()
-    import sys
     sys.stdout.flush()
 
 def invert_dict(dic, sort=True, keymap={}, valmap={}):
@@ -159,14 +164,11 @@ def split_indices(n, k):
         assert type(n)==type(int(1))
         indices = range(n)
 
-    from math import ceil
     chunk_size = int(ceil(float(len(indices)) / k))
 
     return [(chunk_size * a, min(chunk_size * (a+1), len(indices))) for a in range(int(ceil(float(len(indices)) / chunk_size)))]
 
 def split_indices_chunk(n, k):
-    from math import ceil
-
     try:
         iter(n)
         n = len(n)
@@ -404,7 +406,7 @@ def nx_nodes_to_pandas(G, attr_list=None):
     Returns
     -------
     pandas.DataFrame
-       Dataframe where index is the names of nodes and the columns are node attributes.
+       DataFrame where index is the names of nodes and the columns are node attributes.
 
     """
 
@@ -428,7 +430,7 @@ def nx_edges_to_pandas(G, attr_list=None):
     -------
     pandas.DataFrame
 
-       Dataframe where index is a MultIndex with two levels (u,v)
+       DataFrame where index is a MultIndex with two levels (u,v)
        referring to edges and the columns refer to edge
        attributes. For multi(di)graphs, the MultiIndex have three
        levels of the form (u, v, key).
@@ -457,7 +459,6 @@ def nx_to_NdexGraph(G_nx, discard_null=True):
 
     """
 
-    from ndex.networkn import NdexGraph
     G = NdexGraph()
     node_id = 0
     node_dict = {}
@@ -547,9 +548,6 @@ def create_edgeMatrix(X, X_cols, X_rows, verbose=True, G=None):
 
     """
 
-    import ndex.client as nc
-    from ndex.networkn import NdexGraph
-
     if not X.flags['C_CONTIGUOUS']:
         X = np.ascontiguousarray(X)
     
@@ -578,7 +576,7 @@ def load_edgeMatrix(ndex_uuid,
                     ndex_user,
                     ndex_pass,
                     ndex=None,
-                    json=simplejson,
+                    json=None,
                     verbose=True):
     """Loads a NumPy array from a NdexGraph with a special CX aspect
     called "edge_matrix".
@@ -598,7 +596,9 @@ def load_edgeMatrix(ndex_uuid,
         NDEx password
 
     json : module
-        JSON module with "loads" function
+
+        JSON module with "loads" function. Default: the simplejson
+        package (must be installed)
 
     Returns
     -------
@@ -612,9 +612,10 @@ def load_edgeMatrix(ndex_uuid,
 
     """
 
-    import ndex.client as nc
-    from ndex.networkn import NdexGraph
-
+    if json is None:
+        import simplejson
+        json = simplejson
+        
     if ndex is None:
         ndex = nc.Ndex(ndex_server, ndex_user, ndex_pass)
 
@@ -712,9 +713,9 @@ def sim_matrix_to_NdexGraph(sim, names, similarity, output_fmt, node_attr=None):
         raise Exception('Unsupported output_fmt: %s' % output_fmt)
 
 def ndex_to_sim_matrix(ndex_uuid,
-                       ndex_server=ddot.config.ndex_server,
-                       ndex_user=ddot.config.ndex_user,
-                       ndex_pass=ddot.config.ndex_pass,
+                       ndex_server=None,
+                       ndex_user=None,
+                       ndex_pass=None,
                        similarity='similarity',
                        input_fmt='cx_matrix',
                        output_fmt='matrix',
@@ -757,7 +758,12 @@ def ndex_to_sim_matrix(ndex_uuid,
 
     """
 
-    from ndex.networkn import NdexGraph
+    if ndex_server is None:
+        ndex_server = ddot.config.ndex_server
+    if ndex_user is None:
+        ndex_pass = ddot.config.ndex_user
+    if ndex_pass is None:
+        ndex_pass = ddot.config.ndex_pass
     
     if input_fmt=='cx':
         # Read graph using NDEx client
@@ -1049,7 +1055,7 @@ def ddot_pipeline(alpha,
     df_sq = pd.DataFrame(gene_similarities[expand_idx, :][:, expand_idx], index=expand, columns=expand)
     df = melt_square(df_sq)
 
-    from ddot.Ontology import Ontology    
+    from ddot.Ontology import Ontology
     ont = Ontology.run_clixo(df, alpha, beta, verbose=verbose)
 
     try:
@@ -1133,20 +1139,25 @@ def ddot_pipeline(alpha,
     return ont, ont_url, ont_ndexgraph
 
 def make_network_public(uuid,
-                        ndex_server=ddot.config.ndex_server,
-                        ndex_user=ddot.config.ndex_user,
-                        ndex_pass=ddot.config.ndex_pass,
+                        ndex_server=None,
+                        ndex_user=None,
+                        ndex_pass=None,
                         timeout=60,
                         error=False):
-    import ndex.client as nc
-    ndex = nc.Ndex(ndex_server, ndex_user, ndex_pass)
+    if ndex_server is None:
+        ndex_server = ddot.config.ndex_server
+    if ndex_user is None:
+        ndex_pass = ddot.config.ndex_user
+    if ndex_pass is None:
+        ndex_pass = ddot.config.ndex_pass
 
+    ndex = nc.Ndex(ndex_server, ndex_user, ndex_pass)
+            
     sleep_time = 0.25
     
     start = time.time()
     while True:
         if time.time() - start > timeout:
-            import traceback
             print 'Failed to make network public: error message:'
             print traceback.print_exc()
             if error:

@@ -43,7 +43,7 @@ setup(name='ddot',
       ],
       keywords='ontology hierarchy',
       packages=['ddot', 'ddot.cx_services'],
-      install_requires=['pandas', 'numpy', 'python-igraph', 'networkx'],
+      install_requires=['pandas', 'numpy', 'scipy', 'ndex-dev', 'python-igraph', 'networkx', 'cxmate', 'requests'],
       include_package_data=True,
       zip_safe=False)
 

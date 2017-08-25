@@ -1,1 +1,2 @@
+numpy
 sphinx_bootstrap_theme

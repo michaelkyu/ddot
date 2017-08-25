@@ -1,3 +1,5 @@
 include README.md
 include LICENSE.txt
-include ddot/mhk7-clixo_0.3-cec3674/*
+recursive-include ddot/mhk7-clixo_0.3-cec3674 *
+recursive-include ddot/alignOntology *
+include ddot/ontology_style.cx

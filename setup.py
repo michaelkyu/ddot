@@ -19,7 +19,7 @@ from setuptools import setup, find_packages
 setup(name='ddot',
       version='0.1',
       description='Data-Driven Ontology Toolkit',
-      url='http://github.com/michaelkyu/ontology_cx',
+      url='http://github.com/michaelkyu/ontology',
       author='Michael Ku Yu',
       author_email='michaelyu@alum.mit.edu',
       license='MIT',
@@ -50,4 +50,3 @@ setup(name='ddot',
       # package_data={
       #     '':['config.py', 'site.cfg'],
       # },
-

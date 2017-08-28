@@ -1,6 +1,7 @@
 Ontology class
 --------------
 
-.. autoclass:: ddot.Ontology
-   :members: 
+.. automodule:: ddot.Ontology
+   .. autoclass:: ddot.Ontology
+      :members: 
       

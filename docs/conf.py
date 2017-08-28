@@ -23,8 +23,6 @@ sys.path.insert(0, os.path.abspath('..'))
 
 print 'sys.path:', sys.path
 
-import ddot
-
 import sphinx_bootstrap_theme
 
 # -- General configuration ------------------------------------------------

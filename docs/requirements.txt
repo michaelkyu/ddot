@@ -1,3 +1,9 @@
+pandas
+scipy
+python-igraph
+networkx
+cxmate
+requests
 numpy
 ndex-dev
 sphinx_bootstrap_theme

@@ -7,7 +7,7 @@ Welcome to Data-Driven Ontology Toolkit's documentation!
 ========================================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    intro
    tutorial

@@ -440,11 +440,26 @@ def nx_edges_to_pandas(G, attr_list=None):
     if attr_list is None:
         attr_list = list(set([a for d in G.edges(data=True) 
                               for a in d[2].keys()]))
+
+    print 'attr_list:', attr_list
+    for a in attr_list:
+        print 'attr:', a
+        nx.get_edge_attributes(G,a)
+    
     if len(attr_list) > 0:
-        return pd.concat([pd.Series(nx.get_edge_attributes(G,a), name=a) for a in attr_list],
+        df = pd.concat([pd.Series(nx.get_edge_attributes(G,a), name=a) for a in attr_list],
                          axis=1)
     else:
-        return pd.DataFrame(index=pd.MultiIndex.from_tuples(G.edges()))
+        df = pd.DataFrame(index=pd.MultiIndex.from_tuples(G.edges()))
+
+    if df.index.nlevels==2:
+        df.index.rename(['Node1', 'Node2'], inplace=True)
+    elif df.index.nlevels==3:
+        df.index.rename(['Node1', 'Node2', 'EdgeID'], inplace=True)
+    else:
+        raise Exception('Invalid number of levels: %s' % df.index.nlevels)
+
+    return df    
 
 def nx_to_NdexGraph(G_nx, discard_null=True):
     """Converts a NetworkX into a NdexGraph object.
@@ -975,9 +990,9 @@ def ddot_pipeline(alpha,
                   name='Data-driven Ontology',
                   expand_kwargs={},
                   align_kwargs={},
-                  ndex_kwargs={'ndex_server' : ddot.config.ndex_server,
-                               'ndex_user' : ddot.config.ndex_user,
-                               'ndex_pass' : ddot.config.ndex_pass},                
+                  ndex_kwargs={'ndex_server' : None,
+                               'ndex_user' : None,
+                               'ndex_pass' : None},
                   subnet_max_term_size=None,
                   node_attr=None,
                   public=True,
@@ -998,9 +1013,20 @@ def ddot_pipeline(alpha,
 
     """
 
-    ndex_server = ndex_kwargs['ndex_server']
-    ndex_user = ndex_kwargs['ndex_user']
-    ndex_pass = ndex_kwargs['ndex_pass']
+    if ndex_kwargs['ndex_server'] is None:
+        ndex_server = ddot.config.ndex_server
+    else:
+        ndex_server = ndex_kwargs['ndex_server']
+
+    if ndex_kwargs['ndex_user'] is None:
+        ndex_user = ddot.config.ndex_user
+    else:
+        ndex_user = ndex_kwargs['ndex_user']
+        
+    if ndex_kwargs['ndex_pass'] is None:
+        ndex_pass = ddot.config.ndex_pass
+    else:
+        ndex_pass = ndex_kwargs['ndex_pass']
 
     ################
     # Expand genes #
@@ -1125,12 +1151,12 @@ def ddot_pipeline(alpha,
         ont_url, ont_ndexgraph = ont.to_ndex(
             name=name,
             description=description,
-            sim=df,
+            network=df,
+            features=['similarity'],
+            subnet_max_term_size=subnet_max_term_size,
             ndex_server=ndex_server,
             ndex_user=ndex_user,
             ndex_pass=ndex_pass,
-            features=['similarity'],
-            subnet_max_term_size=subnet_max_term_size,
             public=public
         )
     else:

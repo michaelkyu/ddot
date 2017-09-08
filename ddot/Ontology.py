@@ -17,7 +17,7 @@ import pandas.io.pickle
 import networkx as nx
 import igraph
 import scipy, scipy.sparse
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_matrix, coo_matrix
 from scipy.stats import hypergeom
 
 import ndex.client as nc
@@ -460,8 +460,8 @@ class Ontology:
     TERM_NODETYPE = 'Term'
 
     EDGETYPE_ATTR = 'EdgeType'
-    GENE_TERM_EDGTYPE = 'Gene-Term'
-    CHILD_PARENT_EDGTYPE = 'Child-Parent'
+    GENE_TERM_EDGETYPE = 'Gene-Term'
+    CHILD_PARENT_EDGETYPE = 'Child-Parent'
 
     def __init__(self,
                  hierarchy,
@@ -523,15 +523,11 @@ class Ontology:
                                                     key=lambda a:a[1]),
                                              key=lambda a:a[1])}
 
-        if add_root_name is not None:
-            ## Check if there is a single unifying root term of the
-            ## ontology. If not, then identify the multiple roots and
-            ## join them under an artificial root
-            root_list = self.get_roots()
-            print 'Unifying %s roots into one super-root' % len(root_list)
-            if len(root_list) > 1:
-                root_name = add_root_name
-                self.parent_2_child[root_name] = root_list
+        # if add_root_name is not None:
+        #     root_list = self.get_roots()
+        #     if len(root_list) > 1:
+        #         print 'Unifying %s roots into one super-root' % len(root_list)
+        #         self.parent_2_child[add_root_name] = root_list
 
         ## Read gene-to-term edges
         # self.gene_2_term[<gene_name>] --> list of terms that <gene_name> is mapped to
@@ -553,6 +549,13 @@ class Ontology:
             
         self.terms = sorted(list(terms_A | terms_B))
         self.genes = sorted(self.gene_2_term.keys())
+
+        if add_root_name is not None:
+            root_list = self.get_roots()
+            if len(root_list) > 1:
+                print 'Unifying %s roots into one super-root' % len(root_list)
+                self.parent_2_child[add_root_name] = root_list
+                self.terms.append(add_root_name)
         
         ## terms_index[<term_name>] --> index in self.terms
         self.terms_index = make_index(self.terms)
@@ -594,6 +597,26 @@ class Ontology:
         self.child_2_parent, self.child_2_parent_indices = self._get_child_2_parent()
         self.term_2_gene = self._get_term_2_gene()
         self.term_sizes = self.get_term_sizes()
+        
+    def add_root(self, root_name):
+        """Check if there is a single unifying root term of the ontology. If
+        not, then identify the multiple roots and join them under an
+        artificial root."""
+
+        assert root_name not in self.terms        
+        root_list = self.get_roots()
+        if len(root_list) > 1:
+            print 'Unifying %s roots into one super-root' % len(root_list)
+            self.parent_2_child[root_name] = root_list
+            
+        self.terms.append(root_name)
+        self.terms_index = make_index(sorted(self.terms))
+
+        for g, t_list in self.gene_2_term.iteritems():
+            self.gene_2_term[g] = [self.terms_index[self.terms[t]] for t in t_list]
+
+        self.terms.sort()
+        self._update_fields()        
 
     def _get_child_2_parent(self):
         """
@@ -706,7 +729,8 @@ class Ontology:
 
         """
 
-        return sorted(set(self.parent_2_child.keys()) - set([y for x in self.parent_2_child.values() for y in x]))
+        return sorted(set(self.terms) - set([y for x in self.parent_2_child.values() for y in x]))
+#        return sorted(set(self.parent_2_child.keys()) - set([y for x in self.parent_2_child.values() for y in x]))
 
     def align(self,
               hier,
@@ -1043,7 +1067,7 @@ class Ontology:
         """
 
         if is_mapping is None:
-            is_mapping = lambda x: x[2]==self.GENE_TERM_EDGETYPE,
+            is_mapping = lambda x: x[2]==cls.GENE_TERM_EDGETYPE
             
         # Read table
         try:
@@ -1121,7 +1145,7 @@ class Ontology:
         if ndex_server is None:
             ndex_server = ddot.config.ndex_server
         if ndex_user is None:
-            ndex_pass = ddot.config.ndex_user
+            ndex_user = ddot.config.ndex_user
         if ndex_pass is None:
             ndex_pass = ddot.config.ndex_pass
             
@@ -1200,9 +1224,9 @@ class Ontology:
         """
         
         if edgetype_attr is None:
-            edgetype_attr=self.EDGETYPE_ATTR
+            edgetype_attr=cls.EDGETYPE_ATTR
         if edgetype_value is None:
-            edgetype_value=self.GENE_TERM_EDGETYPE
+            edgetype_value=cls.GENE_TERM_EDGETYPE
 
         hierarchy = []
         mapping = []
@@ -1380,9 +1404,9 @@ class Ontology:
         if verbose:
             print('Common genes:', len(common_genes))
 
-        ont1 = ont1.delete_genes(set(ont1.genes) - common_genes, inplace=False)
+        ont1 = ont1.delete(genes=set(ont1.genes) - common_genes, inplace=False)
         ont1_collapsed = ont1.collapse_ontology(method='mhkramer')
-        ont2 = ont2.delete_genes(set(ont2.genes) - common_genes, inplace=False)
+        ont2 = ont2.delete(genes=set(ont2.genes) - common_genes, inplace=False)
         ont2_collapsed = ont2.collapse_ontology(method='mhkramer')
 
         if verbose:
@@ -1391,7 +1415,7 @@ class Ontology:
 
         return ont1_collapsed, ont2_collapsed
 
-    def delete_terms(self, terms, inplace=False):
+    def delete(self, terms=None, genes=None, inplace=False):
         """Delete genes or terms from the ontology.
 
         Note that if a gene is directly connected to a term T but not
@@ -1424,23 +1448,31 @@ class Ontology:
             ont = self
         else:
             ont = self.copy()
-        
-        terms = set(terms)
-        tmp_gene_2_term = {g : [ont.terms[t] for t in t_list]
-                           for g, t_list in ont.gene_2_term.items()}
-        ont.terms = [t for t in ont.terms if t not in terms]
-        ont.terms_index = make_index(ont.terms)
-        ont.gene_2_term = {g : [ont.terms_index[t] for t in t_list if t not in terms]
-                           for g, t_list in tmp_gene_2_term.items()}
-        ont.parent_2_child = {p : [c for c in c_list if c not in terms]
-                              for p, c_list in ont.parent_2_child.items()
-                              if p not in terms}
-        
-        genes = set(genes)
-        ont.genes = [g for g in ont.genes if g not in genes]
-        ont.genes_index = make_index(ont.genes)
-        ont.gene_2_term = {g : t for g, t in ont.gene_2_term.items() 
-                           if g not in genes}
+
+        if terms is None:
+            terms = set()
+        else:
+            terms = set(terms)
+            
+            tmp_gene_2_term = {g : [ont.terms[t] for t in t_list]
+                               for g, t_list in ont.gene_2_term.items()}
+            ont.terms = [t for t in ont.terms if t not in terms]
+            ont.terms_index = make_index(ont.terms)
+            ont.gene_2_term = {g : [ont.terms_index[t] for t in t_list if t not in terms]
+                               for g, t_list in tmp_gene_2_term.items()}
+            ont.parent_2_child = {p : [c for c in c_list if c not in terms]
+                                  for p, c_list in ont.parent_2_child.items()
+                                  if p not in terms}
+
+        if genes is None:
+            genes = set()
+        else:            
+            genes = set(genes)
+            ont.genes = [g for g in ont.genes if g not in genes]
+            ont.genes_index = make_index(ont.genes)
+            ont.gene_2_term = {g : t for g, t in ont.gene_2_term.items() 
+                               if g not in genes}
+            
         ont._update_fields()
 
         return ont
@@ -1496,7 +1528,7 @@ class Ontology:
             ont = self.copy()
 
         if genes:
-            ont.delete_genes([g for g in ont.genes if not genes.has_key(g)], inplace=True)
+            ont.delete(genes=[g for g in ont.genes if not genes.has_key(g)], inplace=True)
 
             new_genes = []
             new_gene_2_term = {}
@@ -1514,7 +1546,7 @@ class Ontology:
             ont.genes_index = make_index(ont.genes)
             ont._update_fields()
         if terms:
-            ont.delete_terms([t for t in ont.terms if not terms.has_key(t)], inplace=True)
+            ont.delete(terms=[t for t in ont.terms if not terms.has_key(t)], inplace=True)
             ont.terms = [terms[t] for t in ont.terms]
             ont.terms_index = make_index(ont.terms)
             ont.parent_2_child = {terms[p] : [terms[c] for c in c_list]
@@ -1577,8 +1609,10 @@ class Ontology:
 
     def _hierarchy_to_pandas(self, default_relation=u'default'):
 
-        triples = [(p,c, relation_dict.get((c, p), default_relation)) \
+        triples = [(p,c,default_relation) \
                    for p, c_list in self.parent_2_child.items() for c in c_list]
+        # triples = [(p,c, relation_dict.get((c, p), default_relation)) \
+        #            for p, c_list in self.parent_2_child.items() for c in c_list]
         df = pd.DataFrame(triples, columns=['Parent', 'Child', 'EdgeType'])
         return df
 
@@ -2629,7 +2663,7 @@ class Ontology:
         if ndex_server is None:
             ndex_server = ddot.config.ndex_server
         if ndex_user is None:
-            ndex_pass = ddot.config.ndex_user
+            ndex_user = ddot.config.ndex_user
         if ndex_pass is None:
             ndex_pass = ddot.config.ndex_pass
             
@@ -2638,14 +2672,14 @@ class Ontology:
         else:
             ont = self
 
-        if (sim is not None) and (len(features) > 0):
+        if (network is not None) and (len(features) > 0):
             if subnet_max_term_size is not None:
                 terms = [t for t,s in zip(ont.terms, ont.term_sizes) if s <= subnet_max_term_size]
             else:
                 terms = ont.terms
 
             term_2_uuid = ont.upload_subnets_ndex(
-                sim,
+                network,
                 features,
                 name,
                 ndex_server=ndex_server,
@@ -2841,7 +2875,7 @@ class Ontology:
         if ndex_server is None:
             ndex_server = ddot.config.ndex_server
         if ndex_user is None:
-            ndex_pass = ddot.config.ndex_user
+            ndex_user = ddot.config.ndex_user
         if ndex_pass is None:
             ndex_pass = ddot.config.ndex_pass
         
@@ -3034,6 +3068,52 @@ class Ontology:
     def read_pickle(cls, file, compression='infer'):
         return pandas.io.pickle.read_pickle(file, compression=compression)
 
+    def to_adjacency(self, include_genes=False):
+        """Returns the adjacency matrix between genes and terms.
+
+        Parameters
+        ----------
+        include_genes : bool
+                        
+            Include genes in the adjacency matrix such that the rows
+            (and columns) represent both genes and terms in the order
+            (self.genes + self.terms).
+
+        Returns
+        -------
+        : scipy.sparse.csr_matrix
+
+        """
+
+        edges = [(self.terms_index[c], self.terms_index[p]) for c in self.terms for p in self.child_2_parent.get(c, [])]
+        i, j = zip(*edges)
+        child_2_parent_adj = coo_matrix((np.ones(len(edges), np.bool), (i,j)), shape=(len(self.terms), len(self.terms)))
+        child_2_parent_adj = child_2_parent_adj.tocsr()
+
+        adj = child_2_parent_adj
+
+        if include_genes:
+            tmp = [self.gene_2_term[g] for g in self.genes]
+            indices = np.concatenate(tmp)
+            indptr = np.append(0, np.cumsum([len(x) for x in tmp]))
+            data = np.ones(indices.size, np.bool)
+            gene_2_term_adj = csr_matrix((data,indices,indptr), shape=(len(self.genes), len(self.terms)))
+
+            empty1 = csr_matrix((len(self.genes),len(self.genes))).astype(np.bool)
+            empty2 = csr_matrix((len(self.terms),len(self.genes))).astype(np.bool)
+                    
+            hstack, vstack = scipy.sparse.hstack, scipy.sparse.vstack
+            
+            adj = vstack([hstack([empty1, gene_2_term_adj]).tocsr(),
+                          hstack([empty2, adj]).tocsr()])
+            adj = adj.tocsr()
+
+            nodes = self.genes + self.terms
+        else:
+            nodes = self.terms
+            
+        return adj, nodes
+        
     # def transitive_closure(self):
 
         # """Computes the transitive closure on (child term, parent term)

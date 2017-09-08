@@ -6,9 +6,11 @@ analysis, and visualization of biological hierarchies. ddot consists
 of both a Python package and a portable set of RESTful services.
 
 .. image:: software_pipeline_6jul2017.png
-   :scale: 50 %
-   :align: center
-   
+   :width: 40%
+
+.. image:: fango.png
+   :width: 40%
+	   
 Features
 ---------
 

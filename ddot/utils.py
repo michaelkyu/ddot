@@ -391,7 +391,8 @@ def set_edge_attributes_from_pandas(G, edge_attr):
                     v = v.item()
                 except:
                     pass
-                G.edge[(e1,e2)][feature_name] = v
+                G[e1][e2][feature_name] = v
+#                G.edge[(e1,e2)][feature_name] = v
 
 def nx_nodes_to_pandas(G, attr_list=None):
     """Create pandas.DataFrame of node attributes of a NetworkX graph.

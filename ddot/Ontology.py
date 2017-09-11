@@ -904,8 +904,7 @@ class Ontology:
         G.node[root]['isRoot'] = True
 
         set_node_attributes_from_pandas(G, self.node_attr)
-        set_edge_attributes_from_pandas(G, self.edge_attr)
-            
+
         #################################
         ### Add edges and edge attributes
 
@@ -916,6 +915,13 @@ class Ontology:
         G.add_edges_from([(c, p,  
                            {self.EDGETYPE_ATTR : self.CHILD_PARENT_EDGETYPE}) \
                           for p in self.terms for c in self.parent_2_child.get(p, [])])
+
+        print 'SETTING EDGE ATTR'
+        set_edge_attributes_from_pandas(G, self.edge_attr)
+        print self.edge_attr.head()
+        import random
+        print random.sample([x for x in G.edges(data=True) if x[2]['EdgeType']!='Gene-Term'], 10)
+        print '---------------------'
 
         if spanning_tree:
             # Identify a spanning tree
@@ -1006,9 +1012,9 @@ class Ontology:
     @classmethod
     def from_table(cls,
                    table,
-                   is_mapping=None,
                    parent=0,
-                   child=1,                   
+                   child=1,
+                   is_mapping=None,
                    mapping=None,
                    mapping_parent=0,
                    mapping_child=0,
@@ -1025,6 +1031,14 @@ class Ontology:
             mapping is None, then this table should also list (gene,
             term) pairs.
 
+        parent : int or str
+
+            Column for parent terms (index or name of column)
+        
+        child : int or str
+
+            Column for child terms and genes (index or name of column)
+
         is_mapping : function
 
             Function applied on each row to determine if it represents
@@ -1032,6 +1046,10 @@ class Ontology:
             row represents a (gene, term) pair. If False, it
             represents a (child term, parent term) pair. Only applied
             when mapping=None.
+
+        mapping : pandas.DataFrame, file-like object, or filename (optional)
+
+            A separate table listing only gene-term annotations
 
         parent : int or str
 
@@ -1047,18 +1065,6 @@ class Ontology:
             gene-term annotations up the hierarchy with
             Ontology.propagate_annotations(). If None, then don't
             propagate annotations.
-
-        mapping : pandas.DataFrame, file-like object, or filename (optional)
-
-            A separate table listing only gene-term annotations
-
-        parent : int or str
-
-            Column for parent terms (index or name of column)
-        
-        child : int or str
-
-            Column for child terms and genes (index or name of column)
         
         Returns
         -------

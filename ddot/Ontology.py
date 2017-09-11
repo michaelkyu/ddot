@@ -916,13 +916,8 @@ class Ontology:
                            {self.EDGETYPE_ATTR : self.CHILD_PARENT_EDGETYPE}) \
                           for p in self.terms for c in self.parent_2_child.get(p, [])])
 
-        print 'SETTING EDGE ATTR'
         set_edge_attributes_from_pandas(G, self.edge_attr)
-        print self.edge_attr.head()
-        import random
-        print random.sample([x for x in G.edges(data=True) if x[2]['EdgeType']!='Gene-Term'], 10)
-        print '---------------------'
-
+        
         if spanning_tree:
             # Identify a spanning tree
             tree_edges = self.get_tree_edges()

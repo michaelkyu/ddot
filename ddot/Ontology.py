@@ -1015,6 +1015,7 @@ class Ontology:
                    mapping_child=0,
                    propagate=False,
                    verbose=False,
+                   clixo_format=False,
                    **kwargs):
         """Create Ontology from a tab-delimited table.
 
@@ -1023,38 +1024,54 @@ class Ontology:
         table : pandas.DataFrame, file-like object, or filename
 
             A table that lists (child term, parent term) pairs. If
-            mapping is None, then this table should also list (gene,
+            mapping==None, then this table should also include (gene,
             term) pairs.
 
         parent : int or str
 
-            Column for parent terms (index or name of column)
+            Column for parent terms in table (index or name of column)
         
         child : int or str
 
-            Column for child terms and genes (index or name of column)
+            Column for child terms and genes in table (index or name of column)
 
         is_mapping : function
 
-            Function applied on each row to determine if it represents
-            a gene-term annotation. If the function returns True, then
-            row represents a (gene, term) pair. If False, it
-            represents a (child term, parent term) pair. Only applied
-            when mapping=None.
+            A function that is applied on each row and returns True if
+            the row represents a (gene, term) pair and False
+            otherwise. This function is only applied when a separate
+            table of (gene, term) pairs is not specified,
+            i.e. mapping==None.
 
+            The default function is `lambda row: row[2]==Ontology.GENE_TERM_EDGETYPE`
+
+            which tests if the second column equals the string
+            Ontology.GENE_TERM_EDGETYPE.
+            
         mapping : pandas.DataFrame, file-like object, or filename (optional)
 
-            A separate table listing only gene-term annotations
+            A separate table listing only (gene, term) pairs
 
-        parent : int or str
+        mapping_parent : int or str
 
-            Column for parent terms (index or name of column)
+            Column for terms in mapping table (index or name of column)
         
-        child : int or str
+        mappping_child : int or str
 
-            Column for child terms and genes (index or name of column)
+            Column for genes in mapping table (index or name of column)
 
-        propagate : str
+        clixo_format : bool
+
+            If True, The table is assumed to be in the same format
+            produced by the CLIXO C++ implementation. In particular,
+            table has three columns:
+
+            Column 1) Parent Term
+            Column 2) Child Term or Gene
+            Column 3) The string "gene" if the row is a
+                      gene-term mapping, otherwise the string "default".
+
+        propagate : None or str
 
             The direction ('forward' or 'reverse') for propagating
             gene-term annotations up the hierarchy with
@@ -1067,7 +1084,20 @@ class Ontology:
 
         """
 
+        if clixo_format:
+            ont = cls.from_table(
+                table,
+                parent=0,
+                child=1,
+                is_mapping=lambda x: x[2]=='gene',
+                clixo_format=False)
+            del ont.edge_attr[2]
+            return ont
+        
         if is_mapping is None:
+            if mapping is None:
+                print('WARNING: no gene-term mappings were specified through the is_mapping'
+                      'function or a separate mapping table.')
             is_mapping = lambda x: x[2]==cls.GENE_TERM_EDGETYPE
             
         # Read table
@@ -1569,9 +1599,12 @@ class Ontology:
     def to_pandas(self,
                   term_2_term=True,
                   gene_2_term=True,
-                  default_relation=u'default'):
+                  default_relation=u'default',
+                  include_edge_attr=False):
         """Convert Ontology to pandas.DataFrame
-        
+
+        TODO: implement include_edge_attr
+
         Parameters
         ----------
         term_2_term : bool
@@ -1585,6 +1618,12 @@ class Ontology:
         default_relation : str
         
             The relation type assigned to all (child term, parent term) pairs
+
+        include_edge_attr : bool
+
+            Include the edge attributes as extra columns.
+         
+            PARAMETER NOT IMPLEMENTED YET
 
         Returns
         -------
@@ -1606,6 +1645,8 @@ class Ontology:
                        inplace=True)
             tmp['EdgeType'] = 'gene'
             df = df.append(tmp, ignore_index=True)
+
+        self.edge_attr.reset_index()
         return df
 
     def _hierarchy_to_pandas(self, default_relation=u'default'):
@@ -1622,6 +1663,22 @@ class Ontology:
         df = pd.DataFrame(pairs, columns=['Gene', 'Term'])        
         return df
 
+    def to_table(self,
+                 output,
+                 header=False,
+                 parent_child=True,
+                 encoding=None,
+                 default_relation=u'default'):        
+        
+        raise NotImplementedError()
+            
+        df = self.to_pandas(default_relation=default_relation)
+        if parent_child:
+            df = df[['Parent','Child','EdgeType']]
+        else:
+            df = df[['Child','Parent','EdgeType']]
+        return df.to_csv(output, header=header, index=False, sep='\t')
+    
     def to_3col_table(self,
                       output,
                       header=False,

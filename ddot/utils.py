@@ -4,6 +4,7 @@ import sys
 import base64
 import time
 import traceback
+import os
 from math import ceil
 from datetime import datetime
 
@@ -975,6 +976,9 @@ def expand_seed(seed,
                 sns.distplot(sim_2_seed[seed_idx], kde=False, norm_hist=True,
                              ax=ax,
                              axlabel='Similarity to seed set', label='Probability Density')
+                
+            if os.path.isfile(figure):
+                figure.savefig(figure)
         else:
             fig = None
     except:
@@ -1050,6 +1054,7 @@ def ddot_pipeline(alpha,
         genes,
         **kwargs
     )
+    expand_results = {'expand' : expand, 'sim_2_seed' : sim_2_seed, 'fig' : fig}
     
     expand = list(expand)
     if verbose:
@@ -1163,7 +1168,7 @@ def ddot_pipeline(alpha,
     else:
         ont_url, ont_ndexgraph = None, None
 
-    return ont, ont_url, ont_ndexgraph
+    return ont, ont_url, ont_ndexgraph, expand_results
 
 def make_network_public(uuid,
                         ndex_server=None,

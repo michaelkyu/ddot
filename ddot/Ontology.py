@@ -10,7 +10,8 @@ import inspect
 import shlex
 import shutil
 from StringIO import StringIO
-            
+import json
+
 import numpy as np
 import pandas as pd
 import pandas.io.pickle
@@ -25,7 +26,7 @@ from ndex.networkn import NdexGraph
         
 import ddot
 import ddot.config
-from ddot.utils import time_print, set_node_attributes_from_pandas, set_edge_attributes_from_pandas, nx_to_NdexGraph, NdexGraph_to_nx, parse_ndex_uuid, parse_ndex_server, make_index, update_nx_with_alignment, bubble_layout_nx, split_indices_chunk, invert_dict, make_network_public, nx_edges_to_pandas, nx_nodes_to_pandas
+from ddot.utils import time_print, set_node_attributes_from_pandas, set_edge_attributes_from_pandas, nx_to_NdexGraph, NdexGraph_to_nx, parse_ndex_uuid, parse_ndex_server, make_index, update_nx_with_alignment, bubble_layout_nx, split_indices_chunk, invert_dict, make_network_public, nx_edges_to_pandas, nx_nodes_to_pandas, ig_edges_to_pandas, ig_nodes_to_pandas
 
 def _collapse_node(g,
                    v,
@@ -46,6 +47,11 @@ def _collapse_node(g,
         assert isinstance(v, (unicode, str))
         v = g.vs.find(name_eq=v).index
 
+    try:
+        g.vs[v]
+    except:
+        raise Exception("Can't find vertex %s in graph. Consider setting use_v_name=True" % v)
+    
     if fast_collapse:
         parents = g.neighbors(v, mode='out')
         children = g.neighbors(v, mode='in')
@@ -57,6 +63,9 @@ def _collapse_node(g,
             new_edges = [x for x, y in zip(new_edges, g.get_eids(new_edges, error=False)) if y == -1]
             g.add_edges(new_edges)
     else:
+        g.es['collapsed_length'] = 0
+        g.es['collapsed_terms'] = [[] for x in g.es]
+        
         in_edges = g.es[g.incident(v, mode='in')]
         out_edges = g.es[g.incident(v, mode='out')]
 
@@ -93,8 +102,12 @@ def _collapse_node(g,
                                   (e_in[key], e_out[key]))
 
                 e['collapsed_length'] = e_in['collapsed_length'] + e_out['collapsed_length']
-
-    e['collapsed_terms'] = e_in['collapsed_terms'] + [g.vs[v]['name']] + e_out['collapsed_terms']
+                print g.summary()
+                print e_in['collapsed_terms']
+                print v
+                print g.vs[v]
+                print g.vs[v]['name']
+                e['collapsed_terms'] = e_in['collapsed_terms'] + [g.vs[v]['name']] + e_out['collapsed_terms']
 
     if delete:
         g.delete_vertices(v)
@@ -235,9 +248,11 @@ def align_hierarchies(hier1,
         if update_hier1:
             hier1_orig.update_node_attr(align1.rename(columns=append_prefix))
             hier1_orig.update_node_attr(hier2_import)
+#            hier1_orig.node_attr.dropna(axis=1, how='all', inplace=True)
         if update_hier2:
             hier2_orig.update_node_attr(align2.rename(columns=append_prefix))
             hier2_orig.update_node_attr(hier1_import)
+#            hier2_orig.node_attr.dropna(axis=1, how='all', inplace=True)
 
         return align1
         
@@ -928,6 +943,7 @@ class Ontology:
 
             if layout:
                 if layout=='bubble':
+#                    ont_dummy = self.propagate_annotations('reverse')._make_dummy()
                     ont_dummy = self._make_dummy()
                     G_tree = ont_dummy.to_networkx(layout=None, spanning_tree=False)
                     for u, v, data in G.edges(data=True):
@@ -1244,7 +1260,7 @@ class Ontology:
             Name of the edge attribute that distinguishes a (gene,
             term) pair from a (child term, parent term) pair
 
-        gene_value : str
+        edgetype_value : str
         
             Value of the edge attribute for (gene, term) pairs
 
@@ -1274,7 +1290,57 @@ class Ontology:
                    mapping,
                    node_attr=node_attr,
                    edge_attr=edge_attr)
-    
+
+    @classmethod
+    def from_igraph(cls,
+                    G,
+                    edgetype_attr=None,
+                    edgetype_value=None):
+        """Converts a igraph Graph object to an Ontology object. Gene and terms
+        are distinguished by an edge attribute.
+
+        Parameters
+        ----------
+        G : igraph.Graph
+
+        edgetype_attr : str
+
+            Name of the edge attribute that distinguishes a (gene,
+            term) pair from a (child term, parent term) pair
+
+        edgetype_value : str
+        
+            Value of the edge attribute for (gene, term) pairs
+
+        Returns
+        -------
+        : ddot.Ontology.Ontology
+
+        """
+                
+        if edgetype_attr is None:
+            edgetype_attr=cls.EDGETYPE_ATTR
+        if edgetype_value is None:
+            edgetype_value=cls.GENE_TERM_EDGETYPE
+        
+        hierarchy = []
+        mapping = []
+        for e in G.es:
+            u = G.vs[e.source]['name']
+            v = G.vs[e.target]['name']
+            if e[edgetype_attr] == edgetype_value:
+                mapping.append((u, v))
+            else:
+                hierarchy.append((u, v))
+
+        edge_attr = ig_edges_to_pandas(G)
+        node_attr = ig_nodes_to_pandas(G)
+        
+        return cls(hierarchy,
+                   mapping,
+                   node_attr=node_attr,
+                   edge_attr=edge_attr)
+
     def collapse_ontology(self,                          
                           method='mhkramer',                          
                           min_term_size=2,
@@ -1335,8 +1401,8 @@ class Ontology:
             )
             ont.clear_edge_attr()
 
-#            ont.update_node_attr(self.node_attr)
-#            ont.update_edge_attr(self.edge_attr)
+            ont.update_node_attr(self.node_attr)
+            ont.update_edge_attr(self.edge_attr)
 
             return ont
 
@@ -1733,92 +1799,109 @@ class Ontology:
                         parent_child=False,
                         verbose=False)
 
-    def semantic_similarity(self,
-                            genes_subset=None,
-                            term_sizes='subset',
-                            between_terms=False,
-                            output='Resnik'):
-        """Computes the semantic similarity between pair of genes in
-        <genes_subset>. Similarity s(g1,g2) is defined as
-        :math:`-log_2(|T_sca| / |T_root|)` where :math:`|T|` is the number of genes in
-        <genes_subset> that are under term T. :math:`T_sca` is the "smallest
-        common ancestor", the common ancestral term with the smallest
-        term size. :math:`T_root` is the root term of the ontology.
+    def flatten(self,
+                include_genes=True,
+                include_terms=False,
+                similarity='Resnik'):
+        """Flatten the hierarchy into a gene-gene network by calculating a
+        similarity between pair of genes in <genes_subset>.
 
         Parameters
-        -----------
-        genes_subset : iterable
+        -----------        
+        similarity : str
+            Type of semantic similarity.
 
-            The set of genfes, over which pairs the similarity will be
-            calculated. If <term_sizes>='subset', then term sizes will
-            be recalculated according to only these genes, rather than
-            all genes in the ontology
-
-        between_terms : bool
-            if True, then output similarity between all terms
-
-        output : str
-            type of semantic similarity
+            The "Resnik" similarity s(g1,g2) is defined as
+            :math:`-log_2(|T_sca| / |T_root|)` where :math:`|T|` is
+            the number of genes in <genes_subset> that are under term
+            T. :math:`T_sca` is the "smallest common ancestor", the
+            common ancestral term with the smallest term
+            size. :math:`T_root` is the root term of the ontology.
 
         """
 
-        # If no genes are specified, then compute the similarity between all pairs of genes
-        if genes_subset is None: genes_subset = self.genes
+        assert include_genes or include_terms
+            
+        if similarity=='Resnik':
+            sca, nodes = self.get_best_ancestor_matrix(include_genes=include_genes)            
 
-        time_print('Calculating term sizes')
-        if term_sizes=='all_genes':
-            term_sizes = np.array(self.get_term_sizes())
-        elif term_sizes=='subset':
-            ### Reimplement this by deleting genes
+            nodes_subset = self.genes if include_genes else []
+            nodes_subset += self.terms if include_terms else []
+            sizes = np.array(self.term_sizes)
+            nodes_idx = ddot.utils.make_index(nodes)
+            idx = [nodes_idx[v] for v in nodes_subset]
+            sca = sca[idx, :][:, idx]
 
-            # Recompute term sizes, with respect to the intersection of genes
-            term_2_gene = self.term_2_gene
-            genes_subset_set = set(genes_subset)
-            term_sizes = np.array([len(set([self.genes[x] for x in term_2_gene[t]]) & genes_subset_set) for t in self.terms])
+            ss = -1 * np.log2(sizes[sca] / float(len(self.genes)))
+            ss = ss.astype(np.float32)
+            return ss, np.array(nodes_subset)
         else:
-            raise Exception()
+            raise Exception('Unsupported similarity type')
 
-        if output=='Resnik':
-            graph = self.to_igraph()
+    
+    def common_ancestors(self, nodes, min_nodes='all', minimal=True):
+        """Return the common ancestors of a set of genes
 
-            sca = get_smallest_ancestor(graph, term_sizes)
-            ss_terms = -1 * np.log2(term_sizes[sca] / float(term_sizes.max()))
-
-            if between_terms:
-                return ss_terms
-            else:
-                # For convenience below, set the similarity between a term and itself to be 0
-                ss_terms[[np.arange(ss_terms.shape[0]), np.arange(ss_terms.shape[0])]] = 0                
-                
-                idx_list = [self.gene_2_term[g] for g in genes_subset]
-                ss = [ss_terms[idx1, :][:, idx2].max() for idx1, idx2 in combinations(idx_list, 2)]
-                return ss
-
-            # # Add nodes in the igraph object to represent genes
-            # graph.add_vertices(self.genes)
-            # graph.add_edges([(g, t) for g, t_list in self.gene_2_term.items() for t in t_list])
-            # assert graph.vs[-len(self.genes):]['name'] == self.genes
-
-            # sca = get_smallest_ancestor(graph, term_sizes)
-            # # Offset the indices
-            # idx = [len(self.terms) + self.genes_index[g] for g in genes_subset]
-            # ss = (-1 * np.log2(term_sizes / float(term_sizes.max())))[sca[idx, :][:, idx][np.triu_indices(len(idx), k=1)]]
-
-            # return ss
-        elif output=='sca_list':
-            ## For each pair of gene, return a list of the smallest
-            ## common ancestors (sca). There may be more than one sca with the same size.
-
-            gene_2_term_numpy = {g : np.array(t_list) for g, t_list in self.gene_2_term.items()}            
-            common_ancestors = [np.intersect1d(gene_2_term_numpy[g1], gene_2_term_numpy[g2], assume_unique=True) \
-                                for g1, g2 in combinations(genes_subset, 2)]
-            assert all(x.size > 0 for x in common_ancestors)
-            min_size = [term_sizes[x].min() for x in common_ancestors]
-            sca_list = [x[term_sizes[x]==m] for x, m in zip(common_ancestors, min_size)]
-
-            # Dict: (g1,g2) gene pairs --> list of term indices
-            return {(g1,g2) : x for (g1, g2), x in zip(combinations(genes_subset, 2), sca_list)}
+        Parameters
+        ----------
         
+        nodes : list
+        
+            List of nodes (genes and/or terms) to find the common ancestors
+
+        min_nodes : str or int
+
+            If 'all', then return only terms that contain all of the
+            input genes. If an integer, then return only terms that
+            contain at least <nodes> of the input genes
+
+        minimal : bool
+
+            If True, then do NOT return the terms that are themselves
+            ancestors of the other common ancestors. This filter
+            leaves only the 'minimal' set of common ancestors.
+
+        Returns
+        -------
+
+        : list
+        
+            List of common ancestors
+
+        """
+        
+        if min_nodes=='all':
+            min_nodes = len(nodes)
+
+        conn = self.connected(nodes, self.terms)
+        anc_bool = conn.sum(0) >= min_nodes
+        anc = np.array(self.terms)[anc_bool]
+        
+        # term_count = collections.Counter([t for g in genes for t in self.gene_2_term[g]])
+        # anc = [t for t in term_count if term_count[t] >= min_nodes]
+        # print 'ancestors:', anc
+
+        if minimal:
+            anc_conn = self.connected(anc, anc, sparse=False)
+            np.fill_diagonal(anc_conn, 0)
+            anc = anc[anc_conn.sum(0) == 0]
+
+        return anc
+    
+        # ## For each pair of gene, return a list of the smallest
+        # ## common ancestors (sca). There may be more than one sca with the same size.
+        
+        # gene_2_term_numpy = {g : np.array(t_list) for g, t_list in self.gene_2_term.items()}
+
+        # common_ancestors = [np.intersect1d(gene_2_term_numpy[g1], gene_2_term_numpy[g2], assume_unique=True) \
+        #                     for g1, g2 in combinations(genes_subset, 2)]
+        # assert all(x.size > 0 for x in common_ancestors)
+        # min_size = [term_sizes[x].min() for x in common_ancestors]
+        # sca_list = [x[term_sizes[x]==m] for x, m in zip(common_ancestors, min_size)]
+
+        # # Dict: (g1,g2) gene pairs --> list of term indices
+        # return {(g1,g2) : x for (g1, g2), x in zip(combinations(genes_subset, 2), sca_list)}
+
     def _get_term_2_gene(self, verbose=False): 
         if verbose: print 'Calculating term_2_gene'
 
@@ -1899,27 +1982,31 @@ class Ontology:
 
         """
 
+        
         if include_genes:
             terms_index_offset = {t : v + len(self.genes) for t, v in self.terms_index.items()}
-            edges = ([(self.genes_index[g], terms_index_offset[self.terms[t]])
-                      for g in self.genes
-                      for t in self.gene_2_term[g]] +
-                     [(terms_index_offset[c], terms_index_offset[p]) 
-                      for p, children in self.parent_2_child.items()
-                      for c in children])
+            gene_term_edges = [(self.genes_index[g], terms_index_offset[self.terms[t]])
+                               for g in self.genes
+                               for t in self.gene_2_term[g]]
+            child_parent_edges = [(terms_index_offset[c], terms_index_offset[p]) 
+                                 for p, children in self.parent_2_child.items()
+                                 for c in children]
             graph = igraph.Graph(n=len(self.genes) + len(self.terms),
-                                 edges=edges,
+                                 edges=gene_term_edges + child_parent_edges,
                                  directed=True,
                                  vertex_attrs={
                                      'name':self.genes + self.terms,
                                      self.NODETYPE_ATTR:[self.GENE_NODETYPE for x in self.genes] + [self.TERM_NODETYPE for x in self.terms]
-                                 })
+                                 },
+                                 edge_attrs={self.EDGETYPE_ATTR : [self.GENE_TERM_EDGETYPE for x in gene_term_edges] + \
+                                                                   [self.CHILD_PARENT_EDGETYPE for x in child_parent_edges]})                                             
         else:
             edges = [(self.terms_index[c], self.terms_index[p]) for p, children in self.parent_2_child.items() for c in children]
             graph = igraph.Graph(n=len(self.terms),
                                  edges=edges,
                                  directed=True,
-                                 vertex_attrs={'name':self.terms})
+                                 vertex_attrs={'name':self.terms},
+                                 edge_attrs={self.EDGETYPE_ATTR : [self.CHILD_PARENT_EDGETYPE for x in edges]})
         if spanning_tree:
             tmp = self.get_term_sizes(propagate=True)
             parent_priority = [tmp[self.terms_index[v['name']]] if self.terms_index.has_key(v['name']) else 1 for v in graph.vs]
@@ -1934,63 +2021,116 @@ class Ontology:
 
         return graph
 
-    def get_shortest_paths(self, sparse=False, chunk_size=500):
-        """Calculate the length of the shortest paths between all pairs of
-        terms.
+    def shortest_paths(self,
+                       descendants=None,
+                       ancestors=None,
+                       sparse=False,
+                       weights=None,
+                       chunk_size=500):
+        """Calculate the length of the shortest paths from descendant nodes to
+        ancestor nodes.
 
         Parameters
         ----------
-        sparse
+        sparse : bool
 
             If True, return a scipy.sparse matrix. If False, return a
             NumPy array
 
-        chunk_size
+        weights : dict
+
+            Dictionary mapping (child term, parent term) or (gene,
+            term) edges to weights. Any edge with no given weight is
+            assigned a weight of 0 by default.
+
+            (default) If weights is None, then a uniform weight is
+            assumed.
+
+        chunk_size : int (optional)
 
             Computational optimization: shortest paths are calculated in batches.
 
         Returns
         -------
-        d : np.ndarray or scipy.sparse.matrix
+
+        d : np.ndarray or scipy.sparse.spmatrix
 
             d[x,y] is the length of the shortest directed path from a
-            descendant term with index x to an ancestral term with
-            index y. Term indices are defined by
-            self.terms_index. d[x,y]=0 if no directed path exists.
+            descendant node x to ancestor node y. d[x,y]==numpy.inf if
+            no directed path exists. The rows are in the same order as
+            <descendants>, and the columns are in the same order as
+            <ancestors>.
 
         """
         
-        graph = self.to_igraph()
+        graph = self.to_igraph(include_genes=True, spanning_tree=False)
 
+        import numbers
+        if weights is None:
+            weights = 1
+        if isinstance(weights, numbers.Number):
+            weights = [weights for e in graph.es]
+        elif weights is not None:
+            # Assume dictionary
+            weights = [weights.get((graph.vs[e.source]['name'],
+                                    graph.vs[e.target]['name']), 0) for e in graph.es]
+        graph.es['weight'] = weights
+            
+        if descendants is None:
+            descendants = graph.vs
+        if ancestors is None:
+            ancestors = descendants
+            
         tmp = [graph.shortest_paths(
-                  graph.vs[x[0]:x[1]],
-                  graph.vs,
-                  mode='out')
-               for x in split_indices_chunk(len(graph.vs), chunk_size)]
+            descendants[x[0]:x[1]],
+            ancestors,
+            weights='weight',
+            mode='out')
+               for x in split_indices_chunk(len(descendants), chunk_size)]
 
         if sparse:
             return scipy.sparse.vstack([scipy.sparse.csr_matrix(x) for x in tmp])
         else:
-            return np.vstack(tmp, order='C')
+            return np.vstack(tmp)
         
-    def get_longest_paths(self):
+    def longest_paths(self,
+                      descendants=None,
+                      ancestors=None,
+                      sparse=False,
+                      weights=None,
+                      chunk_size=500):
         """Computes the lengths of the longest directed paths between all pairs
         of terms.
 
         Returns
         -------
-        : np.ndarray
+        d : np.ndarray or scipy.sparse.spmatrix
 
-           NumPy array d where d[x,y] is length of the longest
-           directed path from a descendant term x to an ancestral term y
+            d[x,y] is the length of the longest directed path from a
+            descendant term with index x to an ancestral term with
+            index y, where indices are defined by
+            self.terms. d[x,y]==numpy.inf if no directed path exists.
 
         """
+        
+        d = self.shortest_paths(descendants=descendants,
+                                ancestors=ancestors,
+                                sparse=sparse,
+                                include_genes=include_genes,
+                                weights=-1,
+                                chunk_size=chunk_size)
+        
+        if sparse:
+            d.data = -1 * d.data
+        else:
+            d = -1 * d
 
-        graph = self.to_igraph()
+        return d
 
-        return -1 * np.array(graph.shortest_paths(graph.vs, graph.vs, weights=[-1 for x in graph.es], mode='out'), order='C')
-
-    def get_connectivity_matrix(self, sparse=False):
+    def connected(self,
+                  descendants=None,
+                  ancestors=None,
+                  sparse=False):
         """Calculate which terms are descendants/ancestors of other terms
 
         Parameters
@@ -1999,8 +2139,6 @@ class Ontology:
 
             If True, return a scipy.sparse matrix. If False, return a
             NumPy array
-
-        Creates a term-by-term matrix d where
 
         Returns
         -------
@@ -2011,34 +2149,14 @@ class Ontology:
             every i.
 
         """
-
-        time_print('Calculating connectivity matrix')
-        if sparse:
-            paths = self.get_shortest_paths(sparse=True)
-            d = scipy.sparse.coo_matrix((np.isfinite(paths[paths.nonzero()]),
-                                              (paths.nonzero()[0], paths.nonzero()[1])),
-                                             dtype=np.int8)
+            
+        d = self.shortest_paths(descendants=descendants,
+                                ancestors=ancestors,
+                                sparse=sparse)
+        if sparse:            
+            d.data = np.isfinite(d.data)
         else:
-            d = np.int8(np.isfinite(self.get_shortest_paths()))
-        return d
-
-    def get_connectivity_matrix_nodiag(self):
-        """Returns the same matrix as Ontology.get_connectivity_matrix(),
-        except the diagonal of the matrix is set to 0.
-
-        Note: 
-            d[a, a] == 0 instead of 1
-
-        Returns
-        -------
-        : np.ndarray
-
-        """
-        
-        d = self.get_connectivity_matrix(sparse=False)
-        
-        d[np.diag_indices(d.shape[0])] = 0
-        assert not np.isfortran(d)
+            d = np.isfinite(d)
         return d
 
     def get_leaves(self, terms_list, children_list=None):
@@ -2203,7 +2321,7 @@ class Ontology:
                 graph = self.to_igraph()
 
                 time_print('Calculating node ancestry')
-                d = self.get_connectivity_matrix()
+                d = self.connected()
 
                 assert d.dtype == ontotypes.dtype
 
@@ -2774,13 +2892,89 @@ class Ontology:
     def to_NdexGraph(self,
                      name=None,
                      description=None,
-                     term_2_uuid=False,
+                     term_2_uuid=None,
+                     spanning_tree=True,
                      layout='bubble'):
         """Formats an Ontology object into a NetworkX object with extra node
         attributes that are accessed by the hierarchical viewer.
 
         Parameters
         -----------
+        name : str
+        
+            Name of Ontology, as would appear if uploaded to NDEx.
+
+        description : str
+
+            Description of Ontology, as would appear if uploaded to NDEx.
+
+        term_2_uuid : dict
+
+            A dictionary mapping a term to a NDEx UUID of a gene-gene
+            subnetwork of genes in that term. the UUID will be stored
+            in the node attribute 'ndex:internallink'. If uploaded to
+            NDEx, then this attribute will provide a hyperlink to the
+            gene-gene subnetwork when the term is clicked upon on the
+            NDEx page for this ontology.
+
+            This dictionary can be created using
+            Ontology.upload_subnets_ndex(). Default: no dictionary.
+
+        layout : str
+
+            Layout the genes and terms in this Ontology. Stored in the
+            node attributes 'x_pos' and 'y_pos'. If None, then do not
+            perform a layout.
+
+        Returns
+        -------
+        : ndex.networkn.NdexGraph
+
+        """
+
+        # Convert to NetworkX
+        G = self.to_networkx(layout=layout, spanning_tree=spanning_tree)
+
+        # Set node attribute 'Label'
+        for t in self.terms:
+            if not G.node[t].has_key('Label'):
+                G.node[t]['Label'] = t
+        for g in self.genes:
+            if not G.node[g].has_key('Label'):
+                G.node[g]['Label'] = g
+
+        # Set links to subnetworks supporting each term
+        if term_2_uuid:
+            for t in self.terms:        
+                if term_2_uuid.has_key(t):
+                    G.node[t]['ndex:internalLink'] = '[%s](%s)' % (G.node[t]['Label'], term_2_uuid[t])
+
+        G = nx_to_NdexGraph(G)
+        if name is not None:
+            G.set_name(name)
+        if description is not None:
+            G.set_network_attribute('Description', description)
+
+        return G
+
+    def to_cx(self,
+              output=None,
+              name=None,
+              description=None,
+              term_2_uuid=None,
+              spanning_tree=True,
+              layout='bubble'):
+        """Formats an Ontology object into a NetworkX object with extra node
+        attributes that are accessed by the hierarchical viewer.
+
+        Parameters
+        -----------
+        output : str
+
+            Filename or file-like object to write CX file. If None,
+            then CX is returned as a JSON object, but not written to a
+            file.
+
         name : str
         
             Name of Ontology, as would appear if uploaded to NDEx.
@@ -2814,29 +3008,21 @@ class Ontology:
         """
 
         # Convert to NetworkX
-        G = self.to_networkx(layout=layout, spanning_tree=True)
+        G = self.to_NdexGraph(name=name,
+                              description=description,
+                              term_2_uuid=term_2_uuid,
+                              spanning_tree=spanning_tree,
+                              layout='bubble')
+        cx = G.to_cx()
 
-        # Set node attribute 'Label'
-        for t in self.terms:
-            if not G.node[t].has_key('Label'):
-                G.node[t]['Label'] = t
-        for g in self.genes:
-            if not G.node[g].has_key('Label'):
-                G.node[g]['Label'] = g
+        if output is not None:
+            if hasattr(output, 'write'):
+                json.dump(cx, output)
+            else:
+                with open(output, 'w') as f:
+                    json.dump(cx, f)
 
-                # Set links to subnetworks supporting each term
-        if term_2_uuid:
-            for t in self.terms:        
-                if term_2_uuid.has_key(t):
-                    G.node[t]['ndex:internalLink'] = '[%s](%s)' % (G.node[t]['Label'], term_2_uuid[t])
-
-        G = nx_to_NdexGraph(G)
-        if name is not None:
-            G.set_name(name)
-        if description is not None:
-            G.set_network_attribute('Description', description)
-
-        return G
+        return cx        
 
     def _force_directed_layout(self, G):
         """Force-directed layout on only the terms"""
@@ -3031,7 +3217,7 @@ class Ontology:
 
         return term_2_uuid
 
-    def get_best_ancestor_matrix(self, node_order=None, verbose=False):
+    def get_best_ancestor_matrix(self, node_order=None, verbose=False, include_genes=True):
         """Compute the 'best' ancestor for every pair of terms. 'Best' is
         specified by a ranking of terms. For example, if terms are
         ranked by size, from smallest to largest, then the smallest
@@ -3052,33 +3238,41 @@ class Ontology:
 
         """
 
-        graph = self.to_igraph()
-
+        ont = self.propagate_annotations(direction='reverse', inplace=False)
+        graph = ont.to_igraph(include_genes=include_genes, spanning_tree=False)
+        
         if node_order is None:
             # By default, sort from smallest to largest terms
-            node_order = [a[0] for a in sorted(enumerate(self.get_term_sizes()), key=lambda a: a[1])]
-
+            node_order = [self.terms[t] for t in np.argsort(self.term_sizes)]
+            
+            # if include_genes:
+            #     node_order = self.genes + [self.terms[t] for t in np.argsort(self.term_sizes)]
+            # else:
+            #     node_order = [self.terms[t] for t in np.argsort(self.term_sizes)]
+             
         d = np.int8(np.isfinite(np.array(graph.shortest_paths(graph.vs, graph.vs, mode='out'), order='C')))
 
         ancestor_matrix = np.zeros(d.shape, dtype=np.int32)
         ancestor_matrix.fill(-1)
 
         if verbose: time_print('Iterating:')
-        for idx, i in enumerate(node_order):
-
+        for t in node_order:
+            i = graph.vs.find(t).index
+            t_i = self.terms_index[t]
+            
             # Note: includes self as a child
-            children_list = np.where(d[:,i] == 1)[0]
+            children = np.where(d[:,i] == 1)[0]
 
             # For those descendants without a computed LCA yet, set their LCA to this term
-            lca_sub = ancestor_matrix[children_list.reshape(-1,1), children_list]
-            lca_sub[lca_sub == -1] = i
-            ancestor_matrix[children_list.reshape(-1,1), children_list] = lca_sub
+            lca_sub = ancestor_matrix[children.reshape(-1,1), children]
+            lca_sub[lca_sub == -1] = t_i
+            ancestor_matrix[children.reshape(-1,1), children] = lca_sub
 
         # Check symmetry
         assert (ancestor_matrix.T == ancestor_matrix).all()
         assert (-1 == ancestor_matrix).sum() == 0, 'The ontology may have more than one root'
 
-        return ancestor_matrix
+        return ancestor_matrix, graph.vs['name']
 
     @classmethod
     def _make_tree_igraph(self,
@@ -3171,7 +3365,88 @@ class Ontology:
             nodes = self.terms
             
         return adj, nodes
+
+    def unfold(self, duplicate=None):
+        """
+        """
         
+        ont = self.propagate_annotations(direction='reverse')
+                
+        terms = set(ont.terms)
+
+        if duplicate is None:
+            duplicate = ont.genes + ont.terms
+        nodes_copy = {x : 0 for x in duplicate}
+        
+        def get_name(u):
+            if u in nodes_copy:
+                u_name = '%s.%s' % (u, nodes_copy[u])
+                nodes_copy[u] += 1
+            else:
+                u_name = u
+            return u_name
+
+        to_expand = []
+        new_2_orig = {}
+        for u in ont.get_roots():
+            u_name = get_name(u)
+            new_2_orig[u_name] = u
+            to_expand.append(u_name)
+
+#        print 'to_expand:', to_expand
+        
+        hierarchy, mapping = [], []
+
+        # Manual bfs
+        curr = 0
+        while curr < len(to_expand):
+            v_name = to_expand[curr]
+            v = new_2_orig[v_name]
+#            print 'v, v_name:', v, v_name
+            
+            for u in ont.term_2_gene.get(v, []):
+                u = ont.genes[u]
+                u_name = get_name(u)                
+                new_2_orig[u_name] = u
+#                print 'u, u_name:', u, u_name
+                mapping.append((u_name, v_name))
+
+            for u in ont.parent_2_child.get(v, []):
+                u_name = get_name(u)
+                new_2_orig[u_name] = u
+#                print 'u, u_name:', u, u_name
+                hierarchy.append((u_name, v_name))                
+                to_expand.append(u_name)
+
+            curr += 1
+
+        new_nodes, orig_nodes = zip(*new_2_orig.items())
+        node_attr = ont.node_attr.loc[orig_nodes, :].copy()
+#        print node_attr.head()
+#        print node_attr.loc[node_attr['Seed']==True].head()
+        node_attr['Original_Name'] = orig_nodes
+        node_attr.index = new_nodes
+        node_attr.dropna(axis=0, how='all', inplace=True)
+
+        new_edges = hierarchy + mapping
+        old_edges = [(new_2_orig[u], new_2_orig[v]) for u, v in new_edges]
+        edge_attr = ont.edge_attr.loc[old_edges, :].copy()
+        edge_attr.index = pd.MultiIndex.from_tuples(new_edges)
+        edge_attr.dropna(axis=0, how='all', inplace=True)
+
+        return Ontology(hierarchy,
+                        mapping,
+                        edge_attr=edge_attr,
+                        node_attr=node_attr,
+                        parent_child=False,
+                        verbose=False)        
+
+    def __repr__(self):
+        return self.summary()
+    
+    def __str__(self):
+        return self.summary()
+    
     # def transitive_closure(self):
 
         # """Computes the transitive closure on (child term, parent term)

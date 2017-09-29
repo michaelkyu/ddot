@@ -262,7 +262,7 @@ def melt_square(df, columns=['Gene1', 'Gene2'], similarity='similarity', empty_v
     tmp.rename(similarity, inplace=True)
     return tmp.reset_index()
 
-def get_gene_name_converter(genes, scopes='symbol', fields='entrezgene', species='human'):
+def get_gene_name_converter(genes, scopes='symbol', fields='entrezgene', species='human', target='gene'):
     """Query mygene.info to get a dictionary mapping gene names in the ID
     namespace scopes to the ID namespace in fields
 
@@ -281,11 +281,12 @@ def get_gene_name_converter(genes, scopes='symbol', fields='entrezgene', species
                             'fields': fields,
                             'species': species})
     
+    
     def parse_field(x):
         if isinstance(x, dict):
-            return [unicode(x['gene'])]
+            return [unicode(x[target])]
         elif isinstance(x, list):
-            return [unicode(y['gene']) for y in x]
+            return [unicode(y[target]) for y in x]
         else:
             return unicode(x)
     
@@ -443,10 +444,10 @@ def nx_edges_to_pandas(G, attr_list=None):
         attr_list = list(set([a for d in G.edges(data=True) 
                               for a in d[2].keys()]))
 
-    print 'attr_list:', attr_list
-    for a in attr_list:
-        print 'attr:', a
-        nx.get_edge_attributes(G,a)
+    # print 'attr_list:', attr_list
+    # for a in attr_list:
+    #     print 'attr:', a
+    #     nx.get_edge_attributes(G,a)
     
     if len(attr_list) > 0:
         df = pd.concat([pd.Series(nx.get_edge_attributes(G,a), name=a) for a in attr_list],
@@ -461,6 +462,70 @@ def nx_edges_to_pandas(G, attr_list=None):
     else:
         raise Exception('Invalid number of levels: %s' % df.index.nlevels)
 
+    return df    
+
+def ig_nodes_to_pandas(G, attr_list=None):
+    """Create pandas.DataFrame of node attributes of a igraph.Graph object.
+
+    Parameters
+    ----------
+    G : igraph.Graph
+    
+    attr_list : list, optional
+       Names of node attributes. Default: all node attributes
+
+    Returns
+    -------
+    pandas.DataFrame
+       DataFrame where index is the names of nodes and the columns are node attributes.
+
+    """
+
+    if attr_list is None:
+        attr_list = G.vertex_attributes()
+
+        # Remove the "name" attribute because it will be the DataFrame's index
+        if 'name' in attr_list:
+            attr_list.remove('name')
+
+    df = pd.DataFrame(index=G.vs['name'])
+    for attr in attr_list:
+        df[attr] = G.vs[attr]
+        
+    df.dropna(axis=0, how='all', inplace=True)
+    return df
+
+def ig_edges_to_pandas(G, attr_list=None):
+    """Create pandas.DataFrame of edge attributes of a igraph Graph object.
+
+    Parameters
+    ----------
+    G : igraph.Graph
+    
+    attr_list : list, optional
+       Names of edge attributes. Default: all edge attributes
+
+    Returns
+    -------
+    pandas.DataFrame
+
+       DataFrame where index is a MultIndex with two levels (u,v)
+       referring to edges and the columns refer to edge
+       attributes.
+
+    """
+
+    if attr_list is None:
+        attr_list = G.edge_attributes()
+
+    edge_list = [(G.vs[e.source]['name'], G.vs[e.target]['name']) for e in G.es]
+    df = pd.DataFrame(index=pd.MultiIndex.from_tuples(edge_list))
+    df.index.rename(['Node1', 'Node2'], inplace=True)
+    for attr in attr_list:
+        df[attr] = G.es[attr]
+
+    df.dropna(axis=0, how='all', inplace=True)
+    
     return df    
 
 def nx_to_NdexGraph(G_nx, discard_null=True):
@@ -976,9 +1041,11 @@ def expand_seed(seed,
                 sns.distplot(sim_2_seed[seed_idx], kde=False, norm_hist=True,
                              ax=ax,
                              axlabel='Similarity to seed set', label='Probability Density')
-                
-            if os.path.isfile(figure):
+
+            try:
                 figure.savefig(figure)
+            except:
+                pass
         else:
             fig = None
     except:
@@ -992,13 +1059,14 @@ def ddot_pipeline(alpha,
                   genes,
                   seed,
                   ref,
-                  name='Data-driven Ontology',
+                  name='Data-driven Ontology',                  
                   expand_kwargs={},
                   align_kwargs={},
+                  align_label='Term_Description',
                   ndex_kwargs={'ndex_server' : None,
                                'ndex_user' : None,
                                'ndex_pass' : None},
-                  subnet_max_term_size=None,
+                  subnet_max_term_size=None,                  
                   node_attr=None,
                   public=True,
                   verbose=False,
@@ -1045,13 +1113,13 @@ def ddot_pipeline(alpha,
         'agg_perc':None,
         'figure':True,
         'include_seed':True,
+        'sim':gene_similarities,
+        'sim_names':genes
     }
     kwargs.update(expand_kwargs)
         
     expand, expand_idx, sim_2_seed, fig = expand_seed(
-        seed,
-        gene_similarities,
-        genes,
+        seed,        
         **kwargs
     )
     expand_results = {'expand' : expand, 'sim_2_seed' : sim_2_seed, 'fig' : fig}
@@ -1102,16 +1170,16 @@ def ddot_pipeline(alpha,
     kwargs = {
         'iterations' : 3,
         'threads' : 4,
-        'update_self' : [x for x in ['Term_Description', 'Size'] if x in ref.node_attr.columns]
+        'update_self' : True
     }
     kwargs.update(align_kwargs)
         
     alignment = ont.align(ref, **kwargs)
     if verbose:
-        print 'Alignment: %s matches' % alignment.shape[0]
-
+        print 'Alignment: %s matches' % alignment.shape[0] 
+    
     # Set labels based on ontology alignment
-    if 'Aligned_Term_Description' in ont.node_attr.columns:
+    if align_label and (('Aligned_%s' % align_label) in ont.node_attr.columns):
         def make_label(x):
             if pd.isnull(x['Aligned_Term_Description']):
                 return x.name
@@ -1203,3 +1271,22 @@ def make_network_public(uuid,
             except:
                 time.sleep(sleep_time)
                 sleep_time = min(5, 2 * sleep_time)
+
+
+def ig_unfold_tree_with_attr(g, sources, mode):
+    """Call igraph.Graph.unfold_tree while preserving vertex and edge
+    attributes.
+
+    """
+    
+    g_unfold, g_map = g.unfold_tree(sources, mode=mode)
+    
+    g_eids = g.get_eids([(g_map[e.source], g_map[e.target]) for e in g_unfold.es])
+    for attr in g.edge_attributes():
+        g_unfold.es[attr] = g.es[g_eids][attr]
+        
+    for attr in g.vertex_attributes():
+        g_unfold.vs[attr] = g.vs[g_map][attr]
+                                        
+    return g_unfold
+

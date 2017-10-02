@@ -696,7 +696,7 @@ class Ontology:
         
         # Update index
         self.node_attr = self.node_attr.reindex(self.node_attr.index.union(node_attr.index))
-
+        
         # Update columns
         for col in node_attr.columns:
             self.node_attr.loc[node_attr.index, col] = node_attr[col].values
@@ -1512,24 +1512,56 @@ class Ontology:
 
         return ont1_collapsed, ont2_collapsed
 
-    def delete(self, terms=None, genes=None, inplace=False):
-        """Delete genes or terms from the ontology.
+    def subtrees(self,
+                 roots):
+        """
 
-        Note that if a gene is directly connected to a term T but not
-        to an ancestor of T, then deleting T will lose the information
-        about the indirect connection to the ancestor. For this
-        reason, it is recommended that propagate_annotations() is
-        called first.
+        """
+
+        nodes = np.array(self.genes + self.terms)
+        to_keep = nodes[self.connected(nodes, roots).sum(1) > 0]
+        return self.delete(to_keep=to_keep, preserve_transitivity=False)
+    
+    def delete(self,
+               to_delete=None,
+               to_keep=None,
+               preserve_transitivity=False,
+               inplace=False):
+        """Delete genes and/or terms from the ontology.
 
         Parameters
         ----------
-        terms : iterable of str
+        to_delete : array-like (optional)
            
-            Terms to delete
+            Names of genes and/or terms to delete. Either to_delete or
+            to_keep must be specified.
 
-        genes : iterable of str
+        to_keep : array-like (optional)
+           
+            Names of genes and/or terms to keep; all other genes/terms
+            are delete. Only used if to_delete is not specified.
 
-            Genes to delete
+        preserve_transitivity : bool
+
+            If True, then maintain transitive relations when deleting
+            terms. For example, if the hierarchical structure consists
+            of
+
+            geneA --> term1
+            term1 --> term2
+            term2 --> term3
+            term2 --> term4
+
+            then deleting term2 will result in the structure:
+
+            geneA --> term1
+            term1 --> term3
+            term3 --> term4
+
+            If False, then deleting term2 will result in a
+            disconnected structure:
+
+            geneA --> term1            
 
         inplace : bool
         
@@ -1546,24 +1578,37 @@ class Ontology:
         else:
             ont = self.copy()
 
-        if terms is None:
-            terms = set()
+        if to_delete is not None:
+            terms = set([x for x in to_delete if x in ont.terms_index])
+            genes = set([x for x in to_delete if x in ont.genes_index])
+        elif to_keep is not None:
+            terms = set(ont.terms) - set([x for x in to_keep if x in ont.terms_index])
+            genes = set(ont.genes) - set([x for x in to_keep if x in ont.genes_index])
         else:
-            terms = set(terms)
-            
-            tmp_gene_2_term = {g : [ont.terms[t] for t in t_list]
-                               for g, t_list in ont.gene_2_term.items()}
-            ont.terms = [t for t in ont.terms if t not in terms]
-            ont.terms_index = make_index(ont.terms)
-            ont.gene_2_term = {g : [ont.terms_index[t] for t in t_list if t not in terms]
-                               for g, t_list in tmp_gene_2_term.items()}
-            ont.parent_2_child = {p : [c for c in c_list if c not in terms]
-                                  for p, c_list in ont.parent_2_child.items()
-                                  if p not in terms}
+            raise Exception('Must specify nodes to delete or to keep')
 
-        if genes is None:
-            genes = set()
-        else:            
+        if len(terms) > 0:
+            if preserve_transitivity:
+                assert not inplace, 'Cannot preserve transitivity inplace'
+                g = ont.to_igraph(include_genes=True, spanning_tree=False)
+                for t in terms:
+                    _collapse_node(g, t, use_v_name=True, fast_collapse=True)
+                ont_reduced = Ontology.from_igraph(g)
+                ont_reduced.update_node_attr(ont.node_attr)
+                ont_reduced.update_edge_attr(ont.edge_attr)
+                ont = ont_reduced
+            else:
+                tmp_gene_2_term = {g : [ont.terms[t] for t in t_list]
+                                   for g, t_list in ont.gene_2_term.items()}
+                ont.terms = [t for t in ont.terms if t not in terms]
+                ont.terms_index = make_index(ont.terms)
+                ont.gene_2_term = {g : [ont.terms_index[t] for t in t_list if t not in terms]
+                                   for g, t_list in tmp_gene_2_term.items()}
+                ont.parent_2_child = {p : [c for c in c_list if c not in terms]
+                                      for p, c_list in ont.parent_2_child.items()
+                                      if p not in terms}
+
+        if len(genes) > 0:
             genes = set(genes)
             ont.genes = [g for g in ont.genes if g not in genes]
             ont.genes_index = make_index(ont.genes)
@@ -1575,8 +1620,8 @@ class Ontology:
         return ont
         
     def rename(self,
-               genes={},
-               terms={},
+               genes=lambda x: x,
+               terms=lambda x: x,
                inplace=False):
         """Rename gene and/or term names. 
 
@@ -2562,6 +2607,17 @@ class Ontology:
         return summary
 
     @classmethod
+    def build_from_network(cls,
+                           graph,
+                           method='clixo',
+                           kwargs=None):
+        
+        if method.lower()=='clixo':
+            return cls.run_clixo(graph, **kwargs)
+        else:
+            raise Exception("Unsupported method")
+
+    @classmethod
     def run_clixo(cls,
                   graph,
                   alpha,
@@ -2964,8 +3020,7 @@ class Ontology:
               term_2_uuid=None,
               spanning_tree=True,
               layout='bubble'):
-        """Formats an Ontology object into a NetworkX object with extra node
-        attributes that are accessed by the hierarchical viewer.
+        """Formats an Ontology object into a CX file format
 
         Parameters
         -----------
@@ -3003,16 +3058,16 @@ class Ontology:
 
         Returns
         -------
-        : ndex.networkn.NdexGraph
+        : CX representation as a JSON-like dictionary
 
         """
 
-        # Convert to NetworkX
+        # Convert to NdexGraph
         G = self.to_NdexGraph(name=name,
                               description=description,
                               term_2_uuid=term_2_uuid,
                               spanning_tree=spanning_tree,
-                              layout='bubble')
+                              layout=layout)
         cx = G.to_cx()
 
         if output is not None:
@@ -3023,6 +3078,38 @@ class Ontology:
                     json.dump(cx, f)
 
         return cx        
+
+    def to_graphml(self,
+                   output,
+                   layout='bubble',
+                   spanning_tree=True):
+        """Writes an Ontology object in graphml format.
+
+        Parameters
+        -----------
+        output : str
+
+            Filename or file-like object to write CX file. If None,
+            then CX is returned as a JSON object, but not written to a
+            file.
+
+        layout : str
+
+            Layout the genes and terms in this Ontology. Stored in the
+            node attributes 'x_pos' and 'y_pos'. If None, then do not
+            perform a layout.
+
+        """
+
+        # Convert to NetworkX
+        G = self.to_networkx(spanning_tree=spanning_tree,
+                             layout=layout)
+        
+        if hasattr(output, 'write'):
+            nx.write_graphml(G, output)
+        else:
+            with open(output, 'w') as f:
+                nx.write_graphml(G, f)
 
     def _force_directed_layout(self, G):
         """Force-directed layout on only the terms"""

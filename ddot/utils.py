@@ -15,6 +15,7 @@ import numpy as np
 import ndex.client as nc
 from ndex.networkn import NdexGraph
     
+import ddot
 import ddot.config
 
 def print_time(*s):
@@ -1012,7 +1013,7 @@ def expand_seed(seed,
         # Filter based on a percentile of similarities between seed set to itself
         if seed_perc is not None:
             min_sim = max(min_sim, np.percentile(sim_2_seed[seed_idx], 100 * seed_perc))
-        print 'min_sim:', min_sim
+#        print 'min_sim:', min_sim
 
         expand_idx = expand_idx[sim_2_seed[expand_idx] >= min_sim]
         
@@ -1155,13 +1156,12 @@ def ddot_pipeline(alpha,
     df_sq = pd.DataFrame(gene_similarities[expand_idx, :][:, expand_idx], index=expand, columns=expand)
     df = melt_square(df_sq)
 
-    from ddot.Ontology import Ontology
-    ont = Ontology.run_clixo(df, alpha, beta, verbose=verbose)
+    ont = ddot.Ontology.run_clixo(df, alpha, beta, verbose=verbose)
 
     try:
-        ref = Ontology.from_ndex(go_uuid, ndex_server, ndex_user, ndex_pass)
+        ref = ddot.Ontology.from_ndex(ref, ndex_server, ndex_user, ndex_pass)
     except:
-        assert isinstance(ref, Ontology)
+        assert isinstance(ref, ddot.Ontology)
     
     ###############################
     # Align to Reference Ontology #

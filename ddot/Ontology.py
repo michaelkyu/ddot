@@ -423,12 +423,15 @@ def parse_gaf(gaf):
     df = pd.read_table(gaf, header=None, comment='!', names=gaf_columns)
 
     # Check that all annotations are to UniProtKB protein IDs
-    # assert df['DB'].unique().size == 1 and df['DB'].unique()[0]=='UniProtKB'    
+    # assert df['DB'].unique().size == 1 and df['DB'].unique()[0]=='UniProtKB'
+
+    # Remove annotations that have a NOT qualifier
+    df = df.loc[df['Qualifier']!='NOT', :]
 
 #    return df.loc[:, ['DB Object ID', 'GO ID']].values.tolist()
     return df
 
-class Ontology:
+class Ontology(object):
     """A Python representation for constructing, analyzing, and
     manipulating the hierarchical structure of ontologies.
 
@@ -446,13 +449,15 @@ class Ontology:
 
     gene_2_term : dict
  
-        gene_2_term[<gene>] --> list of terms that <gene> is mapped
-        to. Terms are represented as their 0-based index in self.terms
+        gene_2_term[<gene>] --> list of terms connected to
+        <gene>. Terms are represented as their 0-based index in
+        self.terms.
 
     term_2_gene : dict
 
-        term_2_gene[<term>] --> list of genes that <term>
-        contains. Genes are represented as their 0-based index in self.genes
+        term_2_gene[<term>] --> list of genes connected to
+        <term>. Genes are represented as their 0-based index in
+        self.genes.
 
     child_2_parent : dict
 
@@ -464,10 +469,16 @@ class Ontology:
 
     term_sizes : list
 
-        A list of every term's size, i.e. the number of genes it
-        contains. This list has the same order as self.terms.
+        A list of every term's size, i.e. the number of unique genes
+        that it and its descendant terms contain. This list has the
+        same order as self.terms.
+        
+        Note that if gene-term connections have been propagated up the
+        ontology (with Ontology.propagate_annotations()), then it
+        holds that
 
-        Equivalently, `term_sizes[i] = len(self.term_2_gene[self.terms[i]])`.
+        `term_sizes[i] = len(self.term_2_gene[self.terms[i]])` for every i.
+
     """
 
     NODETYPE_ATTR = 'NodeType'
@@ -564,7 +575,7 @@ class Ontology:
             
         self.terms = sorted(list(terms_A | terms_B))
         self.genes = sorted(self.gene_2_term.keys())
-
+        
         if add_root_name is not None:
             root_list = self.get_roots()
             if len(root_list) > 1:
@@ -611,7 +622,14 @@ class Ontology:
     def _update_fields(self):
         self.child_2_parent, self.child_2_parent_indices = self._get_child_2_parent()
         self.term_2_gene = self._get_term_2_gene()
-        self.term_sizes = self.get_term_sizes()
+        self.term_sizes = self.get_term_sizes(propagate=True)
+
+        for t in self.terms:
+            if t not in self.parent_2_child:
+                self.parent_2_child[t] = []
+            if t not in self.child_2_parent:
+                self.child_2_parent[t] = []
+                self.child_2_parent_indices[t] = []
         
     def add_root(self, root_name):
         """Check if there is a single unifying root term of the ontology. If
@@ -744,7 +762,8 @@ class Ontology:
 
         """
 
-        return sorted(set(self.terms) - set([y for x in self.parent_2_child.values() for y in x]))
+        tmp = set(self.terms) - set([y for x in self.parent_2_child.values() for y in x])
+        return sorted(tmp)
 #        return sorted(set(self.parent_2_child.keys()) - set([y for x in self.parent_2_child.values() for y in x]))
 
     def align(self,
@@ -838,8 +857,9 @@ class Ontology:
             output=output)
 
     def _make_dummy(self):
-        ont = self.propagate_annotations(direction='reverse', inplace=False)
-
+#        ont = self.propagate_annotations(direction='reverse', inplace=False)
+        ont = self
+        
         new_gene_2_term = []
         new_child_2_parent = []
         for t in ont.terms:
@@ -903,11 +923,9 @@ class Ontology:
         G.add_nodes_from([g for g in self.genes])
         G.add_nodes_from([t for t in self.terms])
 
-        term_sizes = dict(zip(self.terms, self.get_term_sizes(propagate=True)))
-
         for t in self.terms:
             G.node[t][self.NODETYPE_ATTR] = self.TERM_NODETYPE
-            G.node[t]['Size'] = term_sizes[t]
+            G.node[t]['Size'] = self.term_sizes[self.terms_index[t]]
             G.node[t]['isRoot'] = False
         for g in self.genes:
             G.node[g][self.NODETYPE_ATTR] = self.GENE_NODETYPE
@@ -946,6 +964,10 @@ class Ontology:
 #                    ont_dummy = self.propagate_annotations('reverse')._make_dummy()
                     ont_dummy = self._make_dummy()
                     G_tree = ont_dummy.to_networkx(layout=None, spanning_tree=False)
+                    # print 'G_tree:', G_tree.edges()
+                    # print G_tree['MCM10']
+                    # print 'G:', G.edges()
+                    # print G['MCM10']
                     for u, v, data in G.edges(data=True):
                         if data['Is_Tree_Edge']=='Not_Tree':
                             if data[self.EDGETYPE_ATTR]==self.GENE_TERM_EDGETYPE:
@@ -1059,10 +1081,9 @@ class Ontology:
             table of (gene, term) pairs is not specified,
             i.e. mapping==None.
 
-            The default function is `lambda row: row[2]==Ontology.GENE_TERM_EDGETYPE`
+            The default function is `lambda row: row[2]=={0}`
 
-            which tests if the second column equals the string
-            Ontology.GENE_TERM_EDGETYPE.
+            which tests if the third column equals the string "{0}".
             
         mapping : pandas.DataFrame, file-like object, or filename (optional)
 
@@ -1098,7 +1119,7 @@ class Ontology:
         -------
         : ddot.Ontology.Ontology
 
-        """
+        """.format(cls.GENE_TERM_EDGETYPE)
 
         if clixo_format:
             ont = cls.from_table(
@@ -1112,9 +1133,11 @@ class Ontology:
         
         if is_mapping is None:
             if mapping is None:
-                print('WARNING: no gene-term mappings were specified through the is_mapping'
-                      'function or a separate mapping table.')
-            is_mapping = lambda x: x[2]==cls.GENE_TERM_EDGETYPE
+            #     print('WARNING: no gene-term connections '
+            #           'were specified by the is_mapping '
+            #           'function or separate table. '
+            #           'Default: assume a gene-term connection when the 3rd column equals %s' % cls.GENE_TERM_EDGETYPE)
+                is_mapping = lambda x: x[2]==cls.GENE_TERM_EDGETYPE
             
         # Read table
         try:
@@ -1122,6 +1145,11 @@ class Ontology:
         except:
             assert isinstance(table, pd.DataFrame)
 
+        if child not in table.columns:
+            child = table.columns[child]
+        if parent not in table.columns:
+            parent = table.columns[parent]
+            
         for col in [child, parent]:
             table.loc[:,col] = table.loc[:,col].astype(str)
 
@@ -1139,7 +1167,12 @@ class Ontology:
                 mapping = pd.read_table(mapping, comment='#', header=None)
             except:
                 assert isinstance(mapping, pd.DataFrame)
-
+                
+            if mapping_child not in mapping.columns:
+                mapping_child = mapping.columns[mapping_child]
+            if mapping_parent not in mapping.columns:
+                mapping_parent = mapping.columns[mapping_parent]
+        
             for col in [mapping_child, mapping_parent]:
                 mapping.loc[:,col] = mapping.loc[:,col].astype(str)
                 
@@ -1342,10 +1375,9 @@ class Ontology:
                    edge_attr=edge_attr)
 
     def collapse_ontology(self,                          
-                          method='mhkramer',                          
+                          method='mhkramer',
+                          to_keep=None,
                           min_term_size=2,
-                          default_relation='default',
-                          collapseRedundantNodes=None,
                           verbose=True):
         """Remove redundant and empty terms. When a term T is removed,
         hierarchical relations are preserved by connecting every child
@@ -1380,13 +1412,12 @@ class Ontology:
             ont = self.propagate_annotations(direction='forward', inplace=False)
             ont.propagate_annotations(direction='reverse', inplace=True)
 
-            if collapseRedundantNodes is None:
-                assert os.path.isdir(ddot.config.alignOntology)
-                collapseRedundantNodes = os.path.join(ddot.config.alignOntology, 'collapseRedundantNodes')
+            assert os.path.isdir(ddot.config.alignOntology)
+            collapseRedundantNodes = os.path.join(ddot.config.alignOntology, 'collapseRedundantNodes')
             assert os.path.isfile(collapseRedundantNodes)
 
             with tempfile.NamedTemporaryFile('w', delete=False) as f:
-                ont.to_3col_table(f, parent_child=True, encoding=None, default_relation=u'default')
+                ont.to_table(f, parent_child=True, clixo_format=True)
             try:                
                 cmd = '%s %s' % (collapseRedundantNodes, f.name)
                 print 'collapse command:', cmd
@@ -1397,7 +1428,8 @@ class Ontology:
 
             ont = Ontology.from_table(
                 StringIO(collapsed),
-                is_mapping=lambda x: x[2]=='gene'
+                is_mapping=lambda x: x[2]=='gene',
+                clixo_format=True
             )
             ont.clear_edge_attr()
 
@@ -1407,76 +1439,24 @@ class Ontology:
             return ont
 
         elif method=='python':
+            ont = self.propagate_annotations()
+            term_hash = {t : hash(tuple(g_list)) for t, g_list in ont.term_2_gene.items()}
+            to_collapse = set()
+            for p in ont.parent_2_child:
+                for c in ont.parent_2_child[p]:
+                    if term_hash[p] == term_hash[c]:
+                        to_collapse.add(p)
+            
+            if min_term_size is not None:
+                to_collapse = to_collapse | set([t for t, s in zip(ont.terms, ont.term_sizes) if s < min_term_size])
 
-            raise Exception('Unsupported')
-        
-            g = self.to_igraph()
-            if verbose: print len(g.vs), 'total nodes'
+            if to_keep is not None:
+                to_collapse = to_collapse - set(to_keep)
 
-            if verbose: print 'Propagating annotations'
-            self.propagate_annotations()
+            ont_reverse = ont.propagate_annotations('reverse')
+            ont_red = ont_reverse.delete(to_delete=to_collapse, preserve_transitivity=True)
 
-            parity = True
-            while True:
-                
-                # Calculate a unique hash for every term based on its set of gense
-                names_2_idx = make_index(g.vs['name'])
-                term_hash = {names_2_idx[t] : (len(g_list), hash(tuple(g_list)))
-                             for t, g_list in self.term_2_gene.items()
-                             if names_2_idx.has_key(t)}
-
-                if verbose: time_print('Identify nodes to collapse')
-                node_order = g.topological_sorting(mode='out')
-
-                small_terms = [v for v in node_order if term_hash[v][0]<min_term_size]
-
-                # Terms that have the same set of genes as all of its parents
-
-                same_as_parents = []
-                same_as_children = []
-                for v in node_order:
-                    if (len(g.neighbors(v, mode='out')) > 0
-                        and all(term_hash[v]==term_hash[y] for y in g.neighbors(v, mode='out'))):
-                        same_as_parents.append(v)
-                        
-                # same_as_all_parents = [v for v in node_order
-                #                        if (len(g.neighbors(v, mode='out'))>0 and all(term_hash[v]==term_hash[y] for y in g.neighbors(v, mode='out')))]
-                # same_as_all_children = [v for v in node_order
-                #                         if (len(g.neighbors(v, mode='in'))>0 and all(term_hash[v]==term_hash[y] for y in g.neighbors(v, mode='in')))]
-
-                if verbose:
-                    time_print('%s empty terms, %s (%s) terms that are redundant with all their parents (children)' %
-                               (len(small_terms), len(same_as_parents), len(same_as_children)))
-
-                to_delete = list(set(small_terms) | set(same_as_children if parity else same_as_parents))
-
-                if verbose:
-                    time_print('Collapsing %s empty terms and %s terms that redundant with its %s' % \
-                               (len(small_terms),
-                                len(same_as_all_children) if parity else len(same_as_all_parents),
-                                'children' if parity else 'parents'))
-                parity = not parity
-
-                if len(to_delete)==0:
-                    break
-                else:
-                    for v in to_delete:
-                        g = _collapse_node(g,
-                                           v,
-                                           use_v_name=False,
-                                           verbose=False,
-                                           fast_collapse=True,
-                                           delete=False)
-                    g.delete_vertices(to_delete)
-
-            g.es(relation_eq=None)['relation'] = default_relation
-
-            remaining_terms = set([self.terms_index[x] for x in g.vs['name']])
-            return Ontology(g,
-                            mapping_file=[(gene, self.terms[t]) 
-                                          for gene, t_list in self.gene_2_term.items() 
-                                          for t in t_list if t in remaining_terms],
-                            combined_file=False, parent_child=False)
+            return ont_red
     
     @classmethod
     def mutual_collapse(cls, ont1, ont2, verbose=False):
@@ -1501,9 +1481,9 @@ class Ontology:
         if verbose:
             print('Common genes:', len(common_genes))
 
-        ont1 = ont1.delete(genes=set(ont1.genes) - common_genes, inplace=False)
+        ont1 = ont1.delete(to_delete=set(ont1.genes) - common_genes, inplace=False)
         ont1_collapsed = ont1.collapse_ontology(method='mhkramer')
-        ont2 = ont2.delete(genes=set(ont2.genes) - common_genes, inplace=False)
+        ont2 = ont2.delete(to_delete=set(ont2.genes) - common_genes, inplace=False)
         ont2_collapsed = ont2.collapse_ontology(method='mhkramer')
 
         if verbose:
@@ -1512,16 +1492,70 @@ class Ontology:
 
         return ont1_collapsed, ont2_collapsed
 
+    # def focus(self, genes):
+    #     branches = ont.common_ancestors(genes, min_nodes=1, minimal=False)
+    #     ont_red = ont.subtrees(anc, focus=gene_list, root=True)
+    #     ont_red.propagate_annotations('reverse', inplace=True)
+    #     return ont_red
+        
     def subtrees(self,
-                 roots):
+                 branches=None,
+                 genes=None,
+                 root=True):
         """
 
         """
 
-        nodes = np.array(self.genes + self.terms)
-        to_keep = nodes[self.connected(nodes, roots).sum(1) > 0]
-        return self.delete(to_keep=to_keep, preserve_transitivity=False)
-    
+        assert (branches is not None) or (genes is not None)
+        
+        to_keep = np.array(self.genes + self.terms)
+        if branches is not None:
+            to_keep = to_keep[self.connected(to_keep, branches).sum(1) > 0]
+            print to_keep.size
+        if genes is not None:
+            to_keep = to_keep[self.connected(genes, to_keep).sum(0) > 0]
+            print to_keep.size
+
+        if root:
+            while True:
+                common_root = self.common_ancestors(to_keep, minimal=True)
+                print 'Adding', common_root
+                to_keep = np.append(to_keep, common_root)
+                if len(common_root)<=1:
+                    break            
+        
+        ont = self.delete(to_keep=to_keep, preserve_transitivity=True)
+        ont = ont.collapse_ontology(method='python', to_keep=ont.get_roots())
+        
+        df = ont.to_table(edge_attr=True)
+        
+        new_connections = []
+        for t in ont.terms:
+            removed_genes = set([self.genes[g] for g in self.term_2_gene[t]]) - set([ont.genes[g] for g in ont.term_2_gene[t]])
+            removed_terms = set(self.parent_2_child[t]) - set(ont.parent_2_child[t])
+            if len(removed_genes) > 0:
+                new_connections.append(('%s_%s_other_genes' % (t, len(removed_genes)), t, self.GENE_TERM_EDGETYPE))
+            if len(removed_terms) > 0:
+                new_connections.append(('%s_%s_other_terms' % (t, len(removed_terms)), t, self.CHILD_PARENT_EDGETYPE))
+
+        if len(new_connections) > 0:
+            new_connections = pd.DataFrame(new_connections)
+            new_connections.columns = ['Child', 'Parent', self.EDGETYPE_ATTR]
+            new_nodes = new_connections['Child'].values.tolist()
+            new_connections['Summary'] = True
+            df['Summary'] = False
+            tmp = pd.concat([df, new_connections], ignore_index=True)
+            df = tmp[df.columns]
+            
+        ont = Ontology.from_table(df)
+        ont.update_node_attr(self.node_attr)
+        del ont.edge_attr[self.EDGETYPE_ATTR]        
+
+        if len(new_connections) > 0:
+            ont.update_node_attr(pd.DataFrame({'Label':['_'.join(x.split('_')[1:]) for x in new_nodes]}, index=new_nodes))
+        
+        return ont
+        
     def delete(self,
                to_delete=None,
                to_keep=None,
@@ -1591,9 +1625,23 @@ class Ontology:
             if preserve_transitivity:
                 assert not inplace, 'Cannot preserve transitivity inplace'
                 g = ont.to_igraph(include_genes=True, spanning_tree=False)
-                for t in terms:
+#                for t in terms:
+                for it, t in enumerate(terms):
+                    if (it % 100)==0: print it
                     _collapse_node(g, t, use_v_name=True, fast_collapse=True)
+
+                # Need to reassign the edgetypes because the
+                # fast_collapse above does not calculate it
+                is_genes = set(self.genes)
+                g.es[self.EDGETYPE_ATTR] = [self.GENE_TERM_EDGETYPE if g.vs[e.source]['name'] in is_genes else self.CHILD_PARENT_EDGETYPE for e in g.es]
+                
                 ont_reduced = Ontology.from_igraph(g)
+                
+                # Remove the EdgeType attribute to prevent further
+                # redundancies when this ontology is converted back
+                # into pandas, igraph, or networkx representations
+                del ont_reduced.edge_attr[self.EDGETYPE_ATTR]
+                
                 ont_reduced.update_node_attr(ont.node_attr)
                 ont_reduced.update_edge_attr(ont.edge_attr)
                 ont = ont_reduced
@@ -1607,7 +1655,7 @@ class Ontology:
                 ont.parent_2_child = {p : [c for c in c_list if c not in terms]
                                       for p, c_list in ont.parent_2_child.items()
                                       if p not in terms}
-
+                
         if len(genes) > 0:
             genes = set(genes)
             ont.genes = [g for g in ont.genes if g not in genes]
@@ -1670,7 +1718,7 @@ class Ontology:
             ont = self.copy()
 
         if genes:
-            ont.delete(genes=[g for g in ont.genes if not genes.has_key(g)], inplace=True)
+            ont.delete(to_delete=[g for g in ont.genes if not genes.has_key(g)], inplace=True)
 
             new_genes = []
             new_gene_2_term = {}
@@ -1688,7 +1736,7 @@ class Ontology:
             ont.genes_index = make_index(ont.genes)
             ont._update_fields()
         if terms:
-            ont.delete(terms=[t for t in ont.terms if not terms.has_key(t)], inplace=True)
+            ont.delete(to_delete=[t for t in ont.terms if not terms.has_key(t)], inplace=True)
             ont.terms = [terms[t] for t in ont.terms]
             ont.terms_index = make_index(ont.terms)
             ont.parent_2_child = {terms[p] : [terms[c] for c in c_list]
@@ -1702,22 +1750,35 @@ class Ontology:
         index = ont.node_attr.index
         ont.node_attr.index = pd.Series(index).replace(conversions)
 
+        # Remove identities
+        conversions = {k : v for k, v in conversions.items() if k!=v}
+        
         index = ont.edge_attr.index
+        # print index.to_frame()
+        # print conversions
         ont.edge_attr.index = index.to_frame().replace({'Child' : conversions, 'Parent' : conversions}).set_index(['Child', 'Parent']).index
         
         return ont
 
-    def to_pandas(self,
-                  term_2_term=True,
-                  gene_2_term=True,
-                  default_relation=u'default',
-                  include_edge_attr=False):
-        """Convert Ontology to pandas.DataFrame
-
-        TODO: implement include_edge_attr
+    def to_table(self,
+                 output=None,
+                 term_2_term=True,
+                 gene_2_term=True,
+                 edge_attr=False,
+                 header=False,
+                 parent_child=True,
+                 clixo_format=False):
+        """Convert Ontology to a table representation. Return a
+        pandas.DataFrame and, optionally, write it to a file as a
+        tab-delimited file.
 
         Parameters
         ----------
+        output : filepath or file-like
+
+            File to write table. If None, then only return a
+            pandas.DataFrame
+
         term_2_term : bool
 
             Include (child term, parent term) pairs
@@ -1726,111 +1787,78 @@ class Ontology:
 
             Include (gene, term) pairs
 
-        default_relation : str
-        
-            The relation type assigned to all (child term, parent term) pairs
+        edge_attr : array-like or bool
 
-        include_edge_attr : bool
+            List of extra edge attributes to include. If True, then
+            include all attributes. If False, then don't include any
+            attribute.
 
-            Include the edge attributes as extra columns.
-         
-            PARAMETER NOT IMPLEMENTED YET
+        header : bool
+
+            If writing to a file, then write the column names as the
+            first row
+
+        parent_child : bool
+
+            If True, then the first column is the parent term and the
+            second column is the child term or gene. If False, then
+            the columns are reversed.
+
+        clixo_format : bool
+
+            If True, the table is the same format used the CLIXO C++
+            implementation. In particular, the table has three columns:
+
+            Column 1) Parent Term
+            Column 2) Child Term or Gene
+            Column 3) The string "gene" if the row is a
+                      gene-term mapping, otherwise the string "default".
 
         Returns
         -------
         : pandas.DataFrame
 
-            Three columns: (1) Parent (2) Child -- a gene or child
-            term, (3) EdgeType type.  The relation type of all (gene,
-            term) pairs is "gene".
+            Contains at least three columns: (1) "Parent", (2)
+            "Child", and (3) "EdgeType".
 
         """
 
-        df = pd.DataFrame(columns=['Parent','Child','EdgeType'])
+        df = pd.DataFrame(columns=['Parent','Child',self.EDGETYPE_ATTR])
         if term_2_term:
-            df = df.append(self._hierarchy_to_pandas(default_relation),
-                           ignore_index=True)
+            df = df.append(self._hierarchy_to_pandas(), ignore_index=True)
         if gene_2_term:
-            tmp = self._mapping_to_pandas()
-            tmp.rename(columns={'Gene':'Child', 'Term':'Parent'},
-                       inplace=True)
-            tmp['EdgeType'] = 'gene'
-            df = df.append(tmp, ignore_index=True)
+            df = df.append(self._mapping_to_pandas(), ignore_index=True)
 
-        self.edge_attr.reset_index()
+        if edge_attr and self.edge_attr.shape[1] > 0:
+            if edge_attr==True:
+                edge_attr = df.columns
+            df = df.merge(self.edge_attr,
+                          how='left',
+                          left_on=['Child', 'Parent'],
+                          right_index=True)
+
+        first_two = ['Parent', 'Child'] if parent_child else ['Child', 'Parent']
+        df = df[first_two + [x for x in df.columns if x not in first_two]]
+
+        if clixo_format:
+            df.replace({self.EDGETYPE_ATTR : {self.GENE_TERM_EDGETYPE : 'gene', self.CHILD_PARENT_EDGETYPE : 'DEFAULT'}}, inplace=True)
+            
+        if output is not None:
+            df.to_csv(output, header=header, index=False, sep='\t')        
+        
         return df
 
-    def _hierarchy_to_pandas(self, default_relation=u'default'):
-
-        triples = [(p,c,default_relation) \
-                   for p, c_list in self.parent_2_child.items() for c in c_list]
-        # triples = [(p,c, relation_dict.get((c, p), default_relation)) \
-        #            for p, c_list in self.parent_2_child.items() for c in c_list]
-        df = pd.DataFrame(triples, columns=['Parent', 'Child', 'EdgeType'])
+    def _hierarchy_to_pandas(self):
+        triples = [(p,c) for p, c_list in self.parent_2_child.items() for c in c_list]
+        df = pd.DataFrame(triples, columns=['Parent', 'Child'])
+        df[self.EDGETYPE_ATTR] = self.CHILD_PARENT_EDGETYPE                  
         return df
 
     def _mapping_to_pandas(self):
-        pairs = [(g, self.terms[t]) for g, t_list in self.gene_2_term.items() for t in t_list]
-        df = pd.DataFrame(pairs, columns=['Gene', 'Term'])        
+        pairs = [(self.terms[t], g) for g, t_list in self.gene_2_term.items() for t in t_list]
+        df = pd.DataFrame(pairs, columns=['Parent', 'Child'])
+        df[self.EDGETYPE_ATTR] = self.GENE_TERM_EDGETYPE
         return df
-
-    def to_table(self,
-                 output,
-                 header=False,
-                 parent_child=True,
-                 encoding=None,
-                 default_relation=u'default'):        
-        
-        raise NotImplementedError()
-            
-        df = self.to_pandas(default_relation=default_relation)
-        if parent_child:
-            df = df[['Parent','Child','EdgeType']]
-        else:
-            df = df[['Child','Parent','EdgeType']]
-        return df.to_csv(output, header=header, index=False, sep='\t')
-    
-    def to_3col_table(self,
-                      output,
-                      header=False,
-                      parent_child=True,
-                      encoding=None,
-                      default_relation=u'default'):
-        """Write Ontology to tab-delimited table with 3 columns and 2 types of rows:
-
-        Row Type A. Parent term, child term, ontology relation 
-           e.g. "GO:0007005      GO:0007006      is_a"
-        Row Type B. Term, gene, "gene"
-           e.g. "GO:0007005      ATG7    gene"
-
-        Parameters
-        ----------
-        output : str
-            Filename of table
-
-        header : bool
-            If True, include a header line in the table
-
-        parent_child : bool
-            If False, then the first and second columns switch places
-
-        encoding
-            Character encoding
-
-        default_relation : str
-            
-            EdgeType type for all (child term, parent term)
-            pairs. Note that the relation type for (gene, term) pairs
-            is "gene".
-
-        """
-
-        df = self.to_pandas(default_relation=default_relation)
-        if parent_child:
-            df = df[['Parent','Child','EdgeType']]
-        else:
-            df = df[['Child','Parent','EdgeType']]
-        return df.to_csv(output, header=header, index=False, sep='\t')
 
     def copy(self):
         """Create a deep copy of the Ontology object"""
@@ -1868,16 +1896,14 @@ class Ontology:
         assert include_genes or include_terms
             
         if similarity=='Resnik':
-            sca, nodes = self.get_best_ancestor_matrix(include_genes=include_genes)            
-
+            sca, nodes = self.get_best_ancestor_matrix(include_genes=include_genes)    
             nodes_subset = self.genes if include_genes else []
             nodes_subset += self.terms if include_terms else []
-            sizes = np.array(self.term_sizes)
             nodes_idx = ddot.utils.make_index(nodes)
             idx = [nodes_idx[v] for v in nodes_subset]
             sca = sca[idx, :][:, idx]
 
-            ss = -1 * np.log2(sizes[sca] / float(len(self.genes)))
+            ss = -1 * np.log2(np.array(self.term_sizes)[sca] / float(len(self.genes)))
             ss = ss.astype(np.float32)
             return ss, np.array(nodes_subset)
         else:
@@ -1921,31 +1947,15 @@ class Ontology:
         conn = self.connected(nodes, self.terms)
         anc_bool = conn.sum(0) >= min_nodes
         anc = np.array(self.terms)[anc_bool]
-        
-        # term_count = collections.Counter([t for g in genes for t in self.gene_2_term[g]])
-        # anc = [t for t in term_count if term_count[t] >= min_nodes]
-        # print 'ancestors:', anc
 
+#        print 'anc:', anc
         if minimal:
             anc_conn = self.connected(anc, anc, sparse=False)
+#            print anc_conn.astype(np.int32)
             np.fill_diagonal(anc_conn, 0)
             anc = anc[anc_conn.sum(0) == 0]
 
         return anc
-    
-        # ## For each pair of gene, return a list of the smallest
-        # ## common ancestors (sca). There may be more than one sca with the same size.
-        
-        # gene_2_term_numpy = {g : np.array(t_list) for g, t_list in self.gene_2_term.items()}
-
-        # common_ancestors = [np.intersect1d(gene_2_term_numpy[g1], gene_2_term_numpy[g2], assume_unique=True) \
-        #                     for g1, g2 in combinations(genes_subset, 2)]
-        # assert all(x.size > 0 for x in common_ancestors)
-        # min_size = [term_sizes[x].min() for x in common_ancestors]
-        # sca_list = [x[term_sizes[x]==m] for x, m in zip(common_ancestors, min_size)]
-
-        # # Dict: (g1,g2) gene pairs --> list of term indices
-        # return {(g1,g2) : x for (g1, g2), x in zip(combinations(genes_subset, 2), sca_list)}
 
     def _get_term_2_gene(self, verbose=False): 
         if verbose: print 'Calculating term_2_gene'
@@ -1960,16 +1970,16 @@ class Ontology:
                 term_2_gene[t] = []
         return term_2_gene
 
-    def get_term_sizes(self, propagate=False):
+    def get_term_sizes(self, propagate=True):
         """Returns an array of term sizes in the same order as self.terms"""
 
         if propagate:
-            ont = self.propagate_annotations(verbose=False, inplace=False)
+            gene_2_term = self._propagate_forward()
         else:
-            ont = self
+            gene_2_term = self.gene_2_term
 
-        tmp = Counter([x for y in ont.gene_2_term.values() for x in y])
-        term_sizes = [tmp[x] for x in range(len(ont.terms))]
+        tmp = Counter([x for y in gene_2_term.values() for x in y])
+        term_sizes = [tmp[x] for x in range(len(self.terms))]
         return term_sizes
 
     def get_information_gain(self):
@@ -2053,8 +2063,7 @@ class Ontology:
                                  vertex_attrs={'name':self.terms},
                                  edge_attrs={self.EDGETYPE_ATTR : [self.CHILD_PARENT_EDGETYPE for x in edges]})
         if spanning_tree:
-            tmp = self.get_term_sizes(propagate=True)
-            parent_priority = [tmp[self.terms_index[v['name']]] if self.terms_index.has_key(v['name']) else 1 for v in graph.vs]
+            parent_priority = [self.term_sizes[self.terms_index[v['name']]] if self.terms_index.has_key(v['name']) else 1 for v in graph.vs]
 
             # Identify spanning tree
             graph = self._make_tree_igraph(
@@ -2230,6 +2239,29 @@ class Ontology:
 
         return terms_list[~ np.any(connectivity_matrix_nodiag[children_list, :][:, terms_list], axis=0)]
 
+    def _propagate_forward(self):
+        child_2_parent_idx = {
+            self.terms_index[c] : [self.terms_index[p] for p in p_list]
+            for c, p_list in self.child_2_parent.items()
+        }
+        gene_2_term_set = {
+            g : set(t_list)
+            for g, t_list in self.gene_2_term.items()
+        }
+
+        genes_to_update = set(self.gene_2_term.keys())
+        while len(genes_to_update) > 0:
+            # Iterate over a copy of genes_to_update
+            for g in genes_to_update.copy():
+                curr_terms = gene_2_term_set[g]
+                num_old = len(curr_terms)
+                curr_terms.update(
+                    set([p for t in curr_terms 
+                         for p in child_2_parent_idx.get(t, [])]))
+                if len(curr_terms) == num_old:
+                    genes_to_update.remove(g)
+        return {g : sorted(t_set) for g, t_set in gene_2_term_set.items()}
+
     def propagate_annotations(self,
                               direction='forward',
                               verbose=False,
@@ -2276,36 +2308,8 @@ class Ontology:
             ont = self.copy()
 
         if direction=='forward':
-            child_2_parent_idx = {
-                ont.terms_index[c] : [ont.terms_index[p] for p in p_list]
-                for c, p_list in ont.child_2_parent.items()
-            }
-            gene_2_term_set = {
-                g : set(t_list)
-                for g, t_list in ont.gene_2_term.items()
-            }
-
-            genes_to_update = set(ont.gene_2_term.keys())
-            count = 0
-            while len(genes_to_update) > 0:
-                # Iterate over a copy of genes_to_update
-                for g in genes_to_update.copy():
-                    curr_terms = gene_2_term_set[g]
-                    num_old = len(curr_terms)
-                    curr_terms.update(
-                        set([p for t in curr_terms 
-                             for p in child_2_parent_idx.get(t, [])]))
-                    if len(curr_terms) == num_old:
-                        genes_to_update.remove(g)                        
-
-                if verbose: print count,
-                count +=1
-                if count == 1000:
-                    raise Exception('ERROR: Ontology depth >1000. Stopping in case of bug in code')
-            if verbose: print
-            ont.gene_2_term = {g : sorted(t_set) for g, t_set in gene_2_term_set.items()}
-            
-            self._update_fields()
+            ont.gene_2_term = ont._propagate_forward()            
+            ont._update_fields()
 
         elif direction=='reverse':
             ont.propagate_annotations(direction='forward', inplace=True)
@@ -2993,10 +2997,10 @@ class Ontology:
 
         # Set node attribute 'Label'
         for t in self.terms:
-            if not G.node[t].has_key('Label'):
+            if not G.node[t].has_key('Label') or pd.isnull(G.node[t]['Label']):
                 G.node[t]['Label'] = t
         for g in self.genes:
-            if not G.node[g].has_key('Label'):
+            if not G.node[g].has_key('Label') or pd.isnull(G.node[t]['Label']):
                 G.node[g]['Label'] = g
 
         # Set links to subnetworks supporting each term
@@ -3102,8 +3106,8 @@ class Ontology:
         """
 
         # Convert to NetworkX
-        G = self.to_networkx(spanning_tree=spanning_tree,
-                             layout=layout)
+        G = self.to_NdexGraph(spanning_tree=spanning_tree,
+                              layout=layout)
         
         if hasattr(output, 'write'):
             nx.write_graphml(G, output)
@@ -3316,12 +3320,19 @@ class Ontology:
 
            A list of terms, ordered by their rank with the 'best' term at the beginning.
 
+        include_genes : bool
+
         Returns
         --------
         ancestors : np.ndarray
 
             ancestors[a,b] = the best common ancestor of terms a and
             b, represented as a 0-based index of self.terms
+
+        nodes : list
+
+            List of the row and column names. Rows and columns are the
+            same.
 
         """
 
@@ -3330,12 +3341,7 @@ class Ontology:
         
         if node_order is None:
             # By default, sort from smallest to largest terms
-            node_order = [self.terms[t] for t in np.argsort(self.term_sizes)]
-            
-            # if include_genes:
-            #     node_order = self.genes + [self.terms[t] for t in np.argsort(self.term_sizes)]
-            # else:
-            #     node_order = [self.terms[t] for t in np.argsort(self.term_sizes)]
+            node_order = [self.terms[t] for t in np.argsort(ont.term_sizes)]
              
         d = np.int8(np.isfinite(np.array(graph.shortest_paths(graph.vs, graph.vs, mode='out'), order='C')))
 
@@ -3453,7 +3459,7 @@ class Ontology:
             
         return adj, nodes
 
-    def unfold(self, duplicate=None):
+    def unfold(self, duplicate=None, genes_only=False, label=True):
         """
         """
         
@@ -3461,7 +3467,9 @@ class Ontology:
                 
         terms = set(ont.terms)
 
-        if duplicate is None:
+        if genes_only:
+            duplicate = ont.genes
+        elif duplicate is None:
             duplicate = ont.genes + ont.terms
         nodes_copy = {x : 0 for x in duplicate}
         
@@ -3480,8 +3488,6 @@ class Ontology:
             new_2_orig[u_name] = u
             to_expand.append(u_name)
 
-#        print 'to_expand:', to_expand
-        
         hierarchy, mapping = [], []
 
         # Manual bfs
@@ -3489,19 +3495,16 @@ class Ontology:
         while curr < len(to_expand):
             v_name = to_expand[curr]
             v = new_2_orig[v_name]
-#            print 'v, v_name:', v, v_name
             
             for u in ont.term_2_gene.get(v, []):
                 u = ont.genes[u]
                 u_name = get_name(u)                
                 new_2_orig[u_name] = u
-#                print 'u, u_name:', u, u_name
                 mapping.append((u_name, v_name))
 
             for u in ont.parent_2_child.get(v, []):
                 u_name = get_name(u)
                 new_2_orig[u_name] = u
-#                print 'u, u_name:', u, u_name
                 hierarchy.append((u_name, v_name))                
                 to_expand.append(u_name)
 
@@ -3509,8 +3512,6 @@ class Ontology:
 
         new_nodes, orig_nodes = zip(*new_2_orig.items())
         node_attr = ont.node_attr.loc[orig_nodes, :].copy()
-#        print node_attr.head()
-#        print node_attr.loc[node_attr['Seed']==True].head()
         node_attr['Original_Name'] = orig_nodes
         node_attr.index = new_nodes
         node_attr.dropna(axis=0, how='all', inplace=True)
@@ -3521,12 +3522,19 @@ class Ontology:
         edge_attr.index = pd.MultiIndex.from_tuples(new_edges)
         edge_attr.dropna(axis=0, how='all', inplace=True)
 
-        return Ontology(hierarchy,
-                        mapping,
-                        edge_attr=edge_attr,
-                        node_attr=node_attr,
-                        parent_child=False,
-                        verbose=False)        
+        ont = Ontology(hierarchy,
+                       mapping,
+                       edge_attr=edge_attr,
+                       node_attr=node_attr,
+                       parent_child=False,
+                       verbose=False)
+
+        # if label:
+        #     pd.DataFrame({'Label':['_'.join(x.split('_')[1:]) for x in new_nodes]}
+        #     ont.update_node_attr(, index=new_nodes))
+
+        return ont
+
 
     def __repr__(self):
         return self.summary()

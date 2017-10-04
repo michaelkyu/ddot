@@ -1,8 +1,7 @@
 # The Data-Driven Ontology Toolkit (DDOT)
+A library for constructing, analyzing, and visualizing hierarchical models
 
 # Installation
-
-`pip install ddot`
 
 Download the repository and then run
 

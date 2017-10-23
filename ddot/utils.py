@@ -905,6 +905,7 @@ def ndex_to_sim_matrix(ndex_uuid,
 def expand_seed(seed,
                 sim,
                 sim_names,
+                sim_transform=None,
                 agg='mean',
                 min_sim=-np.inf,
                 filter_perc=None,
@@ -977,7 +978,15 @@ def expand_seed(seed,
     sim_slice = sim[seed_idx, :]        
     if agg=='mean':
         # Average similarity to the seed set
-        sim_2_seed = sim_slice.mean(0)
+        # Don't include self in the average.
+        sim_2_seed = sim_slice.sum(0)
+        sim_2_seed[seed_idx] -= sim[seed_idx, seed_idx]
+        sim_2_seed[seed_idx] /= float(seed_idx.size - 1)
+        sim_2_seed[np.setdiff1d(np.arange(sim_2_seed.size), seed_idx)] /= float(seed_idx.size)
+
+        # print sim_2_seed.size, np.diagonal(sim_slice).size, sim_slice.shape
+        # sim_2_seed -= np.diagonal(sim_slice)
+        # sim_2_seed = sim_2_seed / float(sim_2_seed.shape[0] - 1)
     elif agg=='min':
         # The minimum similarity to any gene in the seed set
         sim_2_seed = sim_slice.min(0)
@@ -1047,6 +1056,8 @@ def expand_seed(seed,
                 figure.savefig(figure)
             except:
                 pass
+
+            plt.close(fig)
         else:
             fig = None
     except:
@@ -1162,7 +1173,7 @@ def ddot_pipeline(alpha,
         ref = ddot.Ontology.from_ndex(ref, ndex_server, ndex_user, ndex_pass)
     except:
         assert isinstance(ref, ddot.Ontology)
-    
+
     ###############################
     # Align to Reference Ontology #
     ###############################
@@ -1290,3 +1301,64 @@ def ig_unfold_tree_with_attr(g, sources, mode):
                                         
     return g_unfold
 
+
+def gridify(centers, pos, G, parents):
+    
+    # Recenter positions from a circle into a grid
+    for v, p in zip(centers, parents):
+        # Center of circle is dummy node's position
+        x_center, y_center = pos[v]
+
+        statement = False
+        
+        if statement:
+            print v
+            print 'center:', pos[v]
+
+        # Estimate radius by averaging the distance to the children
+        children = G.predecessors(v)
+        if len(children) == 1:
+            continue
+            
+        radius = np.mean([np.sqrt((pos[c][0] - x_center)**2 + (pos[c][1] - y_center)**2) for c in children])
+
+        if statement:
+            print 'children:', [pos[c] for c in children]
+
+        # Reposition children in grid
+        # square with diagonal 2r. sqrt(2) * r is the width of the square
+        width = np.sqrt(2) * radius
+
+        num_cols = int(np.ceil(np.sqrt(len(children))))
+        col_space = width / (num_cols - 1)
+        row_space = width / (num_cols - 1)
+        topleft = x_center - width / 2, y_center - width / 2
+        for i, c in enumerate(children):
+            row, col = i / num_cols, i % num_cols
+            pos[c] = (topleft[0] + col * col_space, topleft[1] + row * row_space)
+
+            if statement:
+                print i, c, row, col
+
+        # Reposition v to be 1/3rd of the distance from the outside of the circle to its parent
+        x_parent, y_parent = pos[p]
+        distance = np.sqrt((x_parent - x_center)**2 + (y_parent - y_center)**2)
+        alpha = (2/3.) * (distance - radius) / distance
+        
+        pos[v] = (x_center * (1 - alpha) + x_parent * alpha,
+                  y_center * (1 - alpha) + y_parent * alpha)
+        
+        if statement:
+            print 'topleft:', topleft
+            print 'width:', width
+            print 'colspace:', col_space
+            print 'num_cols:', num_cols
+            print 'children(new):', [pos[c] for c in children]
+
+def nx_set_tree_edges(G, tree_edges):
+    nx.set_edge_attributes(
+        G,
+        'Is_Tree_Edge',
+        {(s,t) : 'Tree' if ((s,t) in tree_edges) else 'Not_Tree'
+         for s, t in G.edges_iter(data=False)}
+    )

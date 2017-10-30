@@ -1022,7 +1022,7 @@ def expand_seed(seed,
         # Filter based on a percentile of similarities between seed set to itself
         if seed_perc is not None:
             min_sim = max(min_sim, np.percentile(sim_2_seed[seed_idx], 100 * seed_perc))
-#        print 'min_sim:', min_sim
+        print 'min_sim:', min_sim
 
         expand_idx = expand_idx[sim_2_seed[expand_idx] >= min_sim]
         
@@ -1082,6 +1082,7 @@ def ddot_pipeline(alpha,
                   node_attr=None,
                   public=True,
                   verbose=False,
+                  style=None,
                   ndex=True):
     """Assembles and analyzes a data-driven ontology to study a process or disease
 
@@ -1113,6 +1114,8 @@ def ddot_pipeline(alpha,
     else:
         ndex_pass = ndex_kwargs['ndex_pass']
 
+    style = 'disease-passthrough'
+    
     ################
     # Expand genes #
     ################
@@ -1242,6 +1245,7 @@ def ddot_pipeline(alpha,
             ndex_server=ndex_server,
             ndex_user=ndex_user,
             ndex_pass=ndex_pass,
+            style=style,
             public=public
         )
     else:

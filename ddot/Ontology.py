@@ -1195,7 +1195,8 @@ class Ontology(object):
         """
             
         if spanning_tree:
-            scale = 64
+            scale = 1
+            print 'scale:', scale
             
             if layout=='bubble':
                 G = self._to_networkx_no_layout()
@@ -2400,15 +2401,15 @@ class Ontology(object):
                                  edge_attrs={self.EDGETYPE_ATTR : [self.CHILD_PARENT_EDGETYPE for x in edges]})
         if spanning_tree:
 
-            #parent_priority = [self.term_sizes[self.terms_index[v['name']]] if self.terms_index.has_key(v['name']) else 1 for v in graph.vs]
+            parent_priority = [self.term_sizes[self.terms_index[v['name']]] if self.terms_index.has_key(v['name']) else 1 for v in graph.vs]
 
-            roots = self.get_roots()
-            assert len(roots) == 1
-            parent_priority = self.longest_paths(self.terms, roots).flatten()
-            0 / asdf
-            print parent_priority[:5]
-            0 / asdf
-            parent_priority = [parent_priority[self.terms_index[v['name']]] if v['name'] in self.terms_index else 1 for v in graph.vs]
+            # roots = self.get_roots()
+            # assert len(roots) == 1
+            # parent_priority = self.longest_paths(self.terms, roots).flatten()
+            # 0 / asdf
+            # print parent_priority[:5]
+            # 0 / asdf
+            # parent_priority = [parent_priority[self.terms_index[v['name']]] if v['name'] in self.terms_index else 1 for v in graph.vs]
             
             # Identify spanning tree
             graph = self._make_tree_igraph(

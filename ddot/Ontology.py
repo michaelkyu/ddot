@@ -442,7 +442,7 @@ class Ontology(object):
     manipulating the hierarchical structure of ontologies.
 
     An Ontology object contains the following attributes for
-    inspecting the hierarchical structure. Do not directly modify
+    representing the hierarchical structure. Do not directly modify
     these attributes.
 
     Parameters
@@ -477,13 +477,9 @@ class Ontology(object):
 
         A list of every term's size, i.e. the number of unique genes
         that it and its descendant terms contain. This list has the
-        same order as self.terms.
-        
-        Note that if gene-term connections have been propagated up the
-        ontology (with Ontology.propagate_annotations()), then it
-        holds that
+        same order as self.terms. It holds that for every i,
 
-        `term_sizes[i] = len(self.term_2_gene[self.terms[i]])` for every i.
+        `term_sizes[i] = len(self.term_2_gene[self.terms[i]])`
 
     """
 

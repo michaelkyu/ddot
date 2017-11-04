@@ -1065,25 +1065,28 @@ def expand_seed(seed,
 
     return expand, expand_idx, sim_2_seed, fig
 
-def ddot_pipeline(alpha,
-                  beta,
-                  gene_similarities,
-                  genes,
-                  seed,
-                  ref,
-                  name='Data-driven Ontology',                  
-                  expand_kwargs={},
-                  align_kwargs={},
-                  align_label='Term_Description',
-                  ndex_kwargs={'ndex_server' : None,
-                               'ndex_user' : None,
-                               'ndex_pass' : None},
-                  subnet_max_term_size=None,                  
-                  node_attr=None,
-                  public=True,
-                  verbose=False,
-                  style=None,
-                  ndex=True):
+def make_seed_ontology(seed,
+                       sim,
+                       sim_names,
+                       alpha,
+                       beta,
+                       ref=None,
+                       name='Data-driven Ontology',             
+                       expand_kwargs={},
+                       align_kwargs={},
+                       align_label='Term_Description',
+                       ndex_kwargs={'ndex_server' : None,
+                                    'ndex_user' : None,
+                                    'ndex_pass' : None},
+                       subnet_max_term_size=None,                  
+                       node_attr=None,
+                       public=True,
+                       verbose=False,
+                       style=None,
+                       network=None,
+                       features=None,
+                       main_feature=None,                       
+                       ndex=True):
     """Assembles and analyzes a data-driven ontology to study a process or disease
 
     Parameters
@@ -1113,43 +1116,16 @@ def ddot_pipeline(alpha,
         ndex_pass = ddot.config.ndex_pass
     else:
         ndex_pass = ndex_kwargs['ndex_pass']
-
-    style = 'disease-passthrough'
     
     ################
     # Expand genes #
     ################
-    
-    kwargs = {
-        'agg':'mean',
-        'min_sim':None,
-        'filter_perc':None,
-        'seed_perc':0,
-        'agg_perc':None,
-        'figure':True,
-        'include_seed':True,
-        'sim':gene_similarities,
-        'sim_names':genes
-    }
-    kwargs.update(expand_kwargs)
-        
-    expand, expand_idx, sim_2_seed, fig = expand_seed(
-        seed,        
-        **kwargs
-    )
-    expand_results = {'expand' : expand, 'sim_2_seed' : sim_2_seed, 'fig' : fig}
-    
-    expand = list(expand)
-    if verbose:
-        print 'Expanded gene set:', len(expand)
-        # import matplotlib.pyplot as plt
-        # from IPython.display import display
-        # display(fig)
-        # plt.close()
-    
+
     try:
-        similarity_uuid = gene_similarities
-        gene_similarities, genes = ndex_to_sim_matrix(
+        # Try interpreting <sim> as a NDEx UUID
+        
+        similarity_uuid = sim
+        sim, sim_names = ndex_to_sim_matrix(
             similarity_uuid,
             ndex_server,
             ndex_user,
@@ -1161,47 +1137,70 @@ def ddot_pipeline(alpha,
         similarity_from_ndex = True
     except:
         similarity_from_ndex = False
-        assert isinstance(gene_similarities, np.ndarray)
+        assert isinstance(sim, np.ndarray)
+
+    kwargs = {
+        'agg':'mean',
+        'min_sim':None,
+        'filter_perc':None,
+        'seed_perc':0,
+        'agg_perc':None,
+        'figure':True,
+        'include_seed':True,
+        'sim':sim,
+        'sim_names':sim_names
+    }
+    kwargs.update(expand_kwargs)
+        
+    expand, expand_idx, sim_2_seed, fig = expand_seed(
+        seed,        
+        **kwargs
+    )
+    expand_results = {'expand' : expand, 'sim_2_seed' : sim_2_seed, 'fig' : fig}    
+    expand = list(expand)
     
     #############
     # Run CLIXO #
     #############
     
-    df_sq = pd.DataFrame(gene_similarities[expand_idx, :][:, expand_idx], index=expand, columns=expand)
+    df_sq = pd.DataFrame(sim[expand_idx, :][:, expand_idx], index=expand, columns=expand)
     df = melt_square(df_sq)
 
     ont = ddot.Ontology.run_clixo(df, alpha, beta, verbose=verbose)
 
-    try:
-        ref = ddot.Ontology.from_ndex(ref, ndex_server, ndex_user, ndex_pass)
-    except:
-        assert isinstance(ref, ddot.Ontology)
-
     ###############################
     # Align to Reference Ontology #
     ###############################
-    
-    kwargs = {
-        'iterations' : 3,
-        'threads' : 4,
-        'update_self' : True
-    }
-    kwargs.update(align_kwargs)
-        
-    alignment = ont.align(ref, **kwargs)
-    if verbose:
-        print 'Alignment: %s matches' % alignment.shape[0] 
-    
-    # Set labels based on ontology alignment
-    if align_label and (('Aligned_%s' % align_label) in ont.node_attr.columns):
-        def make_label(x):
-            if pd.isnull(x['Aligned_Term_Description']):
-                return x.name
-            else:
-                return '%s\n%s' % (x.name, x['Aligned_Term_Description'])
 
-        ont.node_attr = ont.node_attr.reindex(set(ont.genes) | set(ont.terms))
-        ont.node_attr['Label'] = ont.node_attr.apply(make_label, axis=1)
+    if ref is not None:
+        try:
+            # Try interpreting <ref> as a NDEx UUID
+            ref = ddot.Ontology.from_ndex(ref, ndex_server, ndex_user, ndex_pass)
+        except:
+            assert isinstance(ref, ddot.Ontology)
+
+
+        kwargs = {
+            'iterations' : 3,
+            'threads' : 4,
+            'update_self' : True
+        }
+        kwargs.update(align_kwargs)
+
+        alignment = ont.align(ref, **kwargs)
+        if verbose:
+            print 'Alignment: %s matches' % alignment.shape[0] 
+
+        # Set labels based on ontology alignment
+        if align_label and (('Aligned_%s' % align_label) in ont.node_attr.columns):
+            def make_label(x):
+                if pd.isnull(x['Aligned_Term_Description']):
+                    return x.name
+                else:
+                    return '%s\n%s' % (x.name, x['Aligned_Term_Description'])
+
+            ont.node_attr = ont.node_attr.reindex(set(ont.genes) | set(ont.terms))
+            ont.node_attr['Label'] = ont.node_attr.apply(make_label, axis=1)
 
     #############################
     # Set other node attributes #
@@ -1211,9 +1210,25 @@ def ddot_pipeline(alpha,
     seed_set = set(seed)
     seed_attr = pd.DataFrame({'Seed' : [g in seed_set for g in ont.genes]}, index=ont.genes)
     ont.update_node_attr(seed_attr)
-                    
+
+    # Annotate the data similarity to the seed set
+    tmp = make_index(sim_names)
+    sim_attr = pd.DataFrame({'Similarity_2_Seed' : [sim_2_seed[tmp[g]] for g in ont.genes]}, index=ont.genes)
+    ont.update_node_attr(sim_attr)    
+
+    # Annotate user-specified node attributes
     if node_attr is not None:
         ont.update_node_attr(node_attr)
+
+    # Color seed genes as green
+    fill_attr = pd.DataFrame({'Vis:Fill Color' : '#6ACC65'}, index=seed)
+    ont.update_node_attr(fill_attr)        
+
+    # Color terms according to their alignment
+    if ref is not None:
+        fill_attr = ont.node_attr['Aligned_Similarity'].dropna().map(color_gradient)
+        fill_attr = fill_attr.to_frame().rename(columns={'Aligned_Similarity' : 'Vis:Fill Color'})
+        ont.update_node_attr(fill_attr)
 
     ##################
     # Upload to NDEx #
@@ -1306,33 +1321,53 @@ def ig_unfold_tree_with_attr(g, sources, mode):
     return g_unfold
 
 
-def gridify(centers, pos, G, parents):
-    
-    # Recenter positions from a circle into a grid
-    for v, p in zip(centers, parents):
-        # Center of circle is dummy node's position
-        x_center, y_center = pos[v]
+def gridify(centers, pos, G):
+    """Relayout leaf nodes into a grid.
 
-        statement = False
+    Nodes must be connected and already laid out in "star"-like
+    topologies. In each "star", a set of nodes are positioned to form
+    the shape of a circle and connect to a common parent node that is
+    positioned at the circle's center.
+
+    This function repositions the nodes in each start into a square
+    grid that inscribes the circle.
+
+    Parameters
+    ----------
+    centers : list
         
-        if statement:
-            print v
-            print 'center:', pos[v]
+        Names of the nodes that lie at the center of the circles.
 
-        # Estimate radius by averaging the distance to the children
+    pos : dict
+
+        Dictionary that maps names of nodes to their (x,y) coordinates
+    
+    G : nx.Graph
+
+        Network
+
+    Returns
+    -------
+    : None
+
+        Modifies <pos> inplace
+
+    """
+    
+    for v in centers:
+        x_center, y_center = pos[v]
         children = G.predecessors(v)
         if len(children) == 1:
             continue
-            
+    
+        # Estimate radius by averaging the distance to the children
         radius = np.mean([np.sqrt((pos[c][0] - x_center)**2 + (pos[c][1] - y_center)**2) for c in children])
-
-        if statement:
-            print 'children:', [pos[c] for c in children]
-
-        # Reposition children in grid
-        # square with diagonal 2r. sqrt(2) * r is the width of the square
+        
+        # Width of the the square inscribing the circle is sqrt(2) *
+        # radius
         width = np.sqrt(2) * radius
 
+        # Reposition nodes into a square grid
         num_cols = int(np.ceil(np.sqrt(len(children))))
         col_space = width / (num_cols - 1)
         row_space = width / (num_cols - 1)
@@ -1341,23 +1376,15 @@ def gridify(centers, pos, G, parents):
             row, col = i / num_cols, i % num_cols
             pos[c] = (topleft[0] + col * col_space, topleft[1] + row * row_space)
 
-            if statement:
-                print i, c, row, col
-
-        # Reposition v to be 1/3rd of the distance from the outside of the circle to its parent
+        # Reposition the center node to be 1/3rd of the distance from
+        # the outside of the circle to the center's parent
+        p = G.successors(v)[0]
         x_parent, y_parent = pos[p]
         distance = np.sqrt((x_parent - x_center)**2 + (y_parent - y_center)**2)
         alpha = (2/3.) * (distance - radius) / distance
         
         pos[v] = (x_center * (1 - alpha) + x_parent * alpha,
                   y_center * (1 - alpha) + y_parent * alpha)
-        
-        if statement:
-            print 'topleft:', topleft
-            print 'width:', width
-            print 'colspace:', col_space
-            print 'num_cols:', num_cols
-            print 'children(new):', [pos[c] for c in children]
 
 def nx_set_tree_edges(G, tree_edges):
     nx.set_edge_attributes(
@@ -1366,3 +1393,22 @@ def nx_set_tree_edges(G, tree_edges):
         {(s,t) : 'Tree' if ((s,t) in tree_edges) else 'Not_Tree'
          for s, t in G.edges_iter(data=False)}
     )
+
+
+
+def color_gradient(ratio, min_col='#FFFFFF', max_col='#D65F5F', output_hex=True):
+    """Calculate a proportional mix between two colors.
+
+    """
+
+    min_col_hex = min_col.lstrip('#')
+    min_col_rgb = tuple(int(min_col_hex[i:i+2], 16) for i in (0, 2 ,4))
+    max_col_hex = max_col.lstrip('#')
+    max_col_rgb = tuple(int(max_col_hex[i:i+2], 16) for i in (0, 2 ,4))
+
+    mix_col_rgb = [int(ratio*x + (1-ratio)*y) for x, y in zip(max_col_rgb, min_col_rgb)]
+    if output_hex:
+        return('#%02x%02x%02x' % tuple(mix_col_rgb)).upper()
+    else:
+        return mix_col_rgb
+

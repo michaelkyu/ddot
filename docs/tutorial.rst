@@ -1,15 +1,38 @@
 Tutorial
-==============
+========
 
-Instantiating an Ontology object
+DDOT is a software library for constructing, analyzing, and viewing
+biological ontologies. An ontology is a hierarchical arrangement of
+two types of nodes, genes and terms. This arrangement is general such
+that each node can have multiple children or multiple parent nodes.
+
+DDOT can handle ontologies that are assembled in a data-driven manner
+as well as manually curated ontologies like the Gene Ontology.
+
+Installation
+------------
+
+1. Download the source code from https://github.com/michaelkyu/ontology
+2. Run `python setup.py install`
+
+Constructing an Ontology
+------------------------
+
+We will work with the following ontology as an example
+	  
+Reading an Ontology object
 ---------------------------------
 
 Ontology objects can be created in several ways
 
 1. Through the __init__ constructor::
      
-     ont = Ontology(...)
+     ont = Ontology(hierarchy, mapping, ...)
 
+   The two main parameters are <hierarchy>, a list of (child term,
+   parent term) pairs, and <mapping>, a list of (gene, term) pairs.
+
+   
 2. Loading from the Network DataBase Exchange (NDEx)::
 
      ont = Ontology.from_ndex(uuid)
@@ -37,50 +60,86 @@ An Ontology stores four fundamental types of information
 
 Alternatively, the hierarchical connections can be viewed as a matrix::
 
-  Ontology.get_connectivity_matrix()
+  Ontology.connected()
 
-A summary of an Ontology's object, i.e. the number of genes, terms, and connections, can be printed by `Ontology.summary()`
+A summary of an Ontology's object, i.e. the number of genes, terms, and connections, can be printed::
 
-Other functions for manipulating the contents of the Ontology
+  print ont
 
-1. .. class:: ddot.Ontology.rename
-2. collapse_node
-3. delete_genes
-4. delete_terms
-
-Preprocessing ontologies
-------------------------
+Direct manipulation of the Ontology
+-----------------------------------
 
 DDOT provides several convenience functions for processing Ontologies into a desirable structure
 
+1. Renaming genes and terms.
+
+   .. class:: ddot.Ontology.rename
+	      
+2. Removing genes and terms.
+
+   .. class:: ddot.Ontology.delete
+
+Currently, there are no functions for adding genes and terms. If this
+is needed, then we recommend creating a new Ontology or manipulating
+the contents in a different library, such as NetworkX or igraph, and
+transforming the results into Ontology.
+
+Collapsing the Ontology
+------------------------
 1. Ontology.collapse
 
 2. Ontology.mutual_collapse
 
-3. Ontology.propagate_annotations
 
-4. Ontology.parse_obo, Ontology.parse_gaf
+Expansion of reduction of transitive connnections in the hierarchy
+------------------------------------------------------------------
 
-Analytical functions
+Ontology.propagate_annotations
+
+
+Alignment of Ontologies
+-----------------------
+
+Ontology.align_hierarchy : align two hierarchies
+
+
+Creating Ontotypes
+------------------
+
+Ontology.get_features : generate ontotypes from Yu et al.
+
+
+Exporting an Ontology
 ---------------------
 
-1. Ontology.align_hierarchy : align two hierarchies
+1. Ontology.to_ndex : http://hiview.ucsd.edu
+2. from_pandas, from_table
+3. to_pandas, to_table
+   
+Visualizing an Ontology
+-----------------------
 
-2. Ontology.get_features : generate ontotypes from Yu et al.
+Because an Ontology is a general hierarchical structure, it is
+difficult to visualize it in a 2D-layout without having edge
+crossings. As one solution, DDOT allows you to show only a subset of
+the edges that form a spanning tree of the DAG. In turn, this tree can
+be visualized much more easily using several existing algorithms.
 
-Sharing and visualizing ontologies with NDEx and HiView
---------------------------------------------------------
 
-1. to_ndex
+1. Ontology.get_tree()
 
-http://hiview.ucsd.edu
+2. Ontology.unfold()
+
+
+CX file documentation: <link>
+
 
 Interfaces with other libraries
 -------------------------------
 
-1. from_pandas
-2. from_pandas
-3. to_igraph
-4. to_networkx
-5. to_NdexGraph
+1. to_igraph
+
+2. to_networkx
+
+3. to_NdexGraph
 

@@ -554,12 +554,6 @@ class Ontology(object):
                                                     key=lambda a:a[1]),
                                              key=lambda a:a[1])}
 
-        # if add_root_name is not None:
-        #     root_list = self.get_roots()
-        #     if len(root_list) > 1:
-        #         print 'Unifying %s roots into one super-root' % len(root_list)
-        #         self.parent_2_child[add_root_name] = root_list
-
         ## Read gene-to-term edges
         # self.gene_2_term[<gene_name>] --> list of terms that <gene_name> is mapped to
         self.gene_2_term = {key: set([a[1] for a in group]) for key, group in \
@@ -575,8 +569,8 @@ class Ontology(object):
 
         if verbose and ignore_orphan_terms and len(terms_B - terms_A)>0:
             print 'WARNING: Ignoring {} terms are connected to genes but not to other terms'.format(len(terms_B - terms_A))
-        if verbose and len(terms_A - terms_B)>0:
-            print 'WARNING: {} terms connected to other terms but not to genes'.format(len(terms_A - terms_B))
+        # if verbose and len(terms_A - terms_B)>0:
+        #     print 'WARNING: {} terms connected to other terms but not to genes'.format(len(terms_A - terms_B))
 
         if ignore_orphan_terms:
             self.terms = sorted(terms_A)
@@ -608,6 +602,9 @@ class Ontology(object):
             if node_attr.index.name != 'Node':
                 if verbose:
                     print "Changing node_attr index name from %s to 'Node'" % node_attr.index.name
+                    # import traceback
+                    # print traceback.print_stack()
+                    
                 node_attr.index.name = 'Node'                
             self.node_attr = node_attr
 
@@ -618,6 +615,9 @@ class Ontology(object):
             if edge_attr.index.names != ['Child', 'Parent']:
                 if verbose:
                     print "Changing edge_attr index names from %s to ['Child', 'Parent']" % edge_attr.index.names
+                    # import traceback
+                    # print traceback.print_stack()
+                    
                 edge_attr.index.names = ['Child', 'Parent']
             self.edge_attr = edge_attr
 
@@ -631,7 +631,14 @@ class Ontology(object):
 
         assert self.edge_attr.index.duplicated().sum()==0
         assert self.node_attr.index.duplicated().sum()==0
-        
+
+        empty_terms = sum([x==0 for x in self.term_sizes])
+        if verbose and empty_terms > 0:
+            print 'WARNING: {} terms are connected to other terms but not to genes'.format(empty_terms), [t for t, x in zip(self.terms, self.term_sizes) if x==0][:5]
+            import traceback
+            print traceback.print_stack()
+
+                
     def _update_fields(self):
         self.child_2_parent, self.child_2_parent_indices = self._get_child_2_parent()
         self.term_2_gene = self._get_term_2_gene()
@@ -875,28 +882,34 @@ class Ontology(object):
             mutual_collapse=mutual_collapse,
             output=output)
 
-    # def _make_dummy(self):
-    #     ont = self
-        
-    #     new_gene_2_term = []
-    #     new_child_2_parent = []
-    #     for t in ont.terms:
-    #         if len(ont.term_2_gene[t]) > 0:
-    #             if len(ont.parent_2_child[t]) > 0:
-    #                 dummy_term = 'dummy_%s' % t
-    #                 new_child_2_parent.append([dummy_term, t])
-    #             else:
-    #                 dummy_term = t                    
-    #             for g in ont.term_2_gene[t]:
-    #                 new_gene_2_term.append([ont.genes[g], dummy_term])
-                    
-    #         for p in ont.child_2_parent[t]:
-    #             new_child_2_parent.append([t, p])
-
-    #     ont_dummy = Ontology(new_child_2_parent, new_gene_2_term)
-    #     return ont_dummy
     
     def _make_dummy(self, tree_edges=None):
+        """For each term T in the ontology, create a new dummy term that
+        indirectly connect T's to T. For example, if g1 and g2 are in
+        T, then a new term dummy_T is created so that the new ontology
+        consists of
+
+        g1 --> T_dummy
+        g2 --> T_dummy
+        T_dummy --> T
+
+        Parameters
+        ----------
+        tree_edges : list
+
+            List of (child, parent) edges that constitute a spanning
+            tree of the ontology. If specified, then for each term T,
+            only the genes that are connected to T in the spanning
+            tree will be re-routed to the dummy node.
+
+            Default: None. This restriction will not apply
+
+        Returns
+        -------
+        : ddot.Ontology.Ontology
+
+        """
+        
         ont = self
         
         new_gene_2_term = []
@@ -924,6 +937,10 @@ class Ontology(object):
         return ont_dummy
 
     def _collect_tree(self, tree_edges=None):
+        """
+        Creates intermediate nodes 
+        """
+        
         ont = self
 
         if tree_edges is None:
@@ -985,12 +1002,20 @@ class Ontology(object):
                 new_child_2_parent.append((collect_hidden_child, t))                
             if used_hidden_parent:
                 new_child_2_parent.append((collect_hidden_parent, t))
+
+        # print set([x[0] for x in new_child_2_parent]) | set([x[1] for x in new_child_2_parent])
+        # print set([x[0] for x in new_gene_2_term])
         
         ont_collect = Ontology(new_child_2_parent,
                                new_gene_2_term,
                                node_attr=ont.node_attr.copy(),
-                               edge_attr=ont.edge_attr.copy())
+                               edge_attr=ont.edge_attr.copy(),
+                               verbose=False)
 
+        # for x in ['CLIXO:12760.0', 'CLIXO:12762.0', 'CLIXO:12836.0', 'CLIXO:12843.0', 'CLIXO:12843.1']:
+        #     print 'WACKAKAKAKA', x, ont_collect.term_sizes[ont_collect.terms_index[x]]
+        # print 'WACKAKAKAKA', (np.array(ont_collect.term_sizes)==0).sum()
+        
         new_and_orig = [('%s.%s' %(v,i), v) for v, copy_num in nodes_copy.items() for i in (range(copy_num + 1) if copy_num>0 else [])]
         new_2_orig = dict(new_and_orig)
         #'Original_Name': [x[1] for x in new_and_orig],
@@ -1025,71 +1050,6 @@ class Ontology(object):
         ont_collect.update_node_attr(collect_attr)
                 
         return ont_collect
-
-    # def _collect_tree(self, tree_edges=None):
-    #     ont = self
-
-    #     if tree_edges is None:
-    #         tree_edges = self.get_tree_edges()
-
-    #     nodes_copy = {v : 0 for v in ont.genes + ont.terms}
-    #     def get_name(u):
-    #         if u in nodes_copy:
-    #             u_name = '%s.%s' % (u, nodes_copy[u])
-    #             nodes_copy[u] += 1
-    #         else:
-    #             u_name = u
-    #         return u_name
-
-    #     new_gene_2_term = []
-    #     new_child_2_parent = []
-    #     for t in ont.terms:
-            
-    #         ## Gene-term connections
-
-    #         dummy_hidden_gene = 'dummy_hidden_gene_%s' % t
-    #         used_hidden_gene = False
-
-    #         if len(ont.parent_2_child[t]) > 0:
-    #             dummy_tree_gene = 'dummy_tree_gene_%s' % t
-    #         else:
-    #             dummy_tree_gene = t
-
-    #         used_tree_gene = False
-    #         for g in [ont.genes[g] for g in ont.term_2_gene[t]]:
-    #             if (g, t) in tree_edges:
-    #                 new_gene_2_term.append((g, dummy_tree))
-    #                 used_tree_gene = True
-    #             else:
-    #                 new_gene_2_term.append((g, dummy_hidden_gene))
-    #                 used_hidden_gene = True
-
-    #         if used_tree_gene and dummy_tree_gene != t:
-    #             new_child_2_parent.append((dummy_tree_gene, t))
-    #         if used_hidden_gene:
-    #             new_child_2_parent.append((dummy_tree_gene, t))
-
-
-    #         ## Parent-child term connections
-            
-    #         dummy_hidden_child = 'dummy_hidden_child_%s' % t
-    #         dummy_hidden_parent = 'dummy_hidden_parent_%s' % t
-    #         used_hidden_child, used_hidden_parent = False, False
-            
-    #         for c in ont.parent_2_child[t]:
-    #             if (c,t) in tree_edges:
-    #                 new_child_2_parent.append((c,t))
-    #             else:
-    #                 new_child_2_parent.append((c,dummy_hidden_child))
-    #                 used_hidden = True
-    #         for p in ont.child_2_parent[t]:
-    #             if
-                
-    #         if used_hidden_child:
-    #             new_child_2_parent.append((dummy_hidden_child, t))
-
-    #     ont_dummy = Ontology(new_child_2_parent, new_gene_2_term)
-    #     return ont_dummy
 
     def _to_networkx_no_layout(self):
         G = nx.DiGraph()
@@ -1192,54 +1152,59 @@ class Ontology(object):
             
         if spanning_tree:
             scale = 1
-            print 'scale:', scale
-            
-            if layout=='bubble':
+#            print 'scale:', scale
+
+            if layout is None or layout=='bubble':
                 G = self._to_networkx_no_layout()
                 tree_edges = self.get_tree()
                 nx_set_tree_edges(G, tree_edges)
-                G_tree = self.propagate_annotations('reverse')._make_dummy(tree_edges)._to_networkx_no_layout()
-                
-                pos = bubble_layout_nx(G_tree)
-                gridify([v for v in G_tree.nodes() if 'dummy2' in v], pos, G_tree)
-                G.pos = {n : (float(scale*p[0]), float(scale*p[1])) for n, p in pos.items() if 'dummy2' not in n}
+  
+                if layout=='bubble':
+                    G_tree = self.propagate_annotations('reverse')._make_dummy(tree_edges)._to_networkx_no_layout()
+                    pos = bubble_layout_nx(G_tree)
+                    gridify([v for v in G_tree.nodes() if 'dummy2' in v], pos, G_tree)
+                    G.pos = {n : (float(scale*p[0]), float(scale*p[1])) for n, p in pos.items() if 'dummy2' not in n}
+
             elif layout=='bubble-collect':
                 ont = self._collect_tree()
                 G_tree = ont.get_tree(ret='ontology')._to_networkx_no_layout()
-                
+
                 pos = bubble_layout_nx(G_tree)
                 collect_nodes = [v for v in G_tree.nodes() if 'collect' in v]               
-                gridify(collect_nodes, pos, G_tree, [G_tree.successors(v)[0] for v in collect_nodes])
-                
+                gridify(collect_nodes, pos, G_tree)
+
                 ont_red = ont.delete(to_delete=[t for t in ont.terms if 'collect_tree_gene' in t],
                                      preserve_transitivity=True)
                 G = ont_red._to_networkx_no_layout()
                 G.pos = {n : (float(scale*p[0]), float(scale*p[1])) for n, p in pos.items() if 'collect_tree_gene' not in n}
                 nx_set_tree_edges(G, ont_red.get_tree())
 
-                # G = ont._to_networkx_no_layout()
-                # nx_set_tree_edges(G, ont.get_tree())                
-                # G.pos = {n : (float(scale*p[0]), float(scale*p[1])) for n, p in pos.items()}
-
+                ######################################################
+                # TODO: move this visual styling outside of the layout
+                # functionality
+                
                 nx.set_edge_attributes(G, 'Vis:EDGE_SOURCE_ARROW_SHAPE', 'ARROW')
                 nx.set_edge_attributes(G, 'Vis:EDGE_TARGET_ARROW_SHAPE', 'NONE')
-                
+
                 for v, data in G.nodes(data=True):
                     if 'collect_hidden' in v:
                         for u in G.predecessors(v):
+                            # G.node[u][NODETYPE_ATTR] = 'collect'
                             G.node[u]['Vis:Fill Color'] = '#3182BD'
                     if 'collect_hidden_parent' in v:
                         for u in G.predecessors(v):
+                            # G.node[u][NODETYPE_ATTR] = 'collect'
                             G.node[u]['Vis:Size'] = 20
                         for _, _, data in G.in_edges(v, data=True):
                             data["Vis:EDGE_TARGET_ARROW_SHAPE"] = 'ARROW'
                             data["Vis:EDGE_SOURCE_ARROW_SHAPE"] = 'NONE'
-                        
             else:
                 raise Exception('Unsupported layout: %s', layout)
 
-            nx.set_node_attributes(G, 'x_pos', {n : x for n, (x,y) in G.pos.items()})
-            nx.set_node_attributes(G, 'y_pos', {n : y for n, (x,y) in G.pos.items()})
+            if layout is not None:
+                nx.set_node_attributes(G, 'x_pos', {n : x for n, (x,y) in G.pos.items()})
+                nx.set_node_attributes(G, 'y_pos', {n : y for n, (x,y) in G.pos.items()})
+                
         else:
             G = self._to_networkx_no_layout()
             
@@ -1458,6 +1423,9 @@ class Ontology(object):
             hierarchy.drop_duplicates([child, parent], inplace=True)
 
         edge_attr = edge_attr.loc[~ edge_attr.index.duplicated(), :]
+
+#        node_attr.index.name = 'Node'
+        edge_attr.index.names = ['Child', 'Parent']
         
         mapping, hierarchy = mapping.values.tolist(), hierarchy.values.tolist()        
         
@@ -1649,7 +1617,8 @@ class Ontology(object):
     def from_igraph(cls,
                     G,
                     edgetype_attr=None,
-                    edgetype_value=None):
+                    edgetype_value=None,
+                    verbose=False):
         """Converts a igraph Graph object to an Ontology object. Gene and terms
         are distinguished by an edge attribute.
 
@@ -1689,11 +1658,14 @@ class Ontology(object):
 
         edge_attr = ig_edges_to_pandas(G)
         node_attr = ig_nodes_to_pandas(G)
+        edge_attr.index.names = ['Child', 'Parent']
+        node_attr.index.name = 'Node'
         
         return cls(hierarchy,
                    mapping,
                    node_attr=node_attr,
-                   edge_attr=edge_attr)
+                   edge_attr=edge_attr,
+                   verbose=verbose)
 
     def collapse_ontology(self,                          
                           method='mhkramer',
@@ -2312,7 +2284,7 @@ class Ontology(object):
 
         return self.rename(rename, inplace=False)
 
-    def get_tree(self, ret='edges'):
+    def get_tree(self, ret='edges', verbose=False):
         """Identify a spanning tree of the DAG (including genes as part of the
         DAG).
 
@@ -2339,7 +2311,7 @@ class Ontology(object):
             return tree_edges
         elif ret=='ontology':
             tree.delete_edges([e.index for e in tree.es if e['Is_Tree_Edge']=='Not_Tree'])
-            return Ontology.from_igraph(tree)
+            return Ontology.from_igraph(tree, verbose=verbose)
 
     def is_dag(self):
         """Return True if the Ontology is a valid directed acyclic graph,
@@ -3165,13 +3137,13 @@ class Ontology(object):
             is_mapping=lambda x: x[2]=='gene',
             verbose=verbose)
         ont.rename(terms=lambda x: 'CLIXO:%s' % x, inplace=True)
-
+        
         ont.edge_attr.columns = map(str, ont.edge_attr.columns)
         ont.edge_attr.drop('2', inplace=True, axis=1)
         ont.edge_attr.rename(columns={'3':'CLIXO_score'}, inplace=True)
 
         if verbose:
-            print 'Ontology:', ont.summary()
+            print 'Ontology:', ont
 
 #        if len(ont.terms)
 
@@ -3184,11 +3156,12 @@ class Ontology(object):
                 ndex_user=None,
                 ndex_pass=None,
                 network=None,
-                features=[],
+                features=None,
+                main_feature=None,
                 subnet_max_term_size=None,
                 layout='bubble',
                 propagate='reverse',
-                style=ddot.config.ontology_style,
+                style=None,
                 node_alias='Original_Name',
                 term_2_uuid=None,
                 public=False,
@@ -3261,11 +3234,6 @@ class Ontology(object):
 
         """
 
-             #    term_alias : str (optional)
-
-             # Name of a node attribute (i.e. a column in
-             # Ontology.node_attr) that is used to identify terms
-
         if ndex_server is None:
             ndex_server = ddot.config.ndex_server
         if ndex_user is None:
@@ -3277,12 +3245,17 @@ class Ontology(object):
             ont = self.propagate_annotations(direction=propagate, inplace=False)
         else:
             ont = self
-        
+
+        if features is None:
+            features = []
+            
         if (network is not None) and (len(features) > 0) and (term_2_uuid is None):
-            if subnet_max_term_size is not None:
-                terms = [t for t,s in zip(ont.terms, ont.term_sizes) if s <= subnet_max_term_size]
+            assert main_feature in features, 'A main feature of the network must be specified'
+            
+            if subnet_max_term_size is None:
+                terms = ont.terms                
             else:
-                terms = ont.terms
+                terms = [t for t,s in zip(ont.terms, ont.term_sizes) if s <= subnet_max_term_size]
 
             # Only upload subnets for the unique set of the original
             # terms
@@ -3291,8 +3264,9 @@ class Ontology(object):
                 terms = [b[0] for b in orig_2_new.values()]
                 
             term_2_uuid = ont.upload_subnets_ndex(
-                network,
+                network,                
                 features,
+                main_feature,
                 name,
                 ndex_server=ndex_server,
                 ndex_user=ndex_user,
@@ -3303,7 +3277,8 @@ class Ontology(object):
             )
 
             if node_alias in ont.node_attr.columns:
-                term_2_uuid = {s : term_2_uuid[orig_2_new[t][0]] for t in orig_2_new for s in orig_2_new[t]}
+                term_2_uuid = {s : term_2_uuid[orig_2_new[t][0]] for t in orig_2_new for s in orig_2_new[t] if orig_2_new[t][0] in term_2_uuid}
+#                term_2_uuid = {s : term_2_uuid[orig_2_new[t][0]] for t in orig_2_new for s in orig_2_new[t]}
         elif term_2_uuid is None:
             term_2_uuid = {}
 
@@ -3333,7 +3308,7 @@ class Ontology(object):
                      term_2_uuid=None,
                      spanning_tree=True,
                      layout='bubble',
-                     style=ddot.config.ontology_style):
+                     style=None):
         """Formats an Ontology object into a NetworkX object with extra node
         attributes that are accessed by the hierarchical viewer.
 
@@ -3374,74 +3349,34 @@ class Ontology(object):
         # Convert to NetworkX
         G = self.to_networkx(layout=layout, spanning_tree=spanning_tree)
 
+        if style is None:
+            style = 'passthrough'
+
         # Set extra attributes for passthrough visual styling
-        if style in ['passthrough', 'disease_passthrough']:
+        if style=='passthrough':
             for v, data in G.nodes(data=True):
-                if data[self.NODETYPE_ATTR]==self.GENE_NODETYPE:
-                    if 'Vis:Shape' not in data:
-                        data['Vis:Shape'] = 'Rectangle'
-
-                    if 'Vis:Fill Color' not in data:
-                        # Randomly fill colors
-                        # if (style=='disease_passthrough' and 'Seed' in data and data['Seed']) or \
-                        #    (style!='disease_passthrough' and np.random.random(1)[0] < 0.2):
-                        if (style=='disease_passthrough' and 'Seed' in data and data['Seed']):
-                            data['Vis:Fill Color'] = '#6ACC65'
-                        else:
-                            data['Vis:Fill Color'] = '#FFFFFF'
-
-                    if 'Vis:Border Paint' not in data:
-                        # Randomly assign border paint
-                        # if (style=='disease_passthrough' and 'has_drug' in data and data['has_drug']) or \
-                        #    (style!='disease_passthrough' and np.random.random(1)[0] < 0.2):
-                        if (style=='disease_passthrough' and 'has_drug' in data and data['has_drug']):                  
-                            data['Vis:Border Paint'] = '#D65F5F'
-                        else:
-                            data['Vis:Border Paint'] = '#000000'
-
-                elif data[self.NODETYPE_ATTR]==self.TERM_NODETYPE:
-                    if 'Vis:Shape' not in data:
-                        data['Vis:Shape'] = 'Circle'
-                    if 'Vis:Border Paint' not in data:
-                        data['Vis:Border Paint'] = '#000000'
-
-                    if 'Vis:Fill Color' not in data:
-                        # Randomly fill colors
-                        # if (style=='disease_passthrough' and ('Aligned_Term' in data)) or \
-                        #    (style!='disease_passthrough' and np.random.random(1)[0] < 0.5):                        
-                        #     data['Vis:Fill Color'] = '#D65F5F'
-                        # else:
-                        #     data['Vis:Fill Color'] = '#B47CC7'
-
-                        if style=='disease_passthrough':
-                            if 'Aligned_Term' in data:
-                                data['Vis:Fill Color'] = '#D65F5F'
-                            else:
-                                data['Vis:Fill Color'] = '#B47CC7'
-                        else:
-                            data['Vis:Fill Color'] = '#FFFFFF'
-
+                is_gene = data[self.NODETYPE_ATTR]==self.GENE_NODETYPE
+                if 'Vis:Shape' not in data:
+                    data['Vis:Shape'] = 'Rectangle' if is_gene else 'Circle'
+                if 'Vis:Fill Color' not in data:
+                    data['Vis:Fill Color'] = '#FFFFFF'
+                if 'Vis:Border Paint' not in data:
+                    data['Vis:Border Paint'] = '#000000'
                 if 'Vis:Size' not in data:
-                    # data['Vis:Size'] = 20 * math.sqrt(data['Size'])
-                    
-                    # data['Vis:Size'] = 20 * float(1. + np.log2(data['Size']))
+                    data['Vis:Size'] = 20 * float(1. + np.log10(data['Size']))
 
-                    try:
-                        data['Vis:Size'] = 20 * float(1. + np.log10(data['Size']))
-                    except:
-                        print data
-                        0 / adsf
-                    
             for u, v, data in G.edges(data=True):
-                if 'Vis:Visible' not in data:
+                if 'Vis:Visible' not in data and 'Is_Tree_Edge' in data:
                     data['Vis:Visible'] = data['Is_Tree_Edge']=='Tree'
 
             style = ddot.config.passthrough_style
-                    
+        else:
+            raise Exception('Unsupported style')
+            
         # Set links to subnetworks supporting each term
         if term_2_uuid:
             for t in self.terms:        
-                if term_2_uuid.has_key(t):
+                if t in term_2_uuid:
                     G.node[t]['ndex:internalLink'] = '[%s](%s)' % (G.node[t]['Label'], term_2_uuid[t])
 
         G = nx_to_NdexGraph(G)
@@ -3587,7 +3522,8 @@ class Ontology(object):
     def upload_subnets_ndex(self,
                             network,
                             features,
-                            name,
+                            main_feature,
+                            name,                            
                             ndex_server=None,
                             ndex_user=None,
                             ndex_pass=None,
@@ -3597,7 +3533,7 @@ class Ontology(object):
                             public=False,
                             node_attr=None,
                             node_alias='Original_Name',
-                            z_score=True,
+                            z_score=False,
                             verbose=False):
         """For each term in the ontology, upload a subnetwork of interactions
         between the genes in that term to NDEx.
@@ -3674,9 +3610,10 @@ class Ontology(object):
         start = time.time()
         g1, g2 = gene_columns[0] + '_lex', gene_columns[1] + '_lex'
 
-        if verbose:
-            print 'features:', features
-            print 'gene_columns:', gene_columns
+        features = [f for f in features if f not in gene_columns]
+        # if verbose:
+        #     print 'features:', features
+        #     print 'gene_columns:', gene_columns
 
         network = network[features + gene_columns].copy()
 
@@ -3690,9 +3627,6 @@ class Ontology(object):
                for x, y in zip(network[gene_columns[0]], network[gene_columns[1]])]
         network = network.loc[tmp, :]
 
-        for feat in features:
-            network[feat] = network[feat].astype(np.float64)
-
         # Lexicographically sort gene1 and gene2 so that gene1 < gene2
         network[g1] = network[gene_columns].min(axis=1)
         network[g2] = network[gene_columns].max(axis=1)
@@ -3702,11 +3636,26 @@ class Ontology(object):
             print 'Setup time:', time.time() - start
 
         if z_score:
+            for feat in features:
+                network[feat] = network[feat].astype(np.float64)
+
             # Normalize features into z-scores
             tmp = network[features]
             network[features] = (tmp - tmp.mean()) / tmp.std()
 
         # Calculate the min/max range of features
+#        feature_types = [str(x) for x in network[features].dtypes.tolist()]
+        numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
+        def f(x):
+            if str(x) in numerics:
+                return 'numeric'
+            elif str(x) == 'bool':
+                return 'boolean'
+            else:
+                raise Exception()
+        feature_types = network[features].dtypes.map(f)
+        # print feature_types
+        # 0 / asdf
         feature_mins = network[features].min().astype(np.str)
         feature_maxs = network[features].max().astype(np.str)
 
@@ -3722,34 +3671,41 @@ class Ontology(object):
                 genes = ont.node_attr.loc[genes, node_alias].values            
             genes.sort()
             gene_pairs_idx = [network_idx[gp] for gp in itertools.combinations(genes, 2) \
-                              if network_idx.has_key(gp)]
+                              if gp in network_idx]
 
-            G_nx = nx.from_pandas_dataframe(network.iloc[gene_pairs_idx, :], g1, g2,
-                                            edge_attr=features)
-            if node_attr is not None:
-                set_node_attributes_from_pandas(G_nx, node_attr)
+            if len(gene_pairs_idx) > 0:
+                G_nx = nx.from_pandas_dataframe(network.iloc[gene_pairs_idx, :], g1, g2,
+                                                edge_attr=features)
+                if node_attr is not None:
+                    set_node_attributes_from_pandas(G_nx, node_attr)
 
-            G = nx_to_NdexGraph(G_nx)
-            G.set_name('%s supporting network for %s' % (name, t))
-            G.set_network_attribute('Description', '%s supporting network for %s' % (name, t))
-            for f in features:
-                G.set_network_attribute('%s min' % f, feature_mins[f])
-                G.set_network_attribute('%s max' % f, feature_maxs[f])
+                G = nx_to_NdexGraph(G_nx)
+                G.set_name('%s supporting network for %s' % (name, t))
+                G.set_network_attribute('Description', '%s supporting network for %s' % (name, t))
+                G.set_network_attribute('Main Feature', main_feature)
+                for f in features:
+                    G.set_network_attribute('%s type' % f, feature_types[f])
+                    if feature_types[f] == 'numeric':
+                        G.set_network_attribute('%s min' % f, feature_mins[f])
+                        G.set_network_attribute('%s max' % f, feature_maxs[f])
 
-            start_upload = time.time()
-            ndex_url = G.upload_to(ndex_server, ndex_user, ndex_pass)
-            term_2_uuid[t] = parse_ndex_uuid(ndex_url)
-            upload_time = time.time() - start_upload
+                start_upload = time.time()
+                ndex_url = G.upload_to(ndex_server, ndex_user, ndex_pass)
+                term_2_uuid[t] = parse_ndex_uuid(ndex_url)
+                upload_time = time.time() - start_upload
 
-            if verbose:
-                print(upload_idx,
-                      'Term:', t,
-                      'Gene pairs:', len(gene_pairs_idx),
-                      'Genes:', len(genes),
-                      'Time:', round(time.time() - start, 4),
-                      'Upload time:', round(upload_time, 4),
-                      'NDEx URL:', ndex_url)
-
+                if verbose:
+                    print(upload_idx,
+                          'Term:', t,
+                          'Gene pairs:', len(gene_pairs_idx),
+                          'Genes:', len(genes),
+                          'Time:', round(time.time() - start, 4),
+                          'Upload time:', round(upload_time, 4),
+                          'NDEx URL:', ndex_url)
+            else:
+                if verbose:
+                    print(upload_idx, 'No data provided for gene pairs in Term: %s' % t)
+                    
         if public:            
             to_upload = set(term_2_uuid.values())
             while len(to_upload) > 0:
@@ -3930,6 +3886,19 @@ class Ontology(object):
                tree_edges=None):
         """
         
+        Parameters
+        ---------- 
+
+        duplicate : list
+
+            Nodes to duplicate for unfolding
+
+        genes_only : bool
+
+            If True, then duplicate all of the genes and none of the terms. Default: False
+
+        levels : 
+
         """
 
         ont = self.propagate_annotations(direction='reverse', inplace=False)
@@ -4021,7 +3990,12 @@ class Ontology(object):
         
         node_attr = ont.node_attr.loc[orig_nodes, :].copy()
         node_attr['Original_Name'] = orig_nodes
-        node_attr['Label'] = orig_nodes
+
+        if 'Label' in node_attr.columns:
+            tmp = pd.isnull(node_attr['Label']).values
+            node_attr.loc[tmp, 'Label'] = np.array(orig_nodes)[tmp]
+        else:
+            node_attr['Label'] = orig_nodes
 
         if hidden_mode:
             node_attr['Level'] = [hidden_depth[v] for v in new_nodes]

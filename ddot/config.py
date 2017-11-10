@@ -19,6 +19,6 @@ with open(os.path.join(top_level, 'ontology_style.cx')) as f:
 with open(os.path.join(top_level, 'passthrough_style.cx')) as f:
     passthrough_style = NdexGraph(json.load(f))
 
-GO_HUMAN_URL = 'http://dev2.ndexbio.org/v2/network/8a878672-be78-11e7-a3af-0660b7976219'
+GO_HUMAN_URL = 'http://dev2.ndexbio.org/v2/network/36e6e5b2-c2aa-11e7-9379-0660b7976219'
 PHAROS_URL = 'http://dev2.ndexbio.org/v2/network/a94f1c0f-789a-11e7-a1d1-0660b7976219'
 MONARCH_DISEASE_GENE_URL = 'http://dev2.ndexbio.org/v2/network/07749a5f-7956-11e7-a1d1-0660b7976219'

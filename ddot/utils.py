@@ -905,7 +905,6 @@ def ndex_to_sim_matrix(ndex_uuid,
 def expand_seed(seed,
                 sim,
                 sim_names,
-                sim_transform=None,
                 agg='mean',
                 min_sim=-np.inf,
                 filter_perc=None,
@@ -913,7 +912,8 @@ def expand_seed(seed,
                 agg_perc=0.5,
                 expand_size=None,
                 include_seed=True,
-                figure=False):
+                figure=False,
+                verbose=False):
     """Identify genes that are most similar to a seed set of genes.
 
     A gene is included in the expanded set only if it meets all of the
@@ -984,7 +984,11 @@ def expand_seed(seed,
         sim_2_seed[seed_idx] /= float(seed_idx.size - 1)
         sim_2_seed[np.setdiff1d(np.arange(sim_2_seed.size), seed_idx)] /= float(seed_idx.size)
 
-        # print sim_2_seed.size, np.diagonal(sim_slice).size, sim_slice.shape
+        ## Just take a simple average including self.
+        ## This method has the problem is that it's not clear what to set the similarity to self
+        # sim_2_seed = sim_slice.mean(0)
+        
+        # print sim_2_seed.size, np.diagonal(sim_slice).size, sim_slice.shape        
         # sim_2_seed -= np.diagonal(sim_slice)
         # sim_2_seed = sim_2_seed / float(sim_2_seed.shape[0] - 1)
     elif agg=='min':
@@ -1022,7 +1026,8 @@ def expand_seed(seed,
         # Filter based on a percentile of similarities between seed set to itself
         if seed_perc is not None:
             min_sim = max(min_sim, np.percentile(sim_2_seed[seed_idx], 100 * seed_perc))
-        print 'min_sim:', min_sim
+            
+        if verbose: print 'min_sim:', min_sim
 
         expand_idx = expand_idx[sim_2_seed[expand_idx] >= min_sim]
         
@@ -1051,13 +1056,14 @@ def expand_seed(seed,
                 sns.distplot(sim_2_seed[seed_idx], kde=False, norm_hist=True,
                              ax=ax,
                              axlabel='Similarity to seed set', label='Probability Density')
-
+            # plt.show(fig)
+            
             try:
                 figure.savefig(figure)
             except:
                 pass
 
-            plt.close(fig)
+            #plt.close(fig)
         else:
             fig = None
     except:
@@ -1082,7 +1088,8 @@ def make_seed_ontology(seed,
                        node_attr=None,
                        public=True,
                        verbose=False,
-                       style=None,
+                       style='passthrough',
+                       layout='bubble-collect',
                        network=None,
                        features=None,
                        main_feature=None,                       
@@ -1179,7 +1186,6 @@ def make_seed_ontology(seed,
         except:
             assert isinstance(ref, ddot.Ontology)
 
-
         kwargs = {
             'iterations' : 3,
             'threads' : 4,
@@ -1249,19 +1255,27 @@ def make_seed_ontology(seed,
         description += (
             'Created from a similarity network '
             'on a local file')
-    
+        
     if ndex:
+        if network is None:
+            network = df
+            features = ['similarity']
+            main_feature = 'similarity'
+            
         ont_url, ont_ndexgraph = ont.to_ndex(
             name=name,
             description=description,
-            network=df,
-            features=['similarity'],
+            network=network,
+            features=features,
+            main_feature=main_feature,
             subnet_max_term_size=subnet_max_term_size,
             ndex_server=ndex_server,
             ndex_user=ndex_user,
             ndex_pass=ndex_pass,
             style=style,
-            public=public
+            layout=layout,
+            public=public,
+            verbose=verbose
         )
     else:
         ont_url, ont_ndexgraph = None, None

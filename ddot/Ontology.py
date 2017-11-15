@@ -579,13 +579,11 @@ class Ontology(object):
         ## parent_2_child and self.gene_2_term
         terms_A = set.union(set(self.parent_2_child.keys()),
                             *[set(x) for x in self.parent_2_child.values()])
-        terms_B = set.union(*self.gene_2_term.values())
-        # try:
-
-        # except:
-        #     print self.gene_2_term.values()[:5]
-        #     0 / asdf
-
+        if len(self.gene_2_term) > 0:
+            terms_B = set.union(*self.gene_2_term.values())
+        else:
+            terms_B = set([])
+            
         if verbose and ignore_orphan_terms and len(terms_B - terms_A)>0:
             print 'WARNING: Ignoring {} terms are connected to genes but not to other terms'.format(len(terms_B - terms_A))
         # if verbose and len(terms_A - terms_B)>0:
@@ -654,8 +652,8 @@ class Ontology(object):
         empty_terms = sum([x==0 for x in self.term_sizes])
         if verbose and empty_terms > 0:
             print 'WARNING: {} terms are connected to other terms but not to genes'.format(empty_terms), [t for t, x in zip(self.terms, self.term_sizes) if x==0][:5]
-            import traceback
-            print traceback.print_stack()
+            # import traceback
+            # print traceback.print_stack()
 
                 
     def _update_fields(self):
@@ -965,7 +963,7 @@ class Ontology(object):
         if tree_edges is None:
             tree_edges = self.get_tree()
 
-        nodes_copy = {v : 0 for v in ont.genes + ont.terms}
+        nodes_copy = {v : 1 for v in ont.genes + ont.terms}
         def get_copy(u):
             u_name = '%s.%s' % (u, nodes_copy[u])
             nodes_copy[u] += 1            
@@ -992,9 +990,11 @@ class Ontology(object):
                     new_gene_2_term.append((g, collect_tree_gene))
                     used_tree_gene = True
                 else:
+                    # tmp = (get_copy(g), collect_hidden_gene)
+                    # new_gene_2_term.append(tmp)
                     new_gene_2_term.append((get_copy(g), collect_hidden_gene))
                     used_hidden_gene = True
-
+            
             if used_tree_gene and collect_tree_gene != t:
                 new_child_2_parent.append((collect_tree_gene, t))
             if used_hidden_gene:
@@ -1022,6 +1022,11 @@ class Ontology(object):
             if used_hidden_parent:
                 new_child_2_parent.append((collect_hidden_parent, t))
 
+        # print '******'
+        # print new_child_2_parent
+        # print new_gene_2_term
+        # print '******'
+        
         ont_collect = Ontology(new_child_2_parent,
                                new_gene_2_term,
                                node_attr=ont.node_attr.copy(),
@@ -1033,11 +1038,12 @@ class Ontology(object):
         # for Duplicate Nodes        #
         ##############################        
 
-        new_and_orig = [('%s.%s' %(v,i), v) for v, copy_num in nodes_copy.items() for i in (range(copy_num + 1) if copy_num>0 else [])]
+        new_and_orig = [('%s.%s' %(v,i), v) for v, copy_num in nodes_copy.items() for i in (range(1, copy_num) if copy_num>1 else [])]
         new_2_orig = dict(new_and_orig)
 
         df = pd.DataFrame({'orig_tmp' : [x[1] for x in new_and_orig],
-                           'Size' : 1,
+#                           'Size' : 1,
+                           'Size_tmp' : 1,
 #                           'Size_tmp' : [ont.term_sizes[ont.terms_index[x[1]]] if x[1] in ont.terms_index else 1 for x in new_and_orig],
                            'Hidden' : True},
                           index=[x[0] for x in new_and_orig])
@@ -1048,13 +1054,18 @@ class Ontology(object):
         else:
             merge['Original_Name'] = df['orig_tmp'].values
         del merge['orig_tmp']
-        # if 'Size' in merge:
-        #     unset = pd.isnull(merge['Size']).values
-        #     merge.loc[unset, 'Size'] = df.loc[unset, 'Size_tmp'].values            
-        # else:
-        #     merge['Size'] = df['Size_tmp'].values
-        # del merge['Size_tmp']        
 
+        #print merge.head()
+        
+        if 'Size' in merge:
+            unset = pd.isnull(merge['Size']).values
+            merge.loc[unset, 'Size'] = df.loc[unset, 'Size_tmp'].values            
+        else:
+            merge['Size'] = df['Size_tmp'].values
+        del merge['Size_tmp']        
+
+        #print merge.head()
+        
         # Append attributes for the new nodes
         ont_collect.node_attr = pd.concat([ont.node_attr, merge], 0)
 
@@ -1088,20 +1099,24 @@ class Ontology(object):
                genes_only=False,
                levels=None,
                tree_edges=None):
-        """
-        
+        """Traverses the ontology from the root to the leaves while
+        duplicating nodes during the traversal to create a tree representation.
+
+Traverse the ontology from the root nodes to the leaves in a
+        breadth-first manner. Each time a node is traversed, then create a duplicate of it 
+
         Parameters
         ---------- 
 
         duplicate : list
 
-            Nodes to duplicate for unfolding
+            Nodes to duplicate for unfolding. Default: all genes and terms
 
         genes_only : bool
 
             If True, then duplicate all of the genes and none of the terms. Default: False
 
-        levels : 
+        levels :
 
         """
 
@@ -1200,13 +1215,17 @@ class Ontology(object):
         
         node_attr.index = new_nodes
         node_attr.dropna(axis=0, how='all', inplace=True)
-
+        
         new_edges = hierarchy + mapping
         old_edges = [(new_2_orig[u], new_2_orig[v]) for u, v in new_edges]
-        edge_attr = ont.edge_attr.loc[old_edges, :].copy()
-        edge_attr.index = pd.MultiIndex.from_tuples(new_edges)
-        edge_attr.dropna(axis=0, how='all', inplace=True)
-
+        in_index = [x in ont.edge_attr.index for x in old_edges]
+        if sum(in_index) > 0:
+            edge_attr = ont.edge_attr.loc[[x for x, y in zip(old_edges, in_index) if y], :].copy()
+            edge_attr.index = pd.MultiIndex.from_tuples([x for x, y in zip(new_edges, in_index) if y])
+            edge_attr.dropna(axis=0, how='all', inplace=True)
+        else:
+            edge_attr = None
+            
         ont = Ontology(hierarchy,
                        mapping,
                        edge_attr=edge_attr,
@@ -1314,14 +1333,17 @@ class Ontology(object):
         : nx.DiGraph
 
         """
-            
+
         if spanning_tree:
             scale = 1
 #            print 'scale:', scale
 
             if layout is None or layout=='bubble':
                 G = self._to_networkx_no_layout()
-                tree_edges = self.get_tree()
+                if spanning_tree is True:
+                    tree_edges = self.get_tree()
+                else:
+                    tree_edges = spanning_tree
                 nx_set_tree_edges(G, tree_edges)
   
                 if layout=='bubble':
@@ -1331,18 +1353,52 @@ class Ontology(object):
                     G.pos = {n : (float(scale*p[0]), float(scale*p[1])) for n, p in pos.items() if 'dummy2' not in n}
 
             elif layout=='bubble-collect':
-                ont = self._collect_tree()
+                if spanning_tree is True:
+                    ont = self._collect_tree()
+                else:
+                    # Assume a list of tree edges are supplied
+                    ont = self._collect_tree(spanning_tree)
+                    
+#                print ont.node_attr
+#                print ont.node_attr.loc[ont.node_attr['Original_Name'=='20367'], :]
+#                print ont.genes, ont.terms
+#                print '============='                    
+                    
                 G_tree = ont.get_tree(ret='ontology')._to_networkx_no_layout()
 
+#                print nx_nodes_to_pandas(G_tree)
+                
                 pos = bubble_layout_nx(G_tree)                
                 collect_nodes = [v for v in G_tree.nodes() if 'collect' in v]               
                 gridify(collect_nodes, pos, G_tree)
 
+                # collect_node_types = ['collect_tree_gene', 'collect_hidden_parent', 'collect_hidden_child']
+                # ont_red = ont.delete(to_delete=[t for t in ont.terms if any([x in t for x in collect_node_types])],
+                #                      preserve_transitivity=True)
+                # G = ont_red._to_networkx_no_layout()
+                # G.pos = {n : (float(scale*p[0]), float(scale*p[1])) for n, p in pos.items() if all([x not in n for x in collect_node_types])}
+                # nx_set_tree_edges(G, ont_red.get_tree())
+                
                 ont_red = ont.delete(to_delete=[t for t in ont.terms if 'collect_tree_gene' in t],
                                      preserve_transitivity=True)
-                G = ont_red._to_networkx_no_layout()
+                # Set the original term sizes for the original copy of
+                # each term (not the duplicates)
+                ont_red.update_node_attr(pd.DataFrame({'Size' : self.term_sizes}, index=self.terms))
+                
+                # print ont_red.node_attr
+                # print ont_red.gene_2_term
+                # print ont_red.genes
+                # print zip(ont_red.terms, ont_red.term_sizes)
+                G = ont_red._to_networkx_no_layout()                
+                # print '------------------'
+                # print nx_nodes_to_pandas(G)
+                
                 G.pos = {n : (float(scale*p[0]), float(scale*p[1])) for n, p in pos.items() if 'collect_tree_gene' not in n}
                 nx_set_tree_edges(G, ont_red.get_tree())
+
+                # G = ont._to_networkx_no_layout()
+                # G.pos = {n : (float(scale*p[0]), float(scale*p[1])) for n, p in pos.items() if 'collect_tree_gene' not in n}
+                # nx_set_tree_edges(G, ont_red.get_tree())
 
                 ######################################################
                 # TODO: move this visual styling outside of the layout
@@ -1359,6 +1415,8 @@ class Ontology(object):
                         for _, _, data in G.in_edges(v, data=True):
                             data["Vis:EDGE_TARGET_ARROW_SHAPE"] = 'ARROW'
                             data["Vis:EDGE_SOURCE_ARROW_SHAPE"] = 'NONE'
+
+                
             else:
                 raise Exception('Unsupported layout: %s', layout)
 
@@ -2010,18 +2068,13 @@ class Ontology(object):
             tmp = pd.concat([df, new_connections], ignore_index=True)
             df = tmp[df.columns]
 
-        # print df.head()
-        # print '-----'
-        # print df['EdgeType'].value_counts()
-        
         ont = Ontology.from_table(df)
         ont.update_node_attr(self.node_attr)
-        orig_sizes = pd.DataFrame({'Size' : self.term_sizes}, index=self.terms)
+        orig_sizes = pd.DataFrame({'Original_Size' : self.term_sizes}, index=self.terms)
         ont.update_node_attr(orig_sizes)
         if len(new_connections)>0:
-            summary_sizes = pd.DataFrame({'Size' : [int(x.split('_')[1]) for x in new_nodes]}, index=new_nodes)
+            summary_sizes = pd.DataFrame({'Original_Size' : [int(x.split('_')[1]) for x in new_nodes]}, index=new_nodes)
             ont.update_node_attr(summary_sizes)
-#            ont.node_attr.loc[new_nodes, 'Size'] = [int(x.split('_')[1]) for x in new_nodes]
         del ont.edge_attr[self.EDGETYPE_ATTR]        
 
         if len(new_connections) > 0:
@@ -3358,6 +3411,7 @@ class Ontology(object):
                 features=None,
                 main_feature=None,
                 subnet_max_term_size=None,
+                visible_term_attr=None,
                 layout='bubble',
                 propagate='reverse',
                 style=None,
@@ -3489,12 +3543,21 @@ class Ontology(object):
                 layout=layout,
                 style=style)
 
+        if visible_term_attr is not None:
+            df = ddot.utils.nx_nodes_to_pandas(G, visible_term_attr)
+            df.rename(columns=lambda x: 'Display:' + x, inplace=True)
+            ddot.utils.set_node_attributes_from_pandas(G, df)
+            
+            # for a in visible_term_attr:
+            #     G.set_network_attribute('Display:' + a, True)
+            G.set_network_attribute('Display', '|'.join(visible_term_attr))
+            
         if verbose:  print 'Uploading to NDEx'
         ont_url = G.upload_to(ndex_server, ndex_user, ndex_pass)
 
         if public:
             ont_uuid = parse_ndex_uuid(ont_url)
-            if verbose: print 'Making ontology at %s public on NDEX:' % ont_uuid
+            if verbose: print 'Making public the ontology at %s' % ont_url
             make_network_public(ont_uuid,
                                 ndex_server=ndex_server,
                                 ndex_user=ndex_user,
@@ -3564,7 +3627,10 @@ class Ontology(object):
                 if 'Vis:Border Paint' not in data:
                     data['Vis:Border Paint'] = '#000000'
                 if 'Vis:Size' not in data:
-                    data['Vis:Size'] = 20 * float(1. + np.log10(data['Size']))
+                    if 'Size' in data and data['Size'] > 0:
+                        data['Vis:Size'] = 20 * float(1. + np.log10(data['Size']))
+                    else:
+                        data['Vis:Size'] = 20
 
             for u, v, data in G.edges(data=True):
                 if 'Vis:Visible' not in data and 'Is_Tree_Edge' in data:
@@ -3587,13 +3653,13 @@ class Ontology(object):
                             max_ratio = max(max_ratio, ratio)
                 if max_ratio > desired_ratio:
                     for v, data in G.nodes(data=True):
+#                        print data['Vis:Size'],
                         data['Vis:Size'] = (data['Vis:Size'] - base_size) * (desired_ratio / max_ratio) + base_size
+#                        print data['Vis:Size']
                     
             style = ddot.config.passthrough_style
         else:
             raise Exception('Unsupported style')
-
-        
                 
         # Set links to subnetworks supporting each term
         if term_2_uuid:
@@ -3607,7 +3673,14 @@ class Ontology(object):
         #     if 'Original_Name' in data and 'Hidden' in data and data['Hidden']==True:
         #         data['Original_Name'] = name_2_idx[data['Original_Name']]
 
+        # for v, data in G.nodes(data=True):
+        #     if 'Size' in data:
+        #         data['abcd'] = data['Size']
+        #         del data['Size']
+            
         G = nx_to_NdexGraph(G)
+#        print nx_nodes_to_pandas(G)
+        
         if name is not None:
             G.set_name(name)
         if description is not None:
@@ -3865,6 +3938,8 @@ class Ontology(object):
             tmp = network[features]
             network[features] = (tmp - tmp.mean()) / tmp.std()
 
+#        network_sq = ddot.utils.pivot_square(network, g1, g2, main_feature)
+            
         # Calculate the min/max range of features
 #        feature_types = [str(x) for x in network[features].dtypes.tolist()]
         numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
@@ -3882,6 +3957,8 @@ class Ontology(object):
         if terms is None:
             terms = ont.terms
 
+        ont_prop = ont.propagate_annotations('forward', inplace=False)
+            
         if verbose: print 'Uploading %s terms' % len(terms)
         for upload_idx, t in enumerate(terms):
             start = time.time()
@@ -3899,6 +3976,22 @@ class Ontology(object):
                 if node_attr is not None:
                     set_node_attributes_from_pandas(G_nx, node_attr)
 
+                # Annotate the membership in children terms
+                genes_set = set(genes)
+                children = ont.parent_2_child[t]
+                df = pd.DataFrame({c : False for c in children}, index=genes, dtype=bool)                
+                for c in children:
+                    genes_in = [ont_prop.genes[g] for g in ont_prop.term_2_gene[c]]
+                    df.loc[genes_in, c] = True
+                df.rename(columns=lambda x: 'Group:'+x, inplace=True)
+                ddot.utils.set_node_attributes_from_pandas(G_nx, df)
+
+                # # If a gene belongs to multiple children, then place it where it is most similar
+                # for g_i in (df.sum(1) > 0).nonzero():
+                #     g = genes[g_i]
+                #     choices = df.loc[g, :].nonzero()
+                #     network_sq.loc[g, :].argmax()                    
+
                 G = nx_to_NdexGraph(G_nx)
                 G.set_name('%s supporting network for %s' % (name, t))
                 G.set_network_attribute('Description', '%s supporting network for %s' % (name, t))
@@ -3908,7 +4001,18 @@ class Ontology(object):
                     if feature_types[f] == 'numeric':
                         G.set_network_attribute('%s min' % f, feature_mins[f])
                         G.set_network_attribute('%s max' % f, feature_maxs[f])
-
+#                for c in children:
+#                    G.set_network_attribute('Group:' + c, True)
+                G.set_network_attribute('Group', '|'.join(children))
+                        
+                # # Group layout of genes into the term's children
+                # children = ont.parent_2_child[term]
+                # for c in children:
+                #     ont_prop.term_2_gene[c]
+                    
+                # # Similarity to each group
+                # orphan_genes = 
+                
                 start_upload = time.time()
                 ndex_url = G.upload_to(ndex_server, ndex_user, ndex_pass)
                 term_2_uuid[t] = parse_ndex_uuid(ndex_url)

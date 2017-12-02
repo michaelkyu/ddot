@@ -13,7 +13,7 @@ http://the-data-driven-ontology-toolkit-ddot.readthedocs.io/en/latest/?
 
 # Dependencies
 
-..* [networkx>=2.0](https://networkx.github.io/)
+* [networkx>=2.0](https://networkx.github.io/)
 ..* [python-igraph](http://igraph.org/python/)
 ..* [pandas>=0.20](http://pandas.pydata.org/)
 ..* [numpy](https://docs.scipy.org/doc/)

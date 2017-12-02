@@ -1,5 +1,5 @@
 # The Data-Driven Ontology Toolkit (DDOT)
-A Python library for constructing, analyzing, and visualizing hierarchical models
+A Python library for constructing, analyzing, and visualizing hierarchical models.
 
 # Installation
 

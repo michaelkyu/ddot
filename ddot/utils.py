@@ -546,19 +546,22 @@ def nx_to_NdexGraph(G_nx, discard_null=True):
     node_id = 0
     node_dict = {}
     G.max_edge_id = 0
-    for node_name, node_attr in G_nx.nodes_iter(data=True):
+    for node_name, node_attr in G_nx.nodes(data=True):
         if discard_null:
             node_attr = {k:v for k,v in node_attr.items() if not pd.isnull(v)}
 
         if node_attr.has_key('name'):
-            G.add_node(node_id, node_attr)
+            #G.add_node(node_id, node_attr)
+            G.add_node(node_id, **node_attr)
         else:
-            G.add_node(node_id, node_attr, name=node_name)
+            #G.add_node(node_id, node_attr, name=node_name)
+            G.add_node(node_id, name=node_name, **node_attr)
         node_dict[node_name] = node_id
         node_id += 1
-    for s, t, edge_attr in G_nx.edges_iter(data=True):
+    for s, t, edge_attr in G_nx.edges(data=True):
         if discard_null:
             edge_attr = {k:v for k,v in edge_attr.items() if not pd.isnull(v)}
+
         G.add_edge(node_dict[s], node_dict[t], G.max_edge_id, edge_attr)
         G.max_edge_id += 1
 
@@ -1071,143 +1074,106 @@ def expand_seed(seed,
 
     return expand, expand_idx, sim_2_seed, fig
 
-def make_seed_ontology(seed,
-                       sim,
+def make_seed_ontology(sim,
                        sim_names,
-                       alpha,
-                       beta,
-                       ref=None,
-                       name='Data-driven Ontology',             
                        expand_kwargs={},
+                       build_kwargs={},
                        align_kwargs={},
-                       align_label='Term_Description',
-                       ndex_kwargs={'ndex_server' : None,
-                                    'ndex_user' : None,
-                                    'ndex_pass' : None,
-                                    'visible_term_attr' : None},
-                       subnet_max_term_size=None,                  
+                       ndex_kwargs={},
                        node_attr=None,
-                       public=True,
                        verbose=False,
-                       style='passthrough',
-                       layout='bubble-collect',
-                       network=None,
-                       features=None,
-                       main_feature=None,                       
                        ndex=True):
     """Assembles and analyzes a data-driven ontology to study a process or disease
 
     Parameters
     ----------
 
-    alpha : float
-    
-       alpha parameter to CLIXO
+    sim : np.ndarray
 
-    beta : float
-    
-       beta parameter to CLIXO
+       gene-by-gene similarity array
 
+    sim_names : array-like
+
+       Names of genes as they appear in the rows and columns of <sim>
+
+    expand_kwargs : dict
+
+       Parameters for ddot.expand_seed() to identify an expanded set of genes
+
+    build_kwargs : dict
+
+       Parameters for Ontology.build_from_network(...) to build a data-driven ontology.
+
+    align_kwargs : dict
+
+       Parameters for Ontology.align() to align against a reference ontology.
+    
+    ndex_kwargs : dict
+
+       Parameters for Ontology.to_ndex() to upload ontology to NDEx.
+
+    node_attr : pd.DataFrame
+
+       A DataFrame of node attributes to assign to the ontology.
+
+    ndex : bool
+
+       If True, then upload ontology to NDEx using parameters <ndex_kwargs>
     """
 
-    if ndex_kwargs['ndex_server'] is None:
-        ndex_server = ddot.config.ndex_server
-    else:
-        ndex_server = ndex_kwargs['ndex_server']
-
-    if ndex_kwargs['ndex_user'] is None:
-        ndex_user = ddot.config.ndex_user
-    else:
-        ndex_user = ndex_kwargs['ndex_user']
-        
-    if ndex_kwargs['ndex_pass'] is None:
-        ndex_pass = ddot.config.ndex_pass
-    else:
-        ndex_pass = ndex_kwargs['ndex_pass']
+    assert 'seed' in expand_kwargs
+    seed = expand_kwargs['seed']
     
     ################
     # Expand genes #
     ################
-
-    try:
-        # Try interpreting <sim> as a NDEx UUID
-        
-        similarity_uuid = sim
-        sim, sim_names = ndex_to_sim_matrix(
-            similarity_uuid,
-            ndex_server,
-            ndex_user,
-            ndex_pass,
-            similarity='similarity',
-            input_fmt='cx_matrix',
-            output_fmt='matrix',
-            subset=None)
-        similarity_from_ndex = True
-    except:
-        similarity_from_ndex = False
-        assert isinstance(sim, np.ndarray)
-
-    kwargs = {
-        'agg':'mean',
-        'min_sim':None,
-        'filter_perc':None,
-        'seed_perc':0,
-        'agg_perc':None,
-        'figure':True,
-        'include_seed':True,
-        'sim':sim,
-        'sim_names':sim_names
-    }
+    if verbose:
+        print '----------------'
+        print 'Expanding genes'
+        print '----------------'
+    
+    kwargs = {'sim': sim,
+              'sim_names': sim_names}
     kwargs.update(expand_kwargs)
         
-    expand, expand_idx, sim_2_seed, fig = expand_seed(
-        seed,        
-        **kwargs
-    )
+    expand, expand_idx, sim_2_seed, fig = expand_seed(**kwargs)
     expand_results = {'expand' : expand, 'sim_2_seed' : sim_2_seed, 'fig' : fig}    
     expand = list(expand)
+
+    if verbose:
+        print 'Seed genes:', len(seed)
+        print 'Expand genes:', len(expand)
+        
+    ##################
+    # Build Ontology #
+    ##################
+    if verbose:
+        print '-----------------'
+        print 'Building ontology'
+        print '-----------------'
     
-    #############
-    # Run CLIXO #
-    #############
-    
+    # Slice the similarity matrix over the expanded gene set and
+    # convert to a square dataframe
     df_sq = pd.DataFrame(sim[expand_idx, :][:, expand_idx], index=expand, columns=expand)
+    # Convert square to long format
     df = melt_square(df_sq)
 
-    ont = ddot.Ontology.run_clixo(df, alpha, beta, verbose=verbose)
+    # Build data-driven ontology
+    ont = ddot.Ontology.build_from_network(df, **build_kwargs)
 
     ###############################
     # Align to Reference Ontology #
     ###############################
 
-    if ref is not None:
-        try:
-            # Try interpreting <ref> as a NDEx UUID
-            ref = ddot.Ontology.from_ndex(ref, ndex_server, ndex_user, ndex_pass)
-        except:
-            assert isinstance(ref, ddot.Ontology)
-
-        kwargs = {
-            'iterations' : 3,
-            'threads' : 4,
-            'update_self' : True
-        }
-        kwargs.update(align_kwargs)
-
-        alignment = ont.align(ref, **kwargs)
+    if 'hier' in align_kwargs:
         if verbose:
-            print 'Alignment: %s matches' % alignment.shape[0] 
-
-        # Set labels based on ontology alignment
-        if align_label and (('Aligned_%s' % align_label) in ont.node_attr.columns):
-            def make_label(x):
-                if pd.isnull(x['Aligned_Term_Description']):
-                    return x.name
-                else:
-                    return '%s\n%s' % (x.name, x['Aligned_Term_Description'])
-
-            ont.node_attr = ont.node_attr.reindex(set(ont.genes) | set(ont.terms))
-            ont.node_attr['Label'] = ont.node_attr.apply(make_label, axis=1)
+            print '------------------'
+            print 'Aligning Ontology'
+            print '------------------'
+                
+        alignment = ont.align(**align_kwargs)
+        if verbose:
+            print 'Alignment: %s alignment matches' % alignment.shape[0] 
 
     #############################
     # Set other node attributes #
@@ -1227,12 +1193,12 @@ def make_seed_ontology(seed,
     if node_attr is not None:
         ont.update_node_attr(node_attr)
 
-    # Color seed genes as green
+    # Color seed genes as green (hex #6ACC65)
     fill_attr = pd.DataFrame({'Vis:Fill Color' : '#6ACC65'}, index=seed)
     ont.update_node_attr(fill_attr)        
 
-    # Color terms according to their alignment
-    if ref is not None:
+    # Color terms according to the exactness of alignment
+    if 'Aligned_Similarity' in ont.node_attr.columns:
         fill_attr = ont.node_attr['Aligned_Similarity'].dropna().map(color_gradient)
         fill_attr = fill_attr.to_frame().rename(columns={'Aligned_Similarity' : 'Vis:Fill Color'})
         ont.update_node_attr(fill_attr)
@@ -1240,44 +1206,28 @@ def make_seed_ontology(seed,
     ##################
     # Upload to NDEx #
     ##################
-
-    description = (
-        'Data-driven ontology created by CLIXO '
-        '(parameters: alpha={alpha}, beta={beta}). ').format(
-            alpha=alpha,
-            beta=beta)
-    if similarity_from_ndex:
-        description += (
-            'Created from the similarity network '
-            'at {ndex_server}/{ndex_uuid}').format(
-                ndex_server=ndex_server,
-                ndex_uuid=similarity_uuid)
-    else:
-        description += (
-            'Created from a similarity network '
-            'on a local file')
         
     if ndex:
-        if network is None:
-            network = df
-            features = ['similarity']
-            main_feature = 'similarity'
-            
+        if verbose:
+            print '--------------------------'
+            print 'Uploading Ontology to NDEx'
+            print '--------------------------'            
+        
+        if 'network' not in ndex_kwargs:
+            ndex_kwargs['network'] = df
+            ndex_kwargs['features'] = ['similarity']
+            ndex_kwargs['main_feature'] = 'similarity'
+
+        description = (
+            'Data-driven ontology created by the function ddot.make_seed_ontology()'
+            'in the DDOT Python package (https://github.com/michaelkyu/ontology)'
+            '(parameters: %s' % ', '.join(['%s=%s' % (k,v) for k,v in build_kwargs.items()])
+        )
+
         ont_url, ont_ndexgraph = ont.to_ndex(
-            name=name,
             description=description,
-            network=network,
-            features=features,
-            main_feature=main_feature,
-            subnet_max_term_size=subnet_max_term_size,
-            ndex_server=ndex_server,
-            ndex_user=ndex_user,
-            ndex_pass=ndex_pass,
-            visible_term_attr=ndex_kwargs['visible_term_attr'],
-            style=style,
-            layout=layout,
-            public=public,
-            verbose=verbose
+            verbose=verbose,
+            **ndex_kwargs
         )
     else:
         ont_url, ont_ndexgraph = None, None
@@ -1285,17 +1235,17 @@ def make_seed_ontology(seed,
     return ont, ont_url, ont_ndexgraph, expand_results
 
 def make_network_public(uuid,
-                        ndex_server=None,
-                        ndex_user=None,
-                        ndex_pass=None,
+                        ndex_server,
+                        ndex_user,
+                        ndex_pass,
                         timeout=60,
                         error=False):
-    if ndex_server is None:
-        ndex_server = ddot.config.ndex_server
-    if ndex_user is None:
-        ndex_pass = ddot.config.ndex_user
-    if ndex_pass is None:
-        ndex_pass = ddot.config.ndex_pass
+    # if ndex_server is None:
+    #     ndex_server = ddot.config.ndex_server
+    # if ndex_user is None:
+    #     ndex_pass = ddot.config.ndex_user
+    # if ndex_pass is None:
+    #     ndex_pass = ddot.config.ndex_pass
 
     ndex = nc.Ndex(ndex_server, ndex_user, ndex_pass)
             
@@ -1372,7 +1322,7 @@ def gridify(centers, pos, G):
     
     for v in centers:
         x_center, y_center = pos[v]
-        children = G.predecessors(v)
+        children = list(G.predecessors(v))
         if len(children) == 1:
             continue
     
@@ -1394,7 +1344,7 @@ def gridify(centers, pos, G):
 
         # Reposition the center node to be 1/3rd of the distance from
         # the outside of the circle to the center's parent
-        p = G.successors(v)[0]
+        p = list(G.successors(v))[0]
         x_parent, y_parent = pos[p]
         distance = np.sqrt((x_parent - x_center)**2 + (y_parent - y_center)**2)
         alpha = (2/3.) * (distance - radius) / distance
@@ -1405,9 +1355,9 @@ def gridify(centers, pos, G):
 def nx_set_tree_edges(G, tree_edges):
     nx.set_edge_attributes(
         G,
-        'Is_Tree_Edge',
-        {(s,t) : 'Tree' if ((s,t) in tree_edges) else 'Not_Tree'
-         for s, t in G.edges_iter(data=False)}
+        values={(s,t) : 'Tree' if ((s,t) in tree_edges) else 'Not_Tree'
+         for s, t in G.edges(data=False)},
+        name='Is_Tree_Edge'
     )
 
 

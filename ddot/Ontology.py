@@ -249,11 +249,6 @@ def align_hierarchies(hier1,
                 node_attr = hier1_orig.node_attr[update_hier2]
             else:
                 node_attr = hier1_orig.node_attr
-
-            # try:
-            #     node_attr = hier1_orig.node_attr[update_hier2]
-            # except KeyError:
-            #     node_attr = hier1_orig.node_attr
                 
             hier1_import = pd.merge(pd.DataFrame(index=align1.index), node_attr, left_index=True, right_index=True, how='left')
             assert (hier1_import.index == align1.index).all()
@@ -815,6 +810,7 @@ class Ontology(object):
               threads,
               update_self=False,
               update_ref=False,
+              align_label=None,
               calculateFDRs=None,
               mutual_collapse=True,
               output=None):
@@ -888,7 +884,7 @@ class Ontology(object):
 
         """
         
-        return align_hierarchies(
+        alignment = align_hierarchies(
             self,
             hier,
             iterations,
@@ -899,6 +895,14 @@ class Ontology(object):
             mutual_collapse=mutual_collapse,
             output=output)
 
+        # Set labels based on ontology alignment
+        if align_label and (('Aligned_%s' % align_label) in self.node_attr.columns):
+            label_attr = self.node_attr['Aligned_%s' % align_label]            
+            label_attr = {k : '%s\n%s' % (k,v) for k, v in label_attr.iteritems()}
+            label_attr = pd.Series(label_attr, name='Label').to_frame()
+            self.update_node_attr(label_attr)
+
+        return alignment
     
     def _make_dummy(self, tree_edges=None):
         """For each term T in the ontology, create a new dummy term that
@@ -1369,7 +1373,7 @@ Traverse the ontology from the root nodes to the leaves in a
 #                print nx_nodes_to_pandas(G_tree)
                 
                 pos = bubble_layout_nx(G_tree)                
-                collect_nodes = [v for v in G_tree.nodes() if 'collect' in v]               
+                collect_nodes = [v for v in G_tree.nodes() if 'collect' in v]
                 gridify(collect_nodes, pos, G_tree)
 
                 # collect_node_types = ['collect_tree_gene', 'collect_hidden_parent', 'collect_hidden_child']
@@ -1404,8 +1408,8 @@ Traverse the ontology from the root nodes to the leaves in a
                 # TODO: move this visual styling outside of the layout
                 # functionality
                 
-                nx.set_edge_attributes(G, 'Vis:EDGE_SOURCE_ARROW_SHAPE', 'ARROW')
-                nx.set_edge_attributes(G, 'Vis:EDGE_TARGET_ARROW_SHAPE', 'NONE')
+                nx.set_edge_attributes(G, values='ARROW', name='Vis:EDGE_SOURCE_ARROW_SHAPE')
+                nx.set_edge_attributes(G, values='NONE', name='Vis:EDGE_TARGET_ARROW_SHAPE')
 
                 for v, data in G.nodes(data=True):
                     if 'collect_hidden' in v:
@@ -1421,8 +1425,8 @@ Traverse the ontology from the root nodes to the leaves in a
                 raise Exception('Unsupported layout: %s', layout)
 
             if layout is not None:
-                nx.set_node_attributes(G, 'x_pos', {n : x for n, (x,y) in G.pos.items()})
-                nx.set_node_attributes(G, 'y_pos', {n : y for n, (x,y) in G.pos.items()})
+                nx.set_node_attributes(G, values={n : x for n, (x,y) in G.pos.items()}, name='x_pos')
+                nx.set_node_attributes(G, values={n : y for n, (x,y) in G.pos.items()}, name='y_pos')
                 
         else:
             G = self._to_networkx_no_layout()
@@ -1832,7 +1836,7 @@ Traverse the ontology from the root nodes to the leaves in a
 
         hierarchy = []
         mapping = []
-        for u, v, attr in G.edges_iter(data=True):
+        for u, v, attr in G.edges(data=True):
             if attr[edgetype_attr] == edgetype_value:
                 mapping.append((u, v))
             else:
@@ -3183,8 +3187,7 @@ Traverse the ontology from the root nodes to the leaves in a
     def build_from_network(cls,
                            graph,
                            method='clixo',
-                           **kwargs):
-        
+                           **kwargs):        
         if method.lower()=='clixo':
             return cls.run_clixo(graph, **kwargs)
         else:
@@ -3417,7 +3420,7 @@ Traverse the ontology from the root nodes to the leaves in a
                 style=None,
                 node_alias='Original_Name',
                 term_2_uuid=None,
-                public=False,
+                visibility='PUBLIC',
                 verbose=False):
         """Upload an Ontology to NDEx. The Ontology can be preformatted in
         several ways including
@@ -3442,7 +3445,7 @@ Traverse the ontology from the root nodes to the leaves in a
         layout : str
 
             The name of the layout algorithm for laying out the
-            Ontology as a graph. Node positions are astored in the
+            Ontology as a graph. Node positions are stored in the
             node attributes 'x_pos' and 'y_pos'. If None, then do not
             perform a layout.
 
@@ -3480,6 +3483,8 @@ Traverse the ontology from the root nodes to the leaves in a
 
         node_alias : str
 
+        visibility : str
+
 
         Returns
         -------
@@ -3509,7 +3514,7 @@ Traverse the ontology from the root nodes to the leaves in a
                 terms = ont.terms                
             else:
                 terms = [t for t,s in zip(ont.terms, ont.term_sizes) if s <= subnet_max_term_size]
-
+            
             # Only upload subnets for the unique set of the original
             # terms
             if node_alias in ont.node_attr.columns:
@@ -3525,7 +3530,7 @@ Traverse the ontology from the root nodes to the leaves in a
                 ndex_user=ndex_user,
                 ndex_pass=ndex_pass,
                 terms=terms,
-                public=public,
+                visibility=visibility,
                 verbose=verbose
             )
 
@@ -3553,17 +3558,8 @@ Traverse the ontology from the root nodes to the leaves in a
             G.set_network_attribute('Display', '|'.join(visible_term_attr))
             
         if verbose:  print 'Uploading to NDEx'
-        ont_url = G.upload_to(ndex_server, ndex_user, ndex_pass)
+        ont_url = G.upload_to(ndex_server, ndex_user, ndex_pass, visibility=visibility)
 
-        if public:
-            ont_uuid = parse_ndex_uuid(ont_url)
-            if verbose: print 'Making public the ontology at %s' % ont_url
-            make_network_public(ont_uuid,
-                                ndex_server=ndex_server,
-                                ndex_user=ndex_user,
-                                ndex_pass=ndex_pass,
-                                timeout=100)
-        
         return ont_url, G
             
     def to_NdexGraph(self,
@@ -3796,7 +3792,7 @@ Traverse the ontology from the root nodes to the leaves in a
         """Force-directed layout on only the terms"""
 
         sub_nx = G.copy()
-        sub_nx.remove_edges_from([(u,v) for u,v,attr in sub_nx.edges_iter(data=True) if attr['Is_Tree_Edge']=='Not_Tree'])
+        sub_nx.remove_edges_from([(u,v) for u,v,attr in sub_nx.edges(data=True) if attr['Is_Tree_Edge']=='Not_Tree'])
         pos = nx.spring_layout(sub_nx, dim=2, k=None,
                                pos=None,
                                fixed=None,
@@ -3825,7 +3821,7 @@ Traverse the ontology from the root nodes to the leaves in a
                             terms=None,
                             gene_columns=['Gene1', 'Gene2'],
                             propagate='forward',
-                            public=False,
+                            visibility='PUBLIC',
                             node_attr=None,
                             node_alias='Original_Name',
                             z_score=False,
@@ -3949,6 +3945,7 @@ Traverse the ontology from the root nodes to the leaves in a
             elif str(x) == 'bool':
                 return 'boolean'
             else:
+#                print str(x), 'asdf'
                 raise Exception()
         feature_types = network[features].dtypes.map(f)
         feature_mins = network[features].min().astype(np.str)
@@ -3956,8 +3953,6 @@ Traverse the ontology from the root nodes to the leaves in a
 
         if terms is None:
             terms = ont.terms
-
-        ont_prop = ont.propagate_annotations('forward', inplace=False)
             
         if verbose: print 'Uploading %s terms' % len(terms)
         for upload_idx, t in enumerate(terms):
@@ -3976,12 +3971,14 @@ Traverse the ontology from the root nodes to the leaves in a
                 if node_attr is not None:
                     set_node_attributes_from_pandas(G_nx, node_attr)
 
+                G_nx.add_nodes_from(list(set(genes) - set(G_nx.nodes())))
+                
                 # Annotate the membership in children terms
                 genes_set = set(genes)
                 children = ont.parent_2_child[t]
                 df = pd.DataFrame({c : False for c in children}, index=genes, dtype=bool)                
                 for c in children:
-                    genes_in = [ont_prop.genes[g] for g in ont_prop.term_2_gene[c]]
+                    genes_in = [ont.genes[g] for g in ont.term_2_gene[c]]
                     df.loc[genes_in, c] = True
                 df.rename(columns=lambda x: 'Group:'+x, inplace=True)
                 ddot.utils.set_node_attributes_from_pandas(G_nx, df)
@@ -3997,6 +3994,7 @@ Traverse the ontology from the root nodes to the leaves in a
                 G.set_network_attribute('Description', '%s supporting network for %s' % (name, t))
                 G.set_network_attribute('Main Feature', main_feature)
                 for f in features:
+
                     G.set_network_attribute('%s type' % f, feature_types[f])
                     if feature_types[f] == 'numeric':
                         G.set_network_attribute('%s min' % f, feature_mins[f])
@@ -4012,9 +4010,9 @@ Traverse the ontology from the root nodes to the leaves in a
                     
                 # # Similarity to each group
                 # orphan_genes = 
-                
+
                 start_upload = time.time()
-                ndex_url = G.upload_to(ndex_server, ndex_user, ndex_pass)
+                ndex_url = G.upload_to(ndex_server, ndex_user, ndex_pass, visibility=visibility)
                 term_2_uuid[t] = parse_ndex_uuid(ndex_url)
                 upload_time = time.time() - start_upload
 
@@ -4030,19 +4028,6 @@ Traverse the ontology from the root nodes to the leaves in a
                 if verbose:
                     print(upload_idx, 'No data provided for gene pairs in Term: %s' % t)
                     
-        if public:            
-            to_upload = set(term_2_uuid.values())
-            while len(to_upload) > 0:
-                completed = set()
-                for ndex_uuid in to_upload:
-                    try:
-                        ndex.make_network_public(ndex_uuid)
-                        completed.add(ndex_uuid)
-                    except:
-                        pass
-                to_upload = to_upload - completed
-                time.sleep(0.5)
-
         return term_2_uuid
 
     def get_best_ancestor_matrix(self, node_order=None, verbose=False, include_genes=True):

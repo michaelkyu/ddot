@@ -1,29 +1,23 @@
 Tutorial
 ========
 
-DDOT is a software library for constructing, analyzing, and viewing
-biological ontologies. An ontology is a hierarchical arrangement of
-two types of nodes, genes and terms. This arrangement is general such
-that each node can have multiple children or multiple parent nodes.
+An ontology is a hierarchical arrangement of two types of nodes: (1)
+genes at the leaves of the hierarchy and (2) terms at intermediate
+levels of the hierarchy. The hierarchy can be thought of as directed
+acyclic graph (DAG), in which each node can have multiple children or
+multiple parent nodes. In contrast, nodes in a tree (a.k.a. dendogram)
+have at most one parent.
 
-DDOT can handle ontologies that are assembled in a data-driven manner
-as well as manually curated ontologies like the Gene Ontology.
+The DDOT Python library provides many functions for assembling,
+analyzing, and visualizing ontologies.  The main functionalities are
+implemented by an "Ontology" class. DDOT can handle ontologies that
+are assembled in a data-driven manner as well as manually curated
+ontologies like the Gene Ontology.
 
-Installation
-------------
+Creating an Ontology object
+---------------------------
 
-1. Download the source code from https://github.com/michaelkyu/ontology
-2. Run `python setup.py install`
-
-Constructing an Ontology
-------------------------
-
-We will work with the following ontology as an example
-	  
-Reading an Ontology object
----------------------------------
-
-Ontology objects can be created in several ways
+Instantiations of the Ontology class can be created in several ways
 
 1. Through the __init__ constructor::
      
@@ -32,22 +26,42 @@ Ontology objects can be created in several ways
    The two main parameters are <hierarchy>, a list of (child term,
    parent term) pairs, and <mapping>, a list of (gene, term) pairs.
 
-   
-2. Loading from the Network DataBase Exchange (NDEx)::
+   **Example:**::
+
+     hierarchy = [('A', 'B'),
+                  ('A', 'C'),
+		  ('B', 'D'),
+		  ('B', 'E'),
+		  ('C', 'D'),
+		  ('C', 'E'),
+		  ('D', 'F'),
+		  ('D', 'G'),
+		  ('D', 'H'),
+		  ('E', 'G'),
+		  ('E', 'H'),
+		  ]
+     mapping = [('F', 'G1'),
+                ('G', 'G1'),
+		('H', 'G1')]
+     ont = Ontology(hierarchy, mapping, parent_child=True)
+
+1. Assembly from a similarity network using the CLIXO algorithm::
+    
+     ont = Ontology.run_clixo(similarity, ...)
+
+2. Loading from a tab-delimited table or pandas DataFrame::
+
+     ont = Ontology.from_table('example.txt')
+
+4. Loading from the Network DataBase Exchange (NDEx)::
 
      ont = Ontology.from_ndex(uuid)
 
    where `uuid` is a specific the unique identifier (UUID) of a
    network on an NDEX server.
 
-3. Loading from a tab-delimited table or pandas DataFrame::
-
-     ont = Ontology.from_table('example.txt')
-
-4. Assembly from a similarity network using the CLIXO algorithm::
-    
-     ont = Ontology.run_clixo(similarity, ...)
-
+     
+     
 Inspecting the Hierarchical Structure of an Ontology
 -------------------------------------------------------
 

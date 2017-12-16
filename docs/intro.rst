@@ -1,101 +1,109 @@
 Introduction
 ============
 
-The Data-Driven Ontology Toolkit (ddot) simplifies the construction,
-analysis, and visualization of biological hierarchies. ddot consists
-of both a Python package and a portable set of RESTful services.
+The Data-Driven Ontology Toolkit (DDOT) Python library simplifies the
+assembly, analysis, and visualization of biological hierarchies using
+a data structure called an ontology.
 
-.. image:: software_pipeline_6jul2017.png
-   :width: 40%
-
-.. image:: fango.png
-   :width: 40%
-	   
 Features
----------
+--------
 
-#. Inspection of hierarchical structure
-   
-   #. Query connections between genes and terms
-   #. Query connections betwween child and parent terms
-   #. Query node and edge attributes
-      
-#. Manipulation of hierarchy
-   
-   #. Deleting genes and terms
-   #. Renaming gene and term names
-   #. Propagating gene-term connections
-   #. Randomization of structure
-      
-#. Assembly of a hierarchy by the CLIXO algorithm
-   
-#. Analysis of hierarchy
-   
-   #. Alignment with a reference hierarchy
-   #. Semantic similarity
-      
-#. Visualization of hierarchy
-   
-   #. Automatic node layout and styling
-   #. `Web-based Hierarchical Viewer <http://hiview.ucsd.edu>`_
-   #. `Cytoscape <www.cytoscape.org>`_
-	    
-#. Translation of Genotype to Phenotype
-   
-   #. Convert genotype to ontotypes
-   #. FUTURE: train neural network
-      
-#. Interfaces to other libraries
-   
-   #. Graph libraries: NetworkX, iGraph
-   #. Tables: Pandas and CSV files
-      
-#. RESTful web services
-   
-   #. Expand Gene Set: Identify genes whose functions are highly similar to a seed set of genes.
-   #. Build Data-driven Hierarchy: Run the CLiXO algorithm to derive a hierarchy relating
-   #. Hierarchical Alignment: Identify terms in a hierarchy that highly match terms in a reference hierarchy, such as the Gene Ontology.
-   #. Hierarchical Viewer: Interactively browse the structure of a hierarchy, including the data that supports the existence of each term in the hierarchy.
-   
-Sharing results with the Network Database Exchange (NDEx)
----------------------------------------------------------
+#. **Build Data-Driven Ontology:** Given a set of genes and a gene
+   similarity network, hierarchically cluster the genes to infer
+   cellular subsystems using the CliXO algorithm (Kramer et
+   al. Bioinformatics 2014). The resulting hierarchy of subsystems
+   defines a data-driven ontology.
 
-A core objective of DDOT is not only to provide programmatic tools for
-data-driven ontologies, but also to pipelines based on thxese tools
-more transparent, shareable, and reproducible. To this end, both the
-Python package and web services can take in data and output results
-via networks stored in the Network Database Exchange (NDEx). NDEx is a
-cloud storage system that (Figure showing ontology in NDEx). This
-seamless connection with NDEx provides three advantages. First, it
-enables a standard data format: a user need only worry about the
-simpler task of uploading data to NDEx. Second, input and output data
-can be shared with others through URLs. Third, it provides a bridge to
-other NDEx features, including provenance tracking and
-synchronization.
+#. **Visualize Hierarchical Structure:** Browse the full hierarchical
+   structure of a data-driven ontology, including the network of gene
+   similarities used to infer it, in a web application called the
+   Hierarchical Viewer (HiView, http://hiview.ucsd.edu)
+
+#. **Examine ontology structure:** For each subsystem, retrieve its
+   hierarchical connections (genes, child and descendant subsystems,
+   parent and ancestral subsystems) and the subnetwork of gene
+   similarities that supports the subsystem’s existence. For each
+   gene, retrieve its set of subsystems.
+
+#. **Modify ontology structure:** Reduce the size of an ontology by
+   removing a set of subsystems or genes. Randomize connections
+   between genes and subsystems to create new ontologies representing
+   a null model for statistical tests.
+
+#. **Flatten ontology structure:** Instead of inferring an ontology
+   from a gene similarity network, perform the reverse process of
+   inferring a gene similarity network from an ontology. In
+   particular, the similarity between two genes is calculated as the
+   size of the smallest common subsystem, known as the Resnik score.
+
+#. **Align Ontologies:** Annotate a data-driven ontology by aligning
+   it to a curated ontology such as the Gene Ontology (GO). For
+   instance, if a data-driven subsystem contains a similar set of
+   genes as the GO term for DNA repair, then annotate this subsystem
+   as being involved in DNA repair. Data-driven subsystems with no
+   such matches represent new molecular mechanisms.
+   
+#. **Expand Gene Set:** Given a set of genes as a “seed set” and a
+   gene similarity network, identify an expanded set of genes that are
+   highly similar to the seed set. This function can broaden the scope
+   of a data-driven ontology beyond genes that are already well known.
+
+#. **Map genotypes to the ontology:** Given a set of mutations
+   comprising a genotype, propagate the impact of these mutations to
+   the subsystems containing these genes in the ontology. In
+   particular, the impact on a subsystem is estimated by the number of
+   its genes that have been mutated. These subsystem activities, which
+   we have called an “ontotype”, enables more accurate and
+   interpretable predictions of phenotype from genotype (Yu et al. Cell Systems 2016).
+
+#. **Load curated ontologies:** Parse Open Biomedical Ontologies (OBO)
+   and gene-association file (GAF) formats that are typically used to
+   describe curated ontologies like GO.
+
+#. **Interface with Network Data Exchange:** Ontologies and networks
+   can be stored and retrieved online at NDEx (http://ndexbio.org). We
+   encourage use of NDEx to make DDOT-based software pipelines more
+   reproducible and shareeable with others.
+
+#. **Interface with other tools and Python libraries:** DDOT can
+   readily interface with other desktop applications, such as
+   Cytoscape, and other programming libraries in Python, such as the
+   Pandas, NetworkX, igraph, and matplotlib.
+
+Example Pipeline
+----------------
+
+.. image:: software_pipeline_1dec2017.png
+   :width: 60%
+
 
 Installation
 ------------
 
-The recommended method of installation is by 'pip'::
+Please see https://github.com/michaelkyu/ontology
 
-   pip install ddot
+Cite
+----
 
-Dependencies
--------------
+If you find DDOT helpful in your research, please cite 
 
-Each of the following packages can be installed using `pip install ...`
-
-#. `cxmate <https://pypi.python.org/pypi/cxmate>`_
-#. `networkx <https_://networkx.github.io/>`_
-#. `python-igraph <http://igraph.org/python/>`_
-#. `pandas <http://pandas.pydata.org/>`_
-#. `numpy and scipy <https://docs.scipy.org/doc/>`_
-#. `ndex-dev <https://github.com/ndexbio/ndex-python>`_
-#. `requests <http://docs.python-requests.org/en/master/>`_
+Michael Ku Yu, Jianzhu Ma, Keiichiro Ono, Fan Zheng, Samson Fong,
+Aaron Gary, Jing Chen, Barry Demchak, Dexter Pratt, Trey Ideker. "A
+swiss-army knife for hierarchical modeling of biological systems." (in
+preparation)
    
-Journal References
-------------------
+Help
+----
 
+Please post any questions or issues to the DDOT forum at https://groups.google.com/forum/#!forum/ontology
+
+References
+----------
+
+#. Michael Ku Yu, Jianzhu Ma, Keiichiro Ono, Fan Zheng, Samson Fong,
+   Barry Demchak, Dexter Pratt, Trey Ideker. "A swiss-army knife for
+   hierarchical modeling of biological systems." (in preparation)
+   
 #. Yu, M.K., Kramer, M., Dutkowski, J., Srivas, R., Licon, K.,
    Kreisberg, J.F., Ng, C.T., Krogan, N., Sharan, R. and Ideker,
    T., 2016. "Translation of genotype to phenotype by a hierarchy of

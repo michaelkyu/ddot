@@ -11,6 +11,10 @@ ndex_server = 'http://test.ndexbio.org'
 ndex_user = 'scratch'
 ndex_pass = 'scratch'
 
+#########################
+# Read CX Visual styles #
+#########################
+
 top_level = os.path.dirname(os.path.abspath(inspect.getfile(ddot)))
 import json
 with open(os.path.join(top_level, 'ontology_style.cx')) as f:
@@ -18,6 +22,10 @@ with open(os.path.join(top_level, 'ontology_style.cx')) as f:
 
 with open(os.path.join(top_level, 'passthrough_style.cx')) as f:
     passthrough_style = NdexGraph(json.load(f))
+
+##################################
+# NDEx URLs for example networks #
+##################################
 
 GO_HUMAN_URL = 'http://dev2.ndexbio.org/v2/network/36e6e5b2-c2aa-11e7-9379-0660b7976219'
 PHAROS_URL = 'http://dev2.ndexbio.org/v2/network/a94f1c0f-789a-11e7-a1d1-0660b7976219'

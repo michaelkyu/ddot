@@ -136,8 +136,6 @@ def bubble_layout_nx(G, xmin=-750, xmax=750, ymin=-750, ymax=750):
 
     """
 
-    print 'node names:', G.nodes()[:5]
-    
     from tulip import tlp
 #     from tulip import *
 #     from tulipgui import *

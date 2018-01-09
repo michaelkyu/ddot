@@ -4,9 +4,6 @@ import ddot
 import os, inspect
 from ndex.networkn import NdexGraph
 
-clixo = '/cellar/users/mikeyu/clixo'
-alignOntology = '/cellar/users/mikeyu/alignOntology'
-
 ndex_server = 'http://test.ndexbio.org'
 ndex_user = 'scratch'
 ndex_pass = 'scratch'

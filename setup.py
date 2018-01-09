@@ -1,21 +1,5 @@
 from setuptools import setup, find_packages
 
-#, read_configuration
-
-# import ConfigParser
-# Config = ConfigParser.ConfigParser()
-# Config.read('ddot/site.cfg')
-# print 'SECTIONS', Config.sections()
-# print Config.items('executables')
-
-#conf_dict = read_configuration('ddot/setup.cfg')
-#print conf_dict
-
-#import ddot.config
-
-# with open('tmp.py', 'w') as f:
-#     f.write('x = 5\n')
-
 setup(name='ddot',
       version='0.1',
       description='Data-Driven Ontology Toolkit',

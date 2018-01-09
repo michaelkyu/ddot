@@ -1374,6 +1374,7 @@ Traverse the ontology from the root nodes to the leaves in a
                         print pos[x]
  
                 collect_nodes = [v for v in G_tree.nodes() if 'collect' in v]
+                print collect_nodes
                 gridify(collect_nodes, pos, G_tree)
 
                 for x, y in G_tree.nodes(data=True):

@@ -1354,6 +1354,12 @@ def gridify(centers, pos, G):
         pos[v] = (x_center * (1 - alpha) + x_parent * alpha,
                   y_center * (1 - alpha) + y_parent * alpha)
 
+        if pd.isnull(pos['fasting_status_at_specimen_collection.1'][0]):
+            print v, x_center, y_center, alpha, x_parent, y_parent
+            print distance, radius
+            print [pos[c] for c in children]
+            0 / asdf
+        
 def nx_set_tree_edges(G, tree_edges):
     nx.set_edge_attributes(
         G,

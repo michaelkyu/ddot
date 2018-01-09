@@ -136,6 +136,8 @@ def bubble_layout_nx(G, xmin=-750, xmax=750, ymin=-750, ymax=750):
 
     """
 
+    print 'node names:', G.nodes()[:5]
+    
     from tulip import tlp
 #     from tulip import *
 #     from tulipgui import *
@@ -1359,8 +1361,6 @@ def nx_set_tree_edges(G, tree_edges):
          for s, t in G.edges(data=False)},
         name='Is_Tree_Edge'
     )
-
-
 
 def color_gradient(ratio, min_col='#FFFFFF', max_col='#D65F5F', output_hex=True):
     """Calculate a proportional mix between two colors.

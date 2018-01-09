@@ -987,25 +987,30 @@ class Ontology(object):
                 collect_tree_gene = 'collect_tree_gene_%s' % t
             else:
                 collect_tree_gene = t
-
             used_tree_gene = False
-            for g in [ont.genes[g] for g in ont.term_2_gene[t]]:
-                if (g, t) in tree_edges:
-                    new_gene_2_term.append((g, collect_tree_gene))
-                    used_tree_gene = True
-                else:
-                    # tmp = (get_copy(g), collect_hidden_gene)
-                    # new_gene_2_term.append(tmp)
-                    new_gene_2_term.append((get_copy(g), collect_hidden_gene))
-                    used_hidden_gene = True
             
+            # # Aggregates copies of genes based on whether its in the
+            # # tree or not            
+            # for g in [ont.genes[g] for g in ont.term_2_gene[t]]:
+            #     if (g, t) in tree_edges:
+            #         new_gene_2_term.append((g, collect_tree_gene))
+            #         used_tree_gene = True
+            #     else:
+            #         new_gene_2_term.append((get_copy(g), collect_hidden_gene))
+            #         used_hidden_gene = True
+                    
+            # # Aggregates genes, disregarding whether it's in the
+            # # tree or not
+            for g in [ont.genes[g] for g in ont.term_2_gene[t]]:
+                new_gene_2_term.append((get_copy(g), collect_hidden_gene))
+                used_hidden_gene = True
+
             if used_tree_gene and collect_tree_gene != t:
                 new_child_2_parent.append((collect_tree_gene, t))
             if used_hidden_gene:
                 new_child_2_parent.append((collect_hidden_gene, t))
 
-            ## Parent-child term connections
-            
+            ## Parent-child term connections            
             collect_hidden_child = 'collect_hidden_child_%s' % t
             collect_hidden_parent = 'collect_hidden_parent_%s' % t
             used_hidden_child, used_hidden_parent = False, False
@@ -1025,11 +1030,6 @@ class Ontology(object):
                 new_child_2_parent.append((collect_hidden_child, t))                
             if used_hidden_parent:
                 new_child_2_parent.append((collect_hidden_parent, t))
-
-        # print '******'
-        # print new_child_2_parent
-        # print new_gene_2_term
-        # print '******'
         
         ont_collect = Ontology(new_child_2_parent,
                                new_gene_2_term,
@@ -1046,9 +1046,7 @@ class Ontology(object):
         new_2_orig = dict(new_and_orig)
 
         df = pd.DataFrame({'orig_tmp' : [x[1] for x in new_and_orig],
-#                           'Size' : 1,
                            'Size_tmp' : 1,
-#                           'Size_tmp' : [ont.term_sizes[ont.terms_index[x[1]]] if x[1] in ont.terms_index else 1 for x in new_and_orig],
                            'Hidden' : True},
                           index=[x[0] for x in new_and_orig])
         merge = pd.merge(df, ont.node_attr, how='left', left_on=['orig_tmp'], right_index=True)
@@ -1058,8 +1056,6 @@ class Ontology(object):
         else:
             merge['Original_Name'] = df['orig_tmp'].values
         del merge['orig_tmp']
-
-        #print merge.head()
         
         if 'Size' in merge:
             unset = pd.isnull(merge['Size']).values
@@ -1067,8 +1063,6 @@ class Ontology(object):
         else:
             merge['Size'] = df['Size_tmp'].values
         del merge['Size_tmp']        
-
-        #print merge.head()
         
         # Append attributes for the new nodes
         ont_collect.node_attr = pd.concat([ont.node_attr, merge], 0)
@@ -1080,11 +1074,11 @@ class Ontology(object):
         
         def get_label(x):
             if 'hidden_child' in x:
-                return 'Hidden Children'
+                return 'Linked Children'
             elif 'hidden_parent' in x:
-                return 'Hidden Parents'
+                return 'Linked Parents'
             elif 'hidden_gene' in x:
-                return 'Hidden Genes'
+                return 'Linked Genes'
             elif 'tree_gene' in x:
                 return 'Genes'
         collect_nodes = [t for t in ont_collect.terms if 'collect' in t]        
@@ -1096,7 +1090,6 @@ class Ontology(object):
         ont_collect.update_node_attr(collect_attr)
                 
         return ont_collect
-
 
     def unfold(self,
                duplicate=None,
@@ -1302,7 +1295,8 @@ Traverse the ontology from the root nodes to the leaves in a
     
     def to_networkx(self,
                     layout='bubble',
-                    spanning_tree=True):
+                    spanning_tree=True,
+                    layout_params=None):
 
         """Converts Ontology into a NetworkX object.
 
@@ -1338,6 +1332,12 @@ Traverse the ontology from the root nodes to the leaves in a
 
         """
 
+        if layout_params is None:
+            layout_params = {'hidden_parent' : True,
+                             'hidden_child' : False,
+                             'tree_gene' : False,
+            'hidden_gene' : False}
+            
         if spanning_tree:
             scale = 1
 #            print 'scale:', scale
@@ -1362,47 +1362,75 @@ Traverse the ontology from the root nodes to the leaves in a
                 else:
                     # Assume a list of tree edges are supplied
                     ont = self._collect_tree(spanning_tree)
-                    
-#                print ont.node_attr
-#                print ont.node_attr.loc[ont.node_attr['Original_Name'=='20367'], :]
-#                print ont.genes, ont.terms
-#                print '============='                    
-                    
-                G_tree = ont.get_tree(ret='ontology')._to_networkx_no_layout()
 
-#                print nx_nodes_to_pandas(G_tree)
+                G_tree = ont.get_tree(ret='ontology')._to_networkx_no_layout()
                 
-                pos = bubble_layout_nx(G_tree)                
+                pos = bubble_layout_nx(G_tree)
+
+                for x, y in G_tree.nodes(data=True):
+                    if 'fasting_status_at_specimen_collection' in x:
+                        print x
+                        print '\t', y
+                        print pos[x]
+ 
                 collect_nodes = [v for v in G_tree.nodes() if 'collect' in v]
                 gridify(collect_nodes, pos, G_tree)
 
-                # collect_node_types = ['collect_tree_gene', 'collect_hidden_parent', 'collect_hidden_child']
-                # ont_red = ont.delete(to_delete=[t for t in ont.terms if any([x in t for x in collect_node_types])],
-                #                      preserve_transitivity=True)
-                # G = ont_red._to_networkx_no_layout()
-                # G.pos = {n : (float(scale*p[0]), float(scale*p[1])) for n, p in pos.items() if all([x not in n for x in collect_node_types])}
-                # nx_set_tree_edges(G, ont_red.get_tree())
+                for x, y in G_tree.nodes(data=True):
+                    if 'fasting_status_at_specimen_collection' in x:
+                        print x
+                        print '\t', y
+                        print pos[x]
+                print '==================='
+ 
+                ## Remove collector nodes               
+                ont_red = ont
+                if not layout_params['hidden_parent']:
+                    ont_red = ont_red.delete(to_delete=[t for t in ont.terms if 'collect_hidden_parent' in t],
+                                             preserve_transitivity=True)
+                if not layout_params['hidden_child']:
+                    ont_red = ont_red.delete(to_delete=[t for t in ont.terms if 'collect_hidden_child' in t],
+                                             preserve_transitivity=True)
+                if not layout_params['hidden_gene']:
+                    ont_red = ont_red.delete(to_delete=[t for t in ont.terms if 'collect_hidden_gene' in t],
+                                             preserve_transitivity=True)
+                if not layout_params['tree_gene']:
+                    ont_red = ont_red.delete(to_delete=[t for t in ont.terms if 'collect_tree_gene' in t],
+                                             preserve_transitivity=True)
+                    
+#                print 'asdf:', [x for x in ont_red.terms if 'collect' in x]
                 
-                ont_red = ont.delete(to_delete=[t for t in ont.terms if 'collect_tree_gene' in t],
-                                     preserve_transitivity=True)
                 # Set the original term sizes for the original copy of
                 # each term (not the duplicates)
                 ont_red.update_node_attr(pd.DataFrame({'Size' : self.term_sizes}, index=self.terms))
-                
-                # print ont_red.node_attr
-                # print ont_red.gene_2_term
-                # print ont_red.genes
-                # print zip(ont_red.terms, ont_red.term_sizes)
-                G = ont_red._to_networkx_no_layout()                
-                # print '------------------'
-                # print nx_nodes_to_pandas(G)
-                
-                G.pos = {n : (float(scale*p[0]), float(scale*p[1])) for n, p in pos.items() if 'collect_tree_gene' not in n}
+                G = ont_red._to_networkx_no_layout()
+
+                print 'asdf:', G.nodes()[:5]
+                print 'asdf2:', [x for x in G.nodes() if 'fasting_status_at_specimen_collection' in x]                                 
+
+                # copy_num = Counter(ont_red['Original_Name'])
+                # for v, data in G.nodes(data=True):                    
+                    # if not pd.isnull(data['Original_Name']) and copy_num[data['Original_Name']] > 1:                        
+                    #     data['Label'] = data['Label'] 
+
+                nodes_set = set(G.nodes())
+                print 'asdf3:', [x for x in nodes_set if 'fasting_status_at_specimen_collection' in x]
+                G.pos = {n : (float(scale*p[0]), float(scale*p[1])) for n, p in pos.items() if n in nodes_set}
                 nx_set_tree_edges(G, ont_red.get_tree())
 
-                # G = ont._to_networkx_no_layout()
-                # G.pos = {n : (float(scale*p[0]), float(scale*p[1])) for n, p in pos.items() if 'collect_tree_gene' not in n}
-                # nx_set_tree_edges(G, ont_red.get_tree())
+                for x, y in pos.items():
+                    if 'fasting_status_at_specimen_collection' in x:
+                        print x
+                        print '\t', y
+                        print pos[x]
+
+                print '----------'
+                for x, y in G.pos.items():
+                    if 'fasting_status_at_specimen_collection' in x:
+                        print x
+                        print '\t', y
+                        print G.pos[x]
+                
 
                 ######################################################
                 # TODO: move this visual styling outside of the layout
@@ -1419,8 +1447,6 @@ Traverse the ontology from the root nodes to the leaves in a
                         for _, _, data in G.in_edges(v, data=True):
                             data["Vis:EDGE_TARGET_ARROW_SHAPE"] = 'ARROW'
                             data["Vis:EDGE_SOURCE_ARROW_SHAPE"] = 'NONE'
-
-                
             else:
                 raise Exception('Unsupported layout: %s', layout)
 
@@ -3628,6 +3654,9 @@ Traverse the ontology from the root nodes to the leaves in a
                     else:
                         data['Vis:Size'] = 20
 
+                # if 'Label' not in data:
+                #     data['Label'] = data['name']
+                        
             for u, v, data in G.edges(data=True):
                 if 'Vis:Visible' not in data and 'Is_Tree_Edge' in data:
                     data['Vis:Visible'] = data['Is_Tree_Edge']=='Tree'

@@ -1394,7 +1394,7 @@ Traverse the ontology from the root nodes to the leaves in a
                     ont_red = ont_red.delete(to_delete=[t for t in ont.terms if 'collect_hidden_parent' in t and 'is_collect_node' in data and data['is_collect_node']],
                                              preserve_transitivity=True)
                 if not layout_params['hidden_child']:
-                    ont_red = ont_red.delete(to_delete=[t for t in ont.terms if 'collect_hidden_child' in t and 'is_collect_node' in data and data['is_collect_node']],
+
                                              preserve_transitivity=True)
                 if not layout_params['hidden_gene']:
                     ont_red = ont_red.delete(to_delete=[t for t in ont.terms if 'collect_hidden_gene' in t and 'is_collect_node' in data and data['is_collect_node']],

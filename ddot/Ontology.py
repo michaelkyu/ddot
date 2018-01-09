@@ -1394,7 +1394,7 @@ Traverse the ontology from the root nodes to the leaves in a
                     ont_red = ont_red.delete(to_delete=[t for t in ont.terms if 'collect_hidden_parent' in t and 'is_collect_node' in data and data['is_collect_node']],
                                              preserve_transitivity=True)
                 if not layout_params['hidden_child']:
-
+                    ont_red = ont_red.delete(to_delete=[t for t in ont.terms if 'collect_hidden_child' in t and 'is_collect_node' in data and data['is_collect_node']],
                                              preserve_transitivity=True)
                 if not layout_params['hidden_gene']:
                     ont_red = ont_red.delete(to_delete=[t for t in ont.terms if 'collect_hidden_gene' in t and 'is_collect_node' in data and data['is_collect_node']],
@@ -1417,19 +1417,6 @@ Traverse the ontology from the root nodes to the leaves in a
 #                print 'asdf3:', [x for x in nodes_set if 'fasting_status_at_specimen_collection' in x]
                 G.pos = {n : (float(scale*p[0]), float(scale*p[1])) for n, p in pos.items() if n in nodes_set}
                 nx_set_tree_edges(G, ont_red.get_tree())
-
-                # for x, y in pos.items():
-                #     if 'fasting_status_at_specimen_collection' in x:
-                #         print x
-                #         print '\t', y
-                #         print pos[x]
-
-                # print '----------'
-                # for x, y in G.pos.items():
-                #     if 'fasting_status_at_specimen_collection' in x:
-                #         print x
-                #         print '\t', y
-                #         print G.pos[x]
 
                 ######################################################
                 # TODO: move this visual styling outside of the layout

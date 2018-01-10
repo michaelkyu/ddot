@@ -3890,7 +3890,7 @@ Traverse the ontology from the root nodes to the leaves in a
 
         ndex = nc.Ndex(ndex_server, ndex_user, ndex_pass)
         term_2_uuid = {}
-
+       
         start = time.time()
         g1, g2 = gene_columns[0] + '_lex', gene_columns[1] + '_lex'
 
@@ -3900,8 +3900,8 @@ Traverse the ontology from the root nodes to the leaves in a
         #     print 'gene_columns:', gene_columns
 
         network = network[features + gene_columns].copy()
-
-        verbose = True
+        
+#        verbose = True
         
         # Filter dataframe for gene pairs within the ontology        
         if node_alias in ont.node_attr.columns:
@@ -3914,10 +3914,12 @@ Traverse the ontology from the root nodes to the leaves in a
         network = network.loc[tmp, :]
 
         # Lexicographically sort gene1 and gene2 so that gene1 < gene2
-        network[g1] = network[gene_columns].min(axis=1)
-        network[g2] = network[gene_columns].max(axis=1)
+        network[g1] = [x if x<y else y for x, y in zip(network[gene_columns[0]], network[gene_columns[1]])]
+        network[g2] = [y if x<y else x for x, y in zip(network[gene_columns[0]], network[gene_columns[1]])]
+        # network[g1] = network[gene_columns].min(axis=1)
+        # network[g2] = network[gene_columns].max(axis=1)
         network_idx = {x : i for i, x in enumerate(zip(network[g1], network[g2]))}
-
+        
         if verbose:
             print 'Setup time:', time.time() - start
 
@@ -3948,12 +3950,16 @@ Traverse the ontology from the root nodes to the leaves in a
 
         if terms is None:
             terms = ont.terms
-            
+
         if verbose: print 'Uploading %s terms' % len(terms)
+
         for upload_idx, t in enumerate(terms):
             start = time.time()
 
             genes = [ont.genes[g] for g in ont.term_2_gene[t]]
+
+#            print genes[:10]       
+            
             if node_alias in ont.node_attr.columns:
                 genes = ont.node_attr.loc[genes, node_alias].values            
             genes.sort()

@@ -27,7 +27,7 @@ setup(name='ddot',
       ],
       keywords='ontology hierarchy',
       packages=['ddot'],
-      install_requires=['pandas>=0.20', 'numpy', 'scipy', 'ndex-dev==3.0.11.35', 'python-igraph', 'networkx>=2.0', 'requests', 'tulip-python'],
+      install_requires=['pandas>=0.20', 'numpy', 'scipy', 'ndex-dev==3.0.11.35', 'python-igraph', 'networkx==1.11', 'requests', 'tulip-python'],
       include_package_data=True,
       zip_safe=False)
 

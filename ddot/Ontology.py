@@ -164,18 +164,22 @@ def align_hierarchies(hier1,
                       update_hier2=False,
                       calculateFDRs=None,
                       mutual_collapse=True,
-                      output=None):
+                      output=None,
+                      verbose=False):
+    print 'verbose out:', verbose
+    
     if output is None:
         with tempfile.NamedTemporaryFile('w', delete=True) as output_file:
             return align_hierarchies(hier1, hier2, iterations, threads,
                                      update_hier1=update_hier1, update_hier2=update_hier2,
                                      mutual_collapse=mutual_collapse,
                                      output=output_file.name,
-                                     calculateFDRs=calculateFDRs)
+                                     calculateFDRs=calculateFDRs,
+                                     verbose=verbose)
 
     hier1_orig, hier2_orig = hier1, hier2
     if mutual_collapse:
-        hier1, hier2 = Ontology.mutual_collapse(hier1, hier2)
+        hier1, hier2 = Ontology.mutual_collapse(hier1, hier2, verbose=verbose)
         hier1.clear_node_attr()
         hier1.clear_edge_attr()
         hier2.clear_node_attr()
@@ -619,7 +623,7 @@ class Ontology(object):
                     
                 node_attr.index.name = 'Node'                
             self.node_attr = node_attr
-
+            
         if edge_attr is None:
             self.clear_edge_attr()
         else:
@@ -813,7 +817,8 @@ class Ontology(object):
               align_label=None,
               calculateFDRs=None,
               mutual_collapse=True,
-              output=None):
+              output=None,
+              verbose=False):
         """Identifies one-to-one matches between terms in this ontology with
         highly similar terms in another ontology.
 
@@ -883,6 +888,7 @@ class Ontology(object):
             null models).
 
         """
+        print 'verbose in:', verbose
         
         alignment = align_hierarchies(
             self,
@@ -893,7 +899,8 @@ class Ontology(object):
             update_hier2=update_ref,
             calculateFDRs=calculateFDRs,
             mutual_collapse=mutual_collapse,
-            output=output)
+            output=output,
+            verbose=verbose)
 
         # Set labels based on ontology alignment
         if align_label and (('Aligned_%s' % align_label) in self.node_attr.columns):
@@ -1322,8 +1329,7 @@ Traverse the ontology from the root nodes to the leaves in a
         if layout_params is None:
             layout_params = {'hidden_parent' : True,
                              'hidden_child' : False,
-                             'tree_gene' : False,
-            'hidden_gene' : False}
+                             'hidden_gene' : False}
             
         if spanning_tree:
             scale = 1
@@ -1353,60 +1359,34 @@ Traverse the ontology from the root nodes to the leaves in a
                 G_tree = ont.get_tree(ret='ontology')._to_networkx_no_layout()
                 pos = bubble_layout_nx(G_tree)
 
-                # for x, y in G_tree.nodes(data=True):
-                #     if 'fasting_status_at_specimen_collection' in x:
-                #         print x
-                #         print '\t', y
-                #         print pos[x]
-
-                # 0 / asdf
-                # print ont.node_attr.head()
-                # print ont.node_attr.dropna(subset=['is_collect_node']).head()
-                # print ont.node_attr.columns
-                # print '-----'
-
-                # tmp = set([])
-                # for _, data in G_tree.nodes(data=True):
-                #     for k in data.keys():
-                #         tmp.add(k)
-                # print tmp
-                # 0 / asdf
-                
-                # for v, data in G_tree.nodes(data=True):
-                #     if 'is_collect_node' in data:
-                #         print v, data
-                #         0 / asdf
-                    
                 collect_nodes = [v for v, data in G_tree.nodes(data=True) if 'collect' in v and 'is_collect_node' in data and data['is_collect_node']]
-#                print 'collect nodes:', collect_nodes
+#                print 'collect:', collect_nodes
                 gridify(collect_nodes, pos, G_tree)
 
-                # for x, y in G_tree.nodes(data=True):
-                #     if 'fasting_status_at_specimen_collection' in x:
-                #         print x
-                #         print '\t', y
-                #         print pos[x]
-                # print '==================='
- 
+#                print 'ont terms:', ont.terms
+                
                 ## Remove collector nodes               
                 ont_red = ont
                 if not layout_params['hidden_parent']:
-                    ont_red = ont_red.delete(to_delete=[t for t in ont.terms if 'collect_hidden_parent' in t and 'is_collect_node' in data and data['is_collect_node']],
-                                             preserve_transitivity=True)
+#                    print 'Removing hidden parents'
+                    to_delete = [v for v, data in G_tree.nodes(data=True) \
+                                 if 'collect_hidden_parent' in v and 'is_collect_node' in data and data['is_collect_node']]
+                    ont_red = ont_red.delete(to_delete=to_delete, preserve_transitivity=True)
                 if not layout_params['hidden_child']:
-                    ont_red = ont_red.delete(to_delete=[t for t in ont.terms if 'collect_hidden_child' in t and 'is_collect_node' in data and data['is_collect_node']],
-                                             preserve_transitivity=True)
+#                    print 'Removing hidden children'
+                    to_delete = [v for v, data in G_tree.nodes(data=True) \
+                                 if 'collect_hidden_child' in v and 'is_collect_node' in data and data['is_collect_node']]
+                    ont_red = ont_red.delete(to_delete=to_delete, preserve_transitivity=True)                    
                 if not layout_params['hidden_gene']:
-                    ont_red = ont_red.delete(to_delete=[t for t in ont.terms if 'collect_hidden_gene' in t and 'is_collect_node' in data and data['is_collect_node']],
-                                             preserve_transitivity=True)
+#                    print 'Removing hidden genes'
+                    to_delete = [v for v, data in G_tree.nodes(data=True) \
+                                 if 'collect_hidden_gene' in v and 'is_collect_node' in data and data['is_collect_node']]
+                    ont_red = ont_red.delete(to_delete=to_delete, preserve_transitivity=True)                    
                     
                 # Set the original term sizes for the original copy of
                 # each term (not the duplicates)
                 ont_red.update_node_attr(pd.DataFrame({'Size' : self.term_sizes}, index=self.terms))
                 G = ont_red._to_networkx_no_layout()
-
-                # print 'asdf:', G.nodes()[:5]
-                # print 'asdf2:', [x for x in G.nodes() if 'fasting_status_at_specimen_collection' in x]                                 
 
                 # copy_num = Counter(ont_red['Original_Name'])
                 # for v, data in G.nodes(data=True):                    
@@ -1414,7 +1394,6 @@ Traverse the ontology from the root nodes to the leaves in a
                     #     data['Label'] = data['Label'] 
 
                 nodes_set = set(G.nodes())
-#                print 'asdf3:', [x for x in nodes_set if 'fasting_status_at_specimen_collection' in x]
                 G.pos = {n : (float(scale*p[0]), float(scale*p[1])) for n, p in pos.items() if n in nodes_set}
                 nx_set_tree_edges(G, ont_red.get_tree())
 
@@ -1955,8 +1934,10 @@ Traverse the ontology from the root nodes to the leaves in a
             ont = self.propagate_annotations(direction='forward', inplace=False)
             ont.propagate_annotations(direction='reverse', inplace=True)
 
-            assert os.path.isdir(ddot.config.alignOntology)
-            collapseRedundantNodes = os.path.join(ddot.config.alignOntology, 'collapseRedundantNodes')
+            top_level = os.path.dirname(os.path.abspath(inspect.getfile(ddot)))
+            collapseRedundantNodes = os.path.join(top_level, 'alignOntology', 'collapseRedundantNodes')
+            # assert os.path.isdir(ddot.config.alignOntology)
+            # collapseRedundantNodes = os.path.join(ddot.config.alignOntology, 'collapseRedundantNodes')
             assert os.path.isfile(collapseRedundantNodes)
 
             with tempfile.NamedTemporaryFile('w', delete=False) as f:
@@ -2020,6 +2001,8 @@ Traverse the ontology from the root nodes to the leaves in a
 
         common_genes = set(ont1.genes) & set(ont2.genes)
 
+        print 'verbose:', verbose
+        
         if verbose:
             print('Common genes:', len(common_genes))
 
@@ -3518,16 +3501,16 @@ Traverse the ontology from the root nodes to the leaves in a
             assert main_feature in features, 'A main feature of the network must be specified'
             
             if subnet_max_term_size is None:
-                terms = ont.terms                
+                terms = ont.terms
             else:
                 terms = [t for t,s in zip(ont.terms, ont.term_sizes) if s <= subnet_max_term_size]
-            
+
             # Only upload subnets for the unique set of the original
             # terms
             if node_alias in ont.node_attr.columns:
                 orig_2_new = {a : b.index.values for a, b in ont.node_attr.loc[terms, [node_alias]].groupby(node_alias)}
                 terms = [b[0] for b in orig_2_new.values()]
-                
+                        
             term_2_uuid = ont.upload_subnets_ndex(
                 network,                
                 features,
@@ -3892,7 +3875,7 @@ Traverse the ontology from the root nodes to the leaves in a
         node_attr : pandas.DataFrame
 
         """
-
+        
         if ndex_server is None:
             ndex_server = ddot.config.ndex_server
         if ndex_user is None:
@@ -3918,6 +3901,8 @@ Traverse the ontology from the root nodes to the leaves in a
 
         network = network[features + gene_columns].copy()
 
+        verbose = True
+        
         # Filter dataframe for gene pairs within the ontology        
         if node_alias in ont.node_attr.columns:
             genes_set = set(ont.node_attr.loc[ont.genes, node_alias].values)

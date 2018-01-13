@@ -1025,14 +1025,9 @@ class Ontology(object):
                                node_attr=ont.node_attr.copy(),
                                edge_attr=ont.edge_attr.copy(),
                                verbose=False)    
-
-        # print ont_collect.node_attr
-        # 0 / asdf
         
-        ##############################
-        # Set Original_Name and Size #
-        # for Duplicate Nodes        #
-        ##############################        
+        ##################################################
+        # Set Original_Name and Size for Duplicate Nodes #
 
         new_and_orig = [('%s.%s' %(v,i), v) for v, copy_num in nodes_copy.items()
                         for i in (range(1, copy_num) if copy_num>1 else [])]
@@ -1074,13 +1069,12 @@ class Ontology(object):
                 return 'Linked Genes'
             elif 'tree_gene' in x:
                 return 'Genes'
-#        collect_nodes = [t for t in ont_collect.terms if 'collect' in t]        
+            
         collect_attr = pd.DataFrame(
             {'Size' : 1,
              'Label' : [get_label(x) for x in collect_nodes],
              'is_collect_node' : True},
-             index=collect_nodes)
-        
+             index=collect_nodes)        
         ont_collect.update_node_attr(collect_attr)
                 
         return ont_collect
@@ -1093,8 +1087,9 @@ class Ontology(object):
         """Traverses the ontology from the root to the leaves while
         duplicating nodes during the traversal to create a tree representation.
 
-Traverse the ontology from the root nodes to the leaves in a
-        breadth-first manner. Each time a node is traversed, then create a duplicate of it 
+        Traverse the ontology from the root nodes to the leaves in a
+        breadth-first manner. Each time a node is traversed, then
+        create a duplicate of it
 
         Parameters
         ---------- 
@@ -3505,11 +3500,16 @@ Traverse the ontology from the root nodes to the leaves in a
             else:
                 terms = [t for t,s in zip(ont.terms, ont.term_sizes) if s <= subnet_max_term_size]
 
+            print 'asdf:', node_alias in ont.node_attr.columns
+            
             # Only upload subnets for the unique set of the original
             # terms
             if node_alias in ont.node_attr.columns:
                 orig_2_new = {a : b.index.values for a, b in ont.node_attr.loc[terms, [node_alias]].groupby(node_alias)}
                 terms = [b[0] for b in orig_2_new.values()]
+
+                # Take union with existing terms ??
+                print orig_2_new
                         
             term_2_uuid = ont.upload_subnets_ndex(
                 network,                
@@ -3661,14 +3661,8 @@ Traverse the ontology from the root nodes to the leaves in a
         # for v, data in G.nodes(data=True):
         #     if 'Original_Name' in data and 'Hidden' in data and data['Hidden']==True:
         #         data['Original_Name'] = name_2_idx[data['Original_Name']]
-
-        # for v, data in G.nodes(data=True):
-        #     if 'Size' in data:
-        #         data['abcd'] = data['Size']
-        #         del data['Size']
             
         G = nx_to_NdexGraph(G)
-#        print nx_nodes_to_pandas(G)
         
         if name is not None:
             G.set_name(name)
@@ -3901,27 +3895,21 @@ Traverse the ontology from the root nodes to the leaves in a
 
         network = network[features + gene_columns].copy()
         
-#        verbose = True
-        
-        # Filter dataframe for gene pairs within the ontology        
-        if node_alias in ont.node_attr.columns:
-            genes_set = set(ont.node_attr.loc[ont.genes, node_alias].values)
-        else:
-            genes_set = set(ont.genes)
-            
+        # Filter dataframe for gene pairs within the ontology
+        # if node_alias in ont.node_attr.columns:
+        #     genes_set = set(ont.node_attr.loc[ont.genes, node_alias].values)
+        # else:
+        #     genes_set = set(ont.genes)
+        genes_set = set(ont.genes)
         tmp = [x in genes_set and y in genes_set
                for x, y in zip(network[gene_columns[0]], network[gene_columns[1]])]
         network = network.loc[tmp, :]
 
         # Lexicographically sort gene1 and gene2 so that gene1 < gene2
-        network[g1] = [x if x<y else y for x, y in zip(network[gene_columns[0]], network[gene_columns[1]])]
-        network[g2] = [y if x<y else x for x, y in zip(network[gene_columns[0]], network[gene_columns[1]])]
-        # network[g1] = network[gene_columns].min(axis=1)
-        # network[g2] = network[gene_columns].max(axis=1)
+        network[g1], network[g2] = zip(*[(x,y) if x<y else (y,x) for x, y in zip(network[gene_columns[0]], network[gene_columns[1]])])
         network_idx = {x : i for i, x in enumerate(zip(network[g1], network[g2]))}
         
-        if verbose:
-            print 'Setup time:', time.time() - start
+        # if verbose:  print 'Setup time:', time.time() - start
 
         if z_score:
             for feat in features:
@@ -3934,7 +3922,6 @@ Traverse the ontology from the root nodes to the leaves in a
 #        network_sq = ddot.utils.pivot_square(network, g1, g2, main_feature)
             
         # Calculate the min/max range of features
-#        feature_types = [str(x) for x in network[features].dtypes.tolist()]
         numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
         def f(x):
             if str(x) in numerics:
@@ -3942,7 +3929,6 @@ Traverse the ontology from the root nodes to the leaves in a
             elif str(x) == 'bool':
                 return 'boolean'
             else:
-#                print str(x), 'asdf'
                 raise Exception()
         feature_types = network[features].dtypes.map(f)
         feature_mins = network[features].min().astype(np.str)
@@ -3957,8 +3943,6 @@ Traverse the ontology from the root nodes to the leaves in a
             start = time.time()
 
             genes = [ont.genes[g] for g in ont.term_2_gene[t]]
-
-#            print genes[:10]       
             
             if node_alias in ont.node_attr.columns:
                 genes = ont.node_attr.loc[genes, node_alias].values            

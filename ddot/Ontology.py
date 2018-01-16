@@ -4081,7 +4081,9 @@ class Ontology(object):
                           edge_name='smallest_parent',
                           parent_priority=None, edge_priority=None, default_priority=None, optim='max'):
         """Returns copy of graph with new edge attribute marking spanning
-        tree"""
+        tree
+
+        """
 
         if graph is None:
             graph = self.to_igraph()

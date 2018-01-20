@@ -102,7 +102,7 @@ def transform_pos(pos, xmin=-250, xmax=250, ymin=-250, ymax=250):
 
     return pos
 
-def bubble_layout_nx(G, xmin=-750, xmax=750, ymin=-750, ymax=750):
+def bubble_layout_nx(G, xmin=-750, xmax=750, ymin=-750, ymax=750, verbose=False):
     """Bubble-tree Layout using the Tulip library.
 
     The input tree must be a graph. The layout is scaled so that it is
@@ -135,27 +135,22 @@ def bubble_layout_nx(G, xmin=-750, xmax=750, ymin=-750, ymax=750):
        Dictionary mapping nodes to 2D coordinates. pos[node_name] -> (x,y)
 
     """
-
+    
     from tulip import tlp
 #     from tulip import *
 #     from tulipgui import *
-
-    graph = tlp.newGraph()
-
+    
+    graph = tlp.newGraph()        
     nodes = graph.addNodes(len(G.nodes()))
-    nodes_idx = make_index(G.nodes())
-
+    nodes_idx = make_index(G.nodes())    
     for x, y in G.edges():
         graph.addEdge(nodes[nodes_idx[x]], nodes[nodes_idx[y]])
-
-    # apply the 'Bubble Tree' graph layout plugin from Tulip
+    # Apply the 'Bubble Tree' graph layout plugin from Tulip
     graph.applyLayoutAlgorithm('Bubble Tree')
-
+        
     viewLayout = graph.getLayoutProperty("viewLayout")
     pos = {g : (viewLayout[i].x(), viewLayout[i].y()) for i, g in zip(nodes, G.nodes())}
-
     pos = transform_pos(pos, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax)
-
     return pos
 
 def split_indices(n, k):
@@ -1287,7 +1282,7 @@ def ig_unfold_tree_with_attr(g, sources, mode):
     return g_unfold
 
 
-def gridify(centers, pos, G):
+def gridify(parents, pos, G):
     """Relayout leaf nodes into a grid.
 
     Nodes must be connected and already laid out in "star"-like
@@ -1300,9 +1295,9 @@ def gridify(centers, pos, G):
 
     Parameters
     ----------
-    centers : list
+    parents : list
         
-        Names of the nodes that lie at the center of the circles.
+        For each parent, its children will be arranged in a grid.
 
     pos : dict
 
@@ -1320,10 +1315,10 @@ def gridify(centers, pos, G):
 
     """
     
-    for v in centers:
+    for v in parents:
         x_center, y_center = pos[v]
         children = list(G.predecessors(v))
-        if len(children) == 1:
+        if len(children) <= 1:
             continue
     
         # Estimate radius by averaging the distance to the children

@@ -1,6 +1,3 @@
-Introduction
-============
-
 The Data-Driven Ontology Toolkit (DDOT) Python library simplifies the
 assembly, analysis, and visualization of biological hierarchies using
 a data structure called an ontology.
@@ -13,6 +10,13 @@ Features
    cellular subsystems using the CliXO algorithm (Kramer et
    al. Bioinformatics 2014). The resulting hierarchy of subsystems
    defines a data-driven ontology.
+
+#. **Align Ontologies:** Annotate a data-driven ontology by aligning
+   it to a curated ontology such as the Gene Ontology (GO). For
+   instance, if a data-driven subsystem contains a similar set of
+   genes as the GO term for DNA repair, then annotate this subsystem
+   as being involved in DNA repair. Data-driven subsystems with no
+   such matches represent new molecular mechanisms.
 
 #. **Visualize Hierarchical Structure:** Browse the full hierarchical
    structure of a data-driven ontology, including the network of gene
@@ -35,13 +39,6 @@ Features
    inferring a gene similarity network from an ontology. In
    particular, the similarity between two genes is calculated as the
    size of the smallest common subsystem, known as the Resnik score.
-
-#. **Align Ontologies:** Annotate a data-driven ontology by aligning
-   it to a curated ontology such as the Gene Ontology (GO). For
-   instance, if a data-driven subsystem contains a similar set of
-   genes as the GO term for DNA repair, then annotate this subsystem
-   as being involved in DNA repair. Data-driven subsystems with no
-   such matches represent new molecular mechanisms.
    
 #. **Expand Gene Set:** Given a set of genes as a “seed set” and a
    gene similarity network, identify an expanded set of genes that are
@@ -70,20 +67,18 @@ Features
    Cytoscape, and other programming libraries in Python, such as the
    Pandas, NetworkX, igraph, and matplotlib.
 
-Example Pipeline
-----------------
 
-.. image:: software_pipeline_1dec2017.png
+.. image:: software_pipeline_23jan2018.png
    :width: 60%
 
 
-Installation
-------------
+Installation and source code
+----------------------------
 
 Please see https://github.com/michaelkyu/ontology
 
-Cite
-----
+How to cite
+-----------
 
 If you find DDOT helpful in your research, please cite 
 

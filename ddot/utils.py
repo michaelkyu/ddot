@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 import sys
 import base64
@@ -182,7 +182,7 @@ def make_index(it):
     return {b : a for a, b in enumerate(it)}
 
 def time_print(*s):
-    print ' '.join(map(str, s)), datetime.today()
+    print(' '.join(map(str, s)), datetime.today())
     sys.stdout.flush()
 
 def pivot_square(df, index, columns, values, fill_value=0):
@@ -637,10 +637,10 @@ def create_edgeMatrix(X, X_cols, X_rows, verbose=True, G=None):
     start = time.time()
     serialized = base64.b64encode(X)
     if verbose:
-        print 'base64 encoding time (sec):', time.time() - start
-        print 'Size of numpy array (MB):', X.nbytes / 1e6
-        print 'Size of serialization (MB):', sys.getsizeof(serialized) / 1e6
-        print 'Constant factor overhead:', float(sys.getsizeof(serialized)) / X.nbytes
+        print('base64 encoding time (sec):', time.time() - start)
+        print('Size of numpy array (MB):', X.nbytes / 1e6)
+        print('Size of serialization (MB):', sys.getsizeof(serialized) / 1e6)
+        print('Constant factor overhead:', float(sys.getsizeof(serialized)) / X.nbytes)
 
     if G is None:
         G = NdexGraph()
@@ -703,7 +703,7 @@ def load_edgeMatrix(ndex_uuid,
     start = time.time()
     response = ndex.get_network_as_cx_stream(ndex_uuid)
     if verbose:
-        print 'NDEx download time (sec):', time.time() - start
+        print('NDEx download time (sec):', time.time() - start)
 
     start = time.time()
     # cx = json.loads(response.text)
@@ -725,7 +725,7 @@ def load_edgeMatrix(ndex_uuid,
             start = time.time()
             binary_data = base64.decodestring(aspect.get('matrix'))
             if verbose:
-                print 'base64 decoding time (sec):', time.time() - start
+                print('base64 decoding time (sec):', time.time() - start)
 
             dtype = np.dtype(aspect.get('matrix_dtype'))
             rows = aspect.get('matrix_rows')
@@ -737,7 +737,7 @@ def load_edgeMatrix(ndex_uuid,
             X = np.frombuffer(binary_data, dtype=dtype).reshape(dim)
 
     if verbose:
-        print 'loop time (sec):', time.time() - start_loop
+        print('loop time (sec):', time.time() - start_loop)
     
     return X, rows, cols
 
@@ -1025,7 +1025,7 @@ def expand_seed(seed,
         if seed_perc is not None:
             min_sim = max(min_sim, np.percentile(sim_2_seed[seed_idx], 100 * seed_perc))
             
-        if verbose: print 'min_sim:', min_sim
+        if verbose: print('min_sim:', min_sim)
 
         expand_idx = expand_idx[sim_2_seed[expand_idx] >= min_sim]
         
@@ -1123,9 +1123,9 @@ def make_seed_ontology(sim,
     # Expand genes #
     ################
     if verbose:
-        print '----------------'
-        print 'Expanding genes'
-        print '----------------'
+        print('----------------')
+        print('Expanding genes')
+        print('----------------')
     
     kwargs = {'sim': sim,
               'sim_names': sim_names}
@@ -1136,16 +1136,16 @@ def make_seed_ontology(sim,
     expand = list(expand)
 
     if verbose:
-        print 'Seed genes:', len(seed)
-        print 'Expand genes:', len(expand)
+        print('Seed genes:', len(seed))
+        print('Expand genes:', len(expand))
         
     ##################
     # Build Ontology #
     ##################
     if verbose:
-        print '-----------------'
-        print 'Building ontology'
-        print '-----------------'
+        print('-----------------')
+        print('Building ontology')
+        print('-----------------')
     
     # Slice the similarity matrix over the expanded gene set and
     # convert to a square dataframe
@@ -1162,13 +1162,13 @@ def make_seed_ontology(sim,
 
     if 'hier' in align_kwargs:
         if verbose:
-            print '------------------'
-            print 'Aligning Ontology'
-            print '------------------'
+            print('------------------')
+            print('Aligning Ontology')
+            print('------------------')
                 
         alignment = ont.align(**align_kwargs)
         if verbose:
-            print 'Alignment: %s alignment matches' % alignment.shape[0] 
+            print('Alignment: %s alignment matches' % alignment.shape[0])
 
     #############################
     # Set other node attributes #
@@ -1204,9 +1204,9 @@ def make_seed_ontology(sim,
         
     if ndex:
         if verbose:
-            print '--------------------------'
-            print 'Uploading Ontology to NDEx'
-            print '--------------------------'            
+            print('--------------------------')
+            print('Uploading Ontology to NDEx')
+            print('--------------------------')           
         
         if 'network' not in ndex_kwargs:
             ndex_kwargs['network'] = df
@@ -1249,8 +1249,8 @@ def make_network_public(uuid,
     start = time.time()
     while True:
         if time.time() - start > timeout:
-            print 'Failed to make network public: error message:'
-            print traceback.print_exc()
+            print('Failed to make network public: error message:')
+            print(traceback.print_exc())
             if error:
                 raise Exception('Could not make the NDEX network %s public' % uuid)
             else:

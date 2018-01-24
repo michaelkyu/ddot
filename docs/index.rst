@@ -9,10 +9,12 @@ Welcome to Data-Driven Ontology Toolkit's documentation!
 .. toctree::
    :maxdepth: 3
 
-   intro
-   tutorial
-   ontology
-   utils
+.. include:: intro.rst
+	     
+..   intro
+..   tutorial
+..   ontology
+..   utils
 
 ..
    :caption: Contents:

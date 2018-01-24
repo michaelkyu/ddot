@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, print_function
 
 import itertools, multiprocessing, logging, os, collections, random, math, sys, time
 from itertools import groupby, combinations
@@ -11,6 +11,7 @@ import shlex
 import shutil
 from StringIO import StringIO
 import json
+import datetime
 
 import numpy as np
 import pandas as pd
@@ -102,11 +103,6 @@ def _collapse_node(g,
                                   (e_in[key], e_out[key]))
 
                 e['collapsed_length'] = e_in['collapsed_length'] + e_out['collapsed_length']
-                print g.summary()
-                print e_in['collapsed_terms']
-                print v
-                print g.vs[v]
-                print g.vs[v]['name']
                 e['collapsed_terms'] = e_in['collapsed_terms'] + [g.vs[v]['name']] + e_out['collapsed_terms']
 
     if delete:
@@ -209,7 +205,7 @@ def align_hierarchies(hier1,
     output_dir = tempfile.mkdtemp(prefix='tmp')
     cmd = '{5} {0} {1} 0.05 criss_cross {2} {3} {4} gene'.format(
               hier1, hier2, output_dir, iterations, threads, calculateFDRs)
-    print 'Alignment command:', cmd
+    print('Alignment command:', cmd)
 
     p = Popen(shlex.split(cmd), shell=False)
     
@@ -393,7 +389,7 @@ def parse_obo(obo,
             stanza.append((parent, curr_term, 'is_a'))
         elif 'relationship:' in line:
             line = line.split('relationship:')[1].strip().split()
-            if len(line)!=2: print line
+            if len(line)!=2: print(line)
             assert len(line)==2
             relation, parent = line
             stanza.append((parent, curr_term, relation))
@@ -583,7 +579,7 @@ class Ontology(object):
             terms_B = set([])
             
         if verbose and ignore_orphan_terms and len(terms_B - terms_A)>0:
-            print 'WARNING: Ignoring {} terms are connected to genes but not to other terms'.format(len(terms_B - terms_A))
+            print('WARNING: Ignoring {} terms are connected to genes but not to other terms'.format(len(terms_B - terms_A)))
         # if verbose and len(terms_A - terms_B)>0:
         #     print 'WARNING: {} terms connected to other terms but not to genes'.format(len(terms_A - terms_B))
 
@@ -596,7 +592,7 @@ class Ontology(object):
         if add_root_name is not None:
             root_list = self.get_roots()
             if len(root_list) > 1:
-                print 'Unifying %s roots into one super-root' % len(root_list)
+                print('Unifying %s roots into one super-root' % len(root_list))
                 self.parent_2_child[add_root_name] = root_list
                 self.terms.append(add_root_name)
         
@@ -616,7 +612,7 @@ class Ontology(object):
             assert node_attr.index.nlevels == 1
             if node_attr.index.name != 'Node':
                 if verbose:
-                    print "Changing node_attr index name from %s to 'Node'" % node_attr.index.name
+                    print("Changing node_attr index name from %s to 'Node'" % node_attr.index.name)
                     # import traceback
                     # print traceback.print_stack()
                     
@@ -629,7 +625,7 @@ class Ontology(object):
             assert edge_attr.index.nlevels == 2
             if edge_attr.index.names != ['Child', 'Parent']:
                 if verbose:
-                    print "Changing edge_attr index names from %s to ['Child', 'Parent']" % edge_attr.index.names
+                    print("Changing edge_attr index names from %s to ['Child', 'Parent']" % edge_attr.index.names)
                     # import traceback
                     # print traceback.print_stack()
                     
@@ -643,7 +639,7 @@ class Ontology(object):
             self._update_fields()
 
         if not self.is_dag():
-            print 'Found cycle:', self._to_networkx_no_layout().find_cycle()
+            print('Found cycle:', self._to_networkx_no_layout().find_cycle())
             raise Exception('Not a directed acyclic graph')
 
         assert self.edge_attr.index.duplicated().sum()==0
@@ -658,11 +654,8 @@ class Ontology(object):
         #     # print traceback.print_stack()
                 
     def _update_fields(self):
-#        print 'Updating fields'
-        
         self.child_2_parent = self._get_child_2_parent()
         self.term_2_gene = self._get_term_2_gene()
-        #self.term_sizes = self.get_term_sizes(propagate=True)
         self._term_sizes = None
 
         for t in self.terms:
@@ -684,7 +677,7 @@ class Ontology(object):
         assert root_name not in ont.terms        
         root_list = ont.get_roots()
         if len(root_list) > 1:
-            print 'Unifying %s roots into one super-root' % len(root_list)
+            print('Unifying %s roots into one super-root' % len(root_list))
             ont.parent_2_child[root_name] = root_list
             
         ont.terms.append(root_name)
@@ -1570,7 +1563,7 @@ class Ontology(object):
             #           'function or separate table. '
             #           'Default: assume a gene-term connection when the 3rd column equals %s' % cls.GENE_TERM_EDGETYPE)
                 is_mapping = lambda x: x.iloc[2]==cls.GENE_TERM_EDGETYPE
-            
+                
         # Read table
         try:
             table = pd.read_table(table, comment='#', header=None)
@@ -1627,12 +1620,12 @@ class Ontology(object):
 
         dups = mapping.duplicated([mapping_child, mapping_parent]).sum()
         if dups > 0:
-            print 'WARNING: Dropping %s duplicate gene-term connections' % dups
+            print('WARNING: Dropping %s duplicate gene-term connections' % dups)
             mapping.drop_duplicates([mapping_child, mapping_parent], inplace=True)
 
         dups = hierarchy.duplicated([child, parent]).sum()
         if dups > 0:
-            print 'WARNING: Dropping %s duplicate term-term connections' % dups
+            print('WARNING: Dropping %s duplicate term-term connections' % dups)
             hierarchy.drop_duplicates([child, parent], inplace=True)
 
         edge_attr = edge_attr.loc[~ edge_attr.index.duplicated(), :]
@@ -1934,7 +1927,7 @@ class Ontology(object):
                 ont.to_table(f, parent_child=True, clixo_format=True)
             try:                
                 cmd = '%s %s' % (collapseRedundantNodes, f.name)
-                print 'collapse command:', cmd
+                print('collapse command:', cmd)
                 p = Popen(shlex.split(cmd), shell=False, stdout=PIPE, stderr=PIPE)
                 collapsed, err = p.communicate()
             finally:
@@ -1991,8 +1984,6 @@ class Ontology(object):
 
         common_genes = set(ont1.genes) & set(ont2.genes)
 
-        print 'verbose:', verbose
-        
         if verbose:
             print('Common genes:', len(common_genes))
 
@@ -2002,8 +1993,8 @@ class Ontology(object):
         ont2_collapsed = ont2.collapse_ontology(method='mhkramer')
 
         if verbose:
-            print 'ont1_collapsed:', ont1_collapsed.summary()
-            print 'ont2_collapsed:', ont2_collapsed.summary()
+            print('ont1_collapsed:', ont1_collapsed.summary())
+            print('ont2_collapsed:', ont2_collapsed.summary())
 
         return ont1_collapsed, ont2_collapsed
 
@@ -2020,10 +2011,10 @@ class Ontology(object):
         to_keep = np.array(self.genes + self.terms)
         if branches is not None:
             to_keep = to_keep[self.connected(to_keep, branches).sum(1) > 0]
-            print 'Genes and Terms to keep:', to_keep.size
+            print('Genes and Terms to keep:', to_keep.size)
         if genes is not None:
             to_keep = to_keep[self.connected(genes, to_keep).sum(0) > 0]
-            print 'Genes and Terms to keep:', to_keep.size
+            print('Genes and Terms to keep:', to_keep.size)
 
         if root:
             while True:
@@ -2031,7 +2022,7 @@ class Ontology(object):
                 if common_root in to_keep or len(common_root)<=1:
                     break            
                 else:
-                    print 'Adding', common_root
+                    print('Adding', common_root)
                     to_keep = np.append(to_keep, common_root)
         
         ont = self.delete(to_keep=to_keep, preserve_transitivity=True)
@@ -2405,14 +2396,14 @@ class Ontology(object):
             new_gene_2_term = {}
             for g in ont.genes:
                 new_g = genes.get(g, g)
-                if isinstance(new_g, (unicode, str)):
-                    new_genes.append(new_g)
-                    new_gene_2_term[new_g] = ont.gene_2_term[g]
-                elif hasattr(new_g, '__iter__'):
+                if hasattr(new_g, '__iter__') and not isinstance(new_g, (unicode, str)):
                     for new_gg in new_g:
                         new_genes.append(new_gg)
                         new_gene_2_term[new_gg] = ont.gene_2_term[g]
-
+                else:
+                    new_genes.append(new_g)
+                    new_gene_2_term[new_g] = ont.gene_2_term[g]
+                    
             ont.genes = new_genes
             ont.gene_2_term = new_gene_2_term
             ont.genes_index = make_index(ont.genes)
@@ -2658,7 +2649,7 @@ class Ontology(object):
         return anc
 
     def _get_term_2_gene(self, verbose=False): 
-        if verbose: print 'Calculating term_2_gene'
+        if verbose: print('Calculating term_2_gene')
 
         term_2_gene = invert_dict(
             self.gene_2_term,
@@ -2673,7 +2664,6 @@ class Ontology(object):
     @property
     def term_sizes(self):
         if self._term_sizes is None:
-#            print 'Calculating term sizes'
             self._term_sizes = self.get_term_sizes(propagate=True)
         return self._term_sizes
     
@@ -3330,10 +3320,10 @@ class Ontology(object):
         return summary
 
     @classmethod
-    def build_from_network(cls,
-                           graph,
-                           method='clixo',
-                           **kwargs):        
+    def infer_ontology(cls,
+                       graph,
+                       method='clixo',
+                       **kwargs):        
         if method.lower()=='clixo':
             return cls.run_clixo(graph, **kwargs)
         else:
@@ -3350,7 +3340,7 @@ class Ontology(object):
                   square_names=None,
                   output=None,
                   output_log=None,
-                  verbose=True):
+                  verbose=False):
         """Runs the CLIXO algorithm and returns the result as an Ontology object.
 
         Acts as a wrapper for the C++ package at
@@ -3409,14 +3399,16 @@ class Ontology(object):
         """
 
         rerun = False
-
+        
         if output is None:
             output_file = tempfile.NamedTemporaryFile('w', delete=False)
             output = output_file.name
             if verbose:
-                print 'temp output:', output
+                print('temp output:', output)
             rerun, delete_output = True, True
-
+        else:
+            delete_output = False
+                
         if not (isinstance(graph, str) and os.path.exists(graph)):
 
             if square:
@@ -3433,15 +3425,19 @@ class Ontology(object):
                     graph_file.write('\n'.join(['\t'.join([str(x[0]),str(x[1]),str(x[2])]) for x in graph]) + '\n')
             graph = graph_file.name
             if verbose:
-                print 'temp graph:', graph
+                print('temp graph:', graph)
             rerun, delete_graph = True, True
+        else:
+            delete_graph = False
                                          
         if not (isinstance(output_log, str) and os.path.exists(output_log)):
             output_log_file = tempfile.NamedTemporaryFile('w', delete=False)
             output_log = output_log_file.name
             if verbose:
-                print 'temp output log:', output_log
+                print('temp output log:', output_log)
             rerun, delete_output_log = True, True
+        else:
+            delete_output_log = False
 
         if rerun:            
             try:
@@ -3460,8 +3456,6 @@ class Ontology(object):
                 if delete_graph:
                     os.remove(graph)
 
-                pass
-
         if verbose:
             time_print('\t'.join(map(str, [graph, alpha, beta, min_dt])))
         
@@ -3473,7 +3467,7 @@ class Ontology(object):
                """ '{if ( $1 ~ /^#/ ) {print "\#", strftime("%Y-%m-%d %H:%M:%S"), $0 ; fflush() } else {print $0}}'""" + 
                """ | tee {}""".format(output_log))
         if verbose:
-            print 'CLIXO command:', cmd
+            print('CLIXO command:', cmd)
 
         p = Popen(cmd, shell=True, stdout=PIPE, stderr=STDOUT, bufsize=1)
 
@@ -3482,7 +3476,7 @@ class Ontology(object):
         # p_cmd = "{0} {1} {2} {3} | awk""".format(clixo_cmd, graph, alpha, beta)
         # p2_cmd = """awk '{if ( $1 ~ /^#/ ) {print "\#", strftime("%Y-%m-%d %H:%M:%S"), $0 ; fflush() } else {print $0}}'"""
         # print 'CLIXO command:', cmd
-
+        
         curr_dt = None
         start = time.time()
 
@@ -3512,8 +3506,22 @@ class Ontology(object):
                              'Current dt: %s, min_dt: %s') % (p.pid, curr_dt, min_dt))
                     break
 
+            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
             # If line was empty, then sleep a bit
-            if line=='':  time.sleep(0.1)
+            if line=='':  time.sleep(0.01)
+
+#        print 'return code:', p.returncode
+
+        # if not os.path.isfile(table):
+        #     raise Exception(
+        #         "CliXO script did not produce a file. One of the common reasons is the"
+        #         "choice of alpha and beta parmaeters. Consider setting"
+        #         "beta=0.5 and alpha to be between 1% to 1% of the"
+        #         "distance from the minimum or maximum gene similarity"
+        #         "scores. For example, if the gene similarities range"
+        #         "between 0 and 1, then consider alpha's between 0.01"
+        #         "and 0.1")
 
         if p.poll() is None:
             if verbose: time_print('Killing process %s. Output: %s' % (p.pid, output_log))
@@ -3544,9 +3552,7 @@ class Ontology(object):
         ont.edge_attr.rename(columns={'3':'CLIXO_score'}, inplace=True)
 
         if verbose:
-            print 'Ontology:', ont
-
-#        if len(ont.terms)
+            print('Ontology:', ont)
 
         return ont
 
@@ -3666,9 +3672,6 @@ class Ontology(object):
             if node_alias in ont.node_attr.columns:
                 orig_2_new = {a : b.index.values for a, b in ont.node_attr.loc[terms, [node_alias]].groupby(node_alias)}
                 terms = [b[0] for b in orig_2_new.values()]
-
-                # Take union with existing terms ??
-                print orig_2_new
                         
             term_2_uuid = ont.upload_subnets_ndex(
                 network,                
@@ -3685,11 +3688,10 @@ class Ontology(object):
 
             if node_alias in ont.node_attr.columns:
                 term_2_uuid = {s : term_2_uuid[orig_2_new[t][0]] for t in orig_2_new for s in orig_2_new[t] if orig_2_new[t][0] in term_2_uuid}
-#                term_2_uuid = {s : term_2_uuid[orig_2_new[t][0]] for t in orig_2_new for s in orig_2_new[t]}
         elif term_2_uuid is None:
             term_2_uuid = {}
 
-        if verbose:  print 'Creating NdexGraph'
+        if verbose: print('Creating NdexGraph')
         G = ont.to_NdexGraph(
                 name=name,
                 description=description,
@@ -3706,7 +3708,7 @@ class Ontology(object):
             #     G.set_network_attribute('Display:' + a, True)
             G.set_network_attribute('Display', '|'.join(visible_term_attr))
             
-        if verbose:  print 'Uploading to NDEx'
+        if verbose:  print('Uploading to NDEx')
         ont_url = G.upload_to(ndex_server, ndex_user, ndex_pass, visibility=visibility)
 
         return ont_url, G
@@ -3759,8 +3761,6 @@ class Ontology(object):
         
         # Convert to NetworkX
         G = self.to_networkx(layout=layout, spanning_tree=spanning_tree)
-
-#        if verbose: print 'Setting style'
                 
         if style is None:
             style = 'passthrough'
@@ -3819,7 +3819,6 @@ class Ontology(object):
         #     if 'Original_Name' in data and 'Hidden' in data and data['Hidden']==True:
         #         data['Original_Name'] = name_2_idx[data['Original_Name']]
 
-#        if verbose: print 'Converting NetworkX to NdexGraph'        
         G = nx_to_NdexGraph(G)
         
         if name is not None:
@@ -3828,7 +3827,6 @@ class Ontology(object):
             G.set_network_attribute('Description', description)
             
         if style:
-#            if verbose: print 'Setting style template'
             import ndex.beta.toolbox as toolbox
             toolbox.apply_network_as_template(G, style)
             
@@ -4028,7 +4026,7 @@ class Ontology(object):
         node_attr : pandas.DataFrame
 
         """
-        
+
         if ndex_server is None:
             ndex_server = ddot.config.ndex_server
         if ndex_user is None:
@@ -4048,12 +4046,11 @@ class Ontology(object):
         g1, g2 = gene_columns[0] + '_lex', gene_columns[1] + '_lex'
 
         features = [f for f in features if f not in gene_columns]
-        # if verbose:
-        #     print 'features:', features
-        #     print 'gene_columns:', gene_columns
 
         network = network[features + gene_columns].copy()
-        
+        network[gene_columns[0]] = network[gene_columns[0]].astype(str)
+        network[gene_columns[1]] = network[gene_columns[1]].astype(str)
+                
         # Filter dataframe for gene pairs within the ontology
         # if node_alias in ont.node_attr.columns:
         #     genes_set = set(ont.node_attr.loc[ont.genes, node_alias].values)
@@ -4063,12 +4060,10 @@ class Ontology(object):
         tmp = [x in genes_set and y in genes_set
                for x, y in zip(network[gene_columns[0]], network[gene_columns[1]])]
         network = network.loc[tmp, :]
-
+        
         # Lexicographically sort gene1 and gene2 so that gene1 < gene2
         network[g1], network[g2] = zip(*[(x,y) if x<y else (y,x) for x, y in zip(network[gene_columns[0]], network[gene_columns[1]])])
         network_idx = {x : i for i, x in enumerate(zip(network[g1], network[g2]))}
-        
-        # if verbose:  print 'Setup time:', time.time() - start
 
         if z_score:
             for feat in features:
@@ -4096,15 +4091,16 @@ class Ontology(object):
         if terms is None:
             terms = ont.terms
 
-        if verbose: print 'Uploading %s terms' % len(terms)
+        if verbose: print('Uploading %s terms' % len(terms))
 
         for upload_idx, t in enumerate(terms):
             start = time.time()
 
-            genes = [ont.genes[g] for g in ont.term_2_gene[t]]
-            
             if node_alias in ont.node_attr.columns:
-                genes = ont.node_attr.loc[genes, node_alias].values            
+                genes = ont.node_attr.loc[genes, node_alias].values
+            else:
+                genes = [ont.genes[g] for g in ont.term_2_gene[t]]
+            
             genes.sort()
             gene_pairs_idx = [network_idx[gp] for gp in itertools.combinations(genes, 2) \
                               if gp in network_idx]

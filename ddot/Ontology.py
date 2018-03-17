@@ -1,4 +1,4 @@
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, print_function, division
 
 import itertools, multiprocessing, logging, os, collections, random, math, sys, time
 from itertools import groupby, combinations
@@ -9,6 +9,7 @@ from subprocess import Popen, PIPE, STDOUT
 import inspect
 import shlex
 import shutil
+import io
 from StringIO import StringIO
 import json
 import datetime
@@ -179,8 +180,8 @@ def align_hierarchies(hier1,
         hier1.clear_edge_attr()
         hier2.clear_node_attr()
         hier2.clear_edge_attr()
-        hier1.propagate_annotations('reverse', inplace=True)
-        hier2.propagate_annotations('reverse', inplace=True)
+        hier1.propagate('reverse', inplace=True)
+        hier2.propagate('reverse', inplace=True)
         
     def to_file(hier):
         if isinstance(hier, Ontology):
@@ -350,7 +351,7 @@ def parse_obo(obo,
     alt_id = dict()
     in_term_stanza = False
     default_namespace_exists = False
-    for line in open(obo).read().splitlines():
+    for line in io.open(obo).read().splitlines():
 
         line = line.split('!')[0].strip()  # Remove comments
 
@@ -535,7 +536,7 @@ class Ontology(object):
 
             The direction ('forward' or 'reverse') to propagate
             gene-term annotations up the hierarchy with
-            Ontology.propagate_annotations(). If None, then don't
+            Ontology.propagate(). If None, then don't
             propagate annotations.
 
         add_root_name : bool
@@ -554,6 +555,10 @@ class Ontology(object):
         if parent_child:
             hierarchy = [(x[1],x[0]) for x in hierarchy]
             mapping = [(x[1],x[0]) for x in mapping]
+
+        # Cast all node names to strings
+        hierarchy = [(str(x[0]),str(x[1])) for x in hierarchy]
+        mapping = [(str(x[0]),str(x[1])) for x in mapping]
             
         ## Read term-to-term edges        
         # parent_2_child[<term_name>] --> list of <term_name>'s children terms
@@ -608,7 +613,7 @@ class Ontology(object):
 
         if node_attr is None:
             self.clear_node_attr()
-        else:
+        else:        
             assert node_attr.index.nlevels == 1
             if node_attr.index.name != 'Node':
                 if verbose:
@@ -626,24 +631,16 @@ class Ontology(object):
             if edge_attr.index.names != ['Child', 'Parent']:
                 if verbose:
                     print("Changing edge_attr index names from %s to ['Child', 'Parent']" % edge_attr.index.names)
-                    # import traceback
-                    # print traceback.print_stack()
-                    
                 edge_attr.index.names = ['Child', 'Parent']
             self.edge_attr = edge_attr
 
         self._update_fields()
 
         if propagate:
-            self.propagate_annotations(direction=propagate, inplace=True)
+            self.propagate(direction=propagate, inplace=True)
             self._update_fields()
 
-        if not self.is_dag():
-            print('Found cycle:', self._to_networkx_no_layout().find_cycle())
-            raise Exception('Not a directed acyclic graph')
-
-        assert self.edge_attr.index.duplicated().sum()==0
-        assert self.node_attr.index.duplicated().sum()==0
+        self._check_valid()
 
         # ## Note necessary and requires extra start-up time (perhaps set as a __init__ parameter to precalculate many things)
         
@@ -653,10 +650,11 @@ class Ontology(object):
         #     # import traceback
         #     # print traceback.print_stack()
                 
-    def _update_fields(self):
+    def _update_fields(self, reset_term_sizes=True):
         self.child_2_parent = self._get_child_2_parent()
         self.term_2_gene = self._get_term_2_gene()
-        self._term_sizes = None
+        if reset_term_sizes:
+            self._term_sizes = None
 
         for t in self.terms:
             if t not in self.parent_2_child:
@@ -708,6 +706,10 @@ class Ontology(object):
             r: tuple(p[1] for p in q) for r, q in 
             itertools.groupby(cp_pairs, key=first)
         }
+
+        for t in self.terms:
+            if t not in child_2_parent:
+                child_2_parent[t] = []
 
         return child_2_parent
 
@@ -895,7 +897,7 @@ class Ontology(object):
         # Set labels based on ontology alignment
         if align_label and (('Aligned_%s' % align_label) in self.node_attr.columns):
             label_attr = self.node_attr['Aligned_%s' % align_label]            
-            label_attr = {k : '%s\n%s' % (k,v) for k, v in label_attr.iteritems()}
+            label_attr = {k : '%s\n%s' % (k,v) for k, v in label_attr.iteritems() if not pd.isnull(v)}
             label_attr = pd.Series(label_attr, name='Label').to_frame()
             self.update_node_attr(label_attr)
 
@@ -1100,7 +1102,7 @@ class Ontology(object):
 
         """
 
-        ont = self.propagate_annotations(direction='reverse', inplace=False)
+        ont = self.propagate(direction='reverse', inplace=False)
                 
         hidden_mode = levels is not None
         if hidden_mode:            
@@ -1333,7 +1335,7 @@ class Ontology(object):
                 nx_set_tree_edges(G, tree_edges)
   
                 if layout=='bubble':
-                    G_tree = self.propagate_annotations('reverse')._make_dummy(tree_edges)._to_networkx_no_layout()
+                    G_tree = self.propagate('reverse')._make_dummy(tree_edges)._to_networkx_no_layout()
                     pos = bubble_layout_nx(G_tree, verbose=verbose)
                     gridify([v for v in G_tree.nodes() if 'dummy2' in v], pos, G_tree)
                     G.pos = {n : (float(scale*p[0]), float(scale*p[1])) for n, p in pos.items() if 'dummy2' not in n}
@@ -1391,10 +1393,18 @@ class Ontology(object):
                     # if 'collect_hidden' in v and 'is_collect_node' in data and data['is_collect_node']:
                     #     for u in G.predecessors(v):
                     #         G.node[u]['Vis:Fill Color'] = '#3182BD'
-                    if 'collect_hidden_parent' in v and 'is_collect_node' in data and data['is_collect_node']:
-                        for _, _, data in G.in_edges(v, data=True):
-                            data["Vis:EDGE_TARGET_ARROW_SHAPE"] = 'ARROW'
-                            data["Vis:EDGE_SOURCE_ARROW_SHAPE"] = 'NONE'
+                    try:
+                        if 'collect_hidden_parent' in v and 'is_collect_node' in data and data['is_collect_node']:
+                            for _, _, data in G.in_edges(v, data=True):
+                                data["Vis:EDGE_TARGET_ARROW_SHAPE"] = 'ARROW'
+                                data["Vis:EDGE_SOURCE_ARROW_SHAPE"] = 'NONE'
+                    except:
+                        print(data)
+                        print('v', v)
+                        print('collect_hidden_parent' in v)
+                        print('is_collect_node' in data)
+                        print(data['is_collect_node'])
+                        raise
             else:
                 raise Exception('Unsupported layout: %s', layout)
 
@@ -1445,7 +1455,7 @@ class Ontology(object):
 
             The direction ('forward' or 'reverse') for propagating
             gene-term annotations up the hierarchy with
-            Ontology.propagate_annotations(). If None, then don't
+            Ontology.propagate(). If None, then don't
             propagate annotations.
 
         Returns
@@ -1537,7 +1547,7 @@ class Ontology(object):
 
             The direction ('forward' or 'reverse') for propagating
             gene-term annotations up the hierarchy with
-            Ontology.propagate_annotations(). If None, then don't
+            Ontology.propagate(). If None, then don't
             propagate annotations.
         
         Returns
@@ -1573,6 +1583,8 @@ class Ontology(object):
         if child not in table.columns:
             child = table.columns[child]
         if parent not in table.columns:
+            print(parent, table.columns)
+            print(table.head())
             parent = table.columns[parent]
             
         for col in [child, parent]:
@@ -1676,7 +1688,7 @@ class Ontology(object):
 
     #     go_yeast = go_yeast.collapse_ontology()
     #     go_yeast.add_root('GO:00SUPER')
-    #     go_yeast.propagate_annotations(direction='forward', inplace=True)
+    #     go_yeast.propagate(direction='forward', inplace=True)
 
     #     go_descriptions = pd.read_table('goID_2_name.tab',
     #                                                                     header=None,
@@ -1914,8 +1926,8 @@ class Ontology(object):
             
             # Propagate forward and then reverse
             ont = self.copy()
-            ont = self.propagate_annotations(direction='forward', inplace=False)
-            ont.propagate_annotations(direction='reverse', inplace=True)
+            ont = self.propagate(direction='forward', inplace=False)
+            ont.propagate(direction='reverse', inplace=True)
 
             top_level = os.path.dirname(os.path.abspath(inspect.getfile(ddot)))
             collapseRedundantNodes = os.path.join(top_level, 'alignOntology', 'collapseRedundantNodes')
@@ -1945,7 +1957,7 @@ class Ontology(object):
             return ont
 
         elif method=='python':
-            ont = self.propagate_annotations('forward', inplace=False)
+            ont = self.propagate('forward', inplace=False)
             term_hash = {t : hash(tuple(g_list)) for t, g_list in ont.term_2_gene.items()}
             to_collapse = set()
             for p in ont.parent_2_child:
@@ -1959,13 +1971,18 @@ class Ontology(object):
             if to_keep is not None:
                 to_collapse = to_collapse - set(to_keep)
 
-            ont.propagate_annotations('reverse', inplace=True)
+#            print('to_collapse:', sorted(to_collapse))
+            
+            ont.propagate('reverse', inplace=True)
             ont_red = ont.delete(to_delete=to_collapse, preserve_transitivity=True)
 
             return ont_red
     
     @classmethod
-    def mutual_collapse(cls, ont1, ont2, verbose=False):
+    def mutual_collapse(cls,
+                        ont1,
+                        ont2,                        
+                        verbose=False):
         """Collapses two ontologies to the common set of genes.
 
         Parameters
@@ -2001,6 +2018,7 @@ class Ontology(object):
     def focus(self,
               branches=None,
               genes=None,
+              collapse=False,
               root=True):
         """
 
@@ -2026,7 +2044,9 @@ class Ontology(object):
                     to_keep = np.append(to_keep, common_root)
         
         ont = self.delete(to_keep=to_keep, preserve_transitivity=True)
-        ont = ont.collapse_ontology(method='python', to_keep=ont.get_roots())
+
+        if collapse:
+            ont = ont.collapse_ontology(method='python', to_keep=ont.get_roots())
         
         df = ont.to_table(edge_attr=True)
         
@@ -2390,29 +2410,38 @@ class Ontology(object):
             ont = self
         else:
             ont = self.copy()
-
+            
         if genes:
-            new_genes = []
+            new_genes = set()
             new_gene_2_term = {}
             for g in ont.genes:
                 new_g = genes.get(g, g)
                 if hasattr(new_g, '__iter__') and not isinstance(new_g, (unicode, str)):
                     for new_gg in new_g:
-                        new_genes.append(new_gg)
+                        new_genes.add(new_gg)
                         new_gene_2_term[new_gg] = ont.gene_2_term[g]
                 else:
-                    new_genes.append(new_g)
+                    new_genes.add(new_g)
                     new_gene_2_term[new_g] = ont.gene_2_term[g]
-                    
-            ont.genes = new_genes
+
+            ont.genes = sorted(new_genes)
             ont.gene_2_term = new_gene_2_term
             ont.genes_index = make_index(ont.genes)
             ont._update_fields()
         if terms:
-            ont.terms = [terms.get(t,t) for t in ont.terms]
-            ont.terms_index = make_index(ont.terms)
             ont.parent_2_child = {terms[p] : [terms[c] for c in c_list]
                                   for p, c_list in ont.parent_2_child.items()}
+            old_term_names = ont.terms
+            ont.terms = [terms.get(t,t) for t in ont.terms]
+            
+            if len(ont.terms) != len(set(ont.terms)):
+                # Retain a unique set of term names
+                ont.terms = sorted(set(ont.terms))
+                ont.terms_index = make_index(ont.terms)
+
+                # Need to reindex gene_2_term
+                ont.gene_2_term = {g : [ont.terms_index[terms[old_term_names[t]]] for t in t_list] for g, t_list in ont.gene_2_term.items()}
+
             ont._update_fields()
 
         conversions = genes.copy()
@@ -2429,9 +2458,26 @@ class Ontology(object):
         # Update edge attributes
         idx = ont.edge_attr.index
         idx.set_levels([idx.levels[0].map(f), idx.levels[1].map(f)], inplace=True)
+
+        ont._check_valid()
         
         return ont
 
+    def _check_valid(self):
+        if not self.is_dag():
+            print('Found cycle:', nx.find_cycle(self._to_networkx_no_layout()))
+            raise Exception('Not a directed acyclic graph')
+
+        assert len(self.genes) == len(set(self.genes))
+        assert len(self.terms) == len(set(self.terms))
+        assert set(self.genes) == set(self.gene_2_term.keys())
+        assert set(self.terms) == set(self.child_2_parent.keys())
+        assert set(self.terms) == set(self.parent_2_child.keys())
+        assert set(self.terms) == set(self.term_2_gene.keys())
+        assert self.edge_attr.index.duplicated().sum()==0
+        assert self.node_attr.index.duplicated().sum()==0
+
+        
     def to_table(self,
                  output=None,
                  term_2_term=True,
@@ -2539,7 +2585,6 @@ class Ontology(object):
         
         for x in ['node_attr', 'edge_attr']:
             setattr(ont, x, getattr(self, x).copy())
-#        for x in ['genes', 'terms', 'term_sizes']:
         for x in ['genes', 'terms']:
             setattr(ont, x, getattr(self, x)[:])
         if self._term_sizes is None:
@@ -2671,7 +2716,9 @@ class Ontology(object):
         """Returns an array of term sizes in the same order as self.terms"""
 
         if propagate:
-            gene_2_term = self._propagate_forward()
+            ont = self.propagate(inplace=False)
+            gene_2_term = ont.gene_2_term
+#            gene_2_term = self._propagate_forward()
         else:
             gene_2_term = self.gene_2_term
 
@@ -2729,7 +2776,26 @@ class Ontology(object):
 
         return self.to_igraph(include_genes=True, spanning_tree=False).is_dag()
 
+    def topological_sorting(self, top_down=True, include_genes=False):
+        """Perform a topological sorting.
+
+        top_down : 
+        
+            If True, then ancestral nodes (e.g. the root nodes) come
+            before descendants in the sorting. If False, then reverse the sorting
+        """
+        
+        graph = self.to_igraph(include_genes=include_genes, spanning_tree=False)
+
+        topo = list(graph.vs[graph.topological_sorting(mode='out')]['name'])
+
+        if not top_down:
+            topo = topo[::-1]
+
+        return topo
+                
     def to_igraph(self, include_genes=False, spanning_tree=True):
+
         """Convert Ontology to an igraph.Graph object. Gene and term names are
            stored in the 'name' vertex attribute of the igraph object.
 
@@ -2954,33 +3020,35 @@ class Ontology(object):
 
         return terms_list[~ np.any(connectivity_matrix_nodiag[children_list, :][:, terms_list], axis=0)]
 
-    def _propagate_forward(self):
-        child_2_parent_idx = {
-            self.terms_index[c] : [self.terms_index[p] for p in p_list]
-            for c, p_list in self.child_2_parent.items()
-        }
-        gene_2_term_set = {
-            g : set(t_list)
-            for g, t_list in self.gene_2_term.items()
-        }
+    # def _propagate_forward(self):
+    #     child_2_parent_idx = {
+    #         self.terms_index[c] : [self.terms_index[p] for p in p_list]
+    #         for c, p_list in self.child_2_parent.items()
+    #     }
+    #     gene_2_term_set = {
+    #         g : set(t_list)
+    #         for g, t_list in self.gene_2_term.items()
+    #     }
 
-        genes_to_update = set(self.gene_2_term.keys())
-        while len(genes_to_update) > 0:
-            # Iterate over a copy of genes_to_update
-            for g in genes_to_update.copy():
-                curr_terms = gene_2_term_set[g]
-                num_old = len(curr_terms)
-                curr_terms.update(
-                    set([p for t in curr_terms 
-                         for p in child_2_parent_idx.get(t, [])]))
-                if len(curr_terms) == num_old:
-                    genes_to_update.remove(g)
-        return {g : sorted(t_set) for g, t_set in gene_2_term_set.items()}
+    #     genes_to_update = set(self.gene_2_term.keys())
+    #     while len(genes_to_update) > 0:
+    #         # Iterate over a copy of genes_to_update
+    #         for g in genes_to_update.copy():
+    #             curr_terms = gene_2_term_set[g]
+    #             num_old = len(curr_terms)
+    #             curr_terms.update(
+    #                 set([p for t in curr_terms 
+    #                      for p in child_2_parent_idx.get(t, [])]))
+    #             if len(curr_terms) == num_old:
+    #                 genes_to_update.remove(g)
+    #     return {g : sorted(t_set) for g, t_set in gene_2_term_set.items()}
 
-    def propagate_annotations(self,
-                              direction='forward',
-                              verbose=False,
-                              inplace=False):
+    def propagate(self,
+                  direction='forward',
+                  gene_term=True,
+                  term_term=False,
+                  verbose=False,
+                  inplace=False):
         """Propagate gene-term annotations through the ontology.
 
         Example) Consider an ontology with one gene g and three terms t1, t2, t3. The connections are
@@ -3022,32 +3090,101 @@ class Ontology(object):
         else:
             ont = self.copy()
 
-        if direction=='forward':
-            ont.gene_2_term = ont._propagate_forward()            
-            ont._update_fields()
+        assert direction in ['forward', 'reverse']
 
-        elif direction=='reverse':
-            ont.propagate_annotations(direction='forward', inplace=True)
+        forward = direction=='forward'
+        
+        if not forward:
+            # This is needed to ensure that the pruning to a parent's
+            # gene set can be based on the gene sets of its direct
+            # children
+#            print(gene_term, term_term)
+#            tmp = {k : v[:] for k, v in ont.gene_2_term.items()}
+            ont = ont.propagate(gene_term=gene_term, term_term=term_term, direction='forward', inplace=True)
+            # for g in tmp:
+            #     if set(tmp[g]) != set(ont.gene_2_term[g]):
+            #         import pdb
+            #         pdb.set_trace()
+            #         assert False
+                
+#            print(ont)
 
-            term_2_gene_set = {}
-            for t, g in ont.term_2_gene.items():
-                term_2_gene_set[t] = set(g)
+        if gene_term:
+            term_2_gene_set = {t : set(g) for t, g in ont.term_2_gene.items()}
+        if term_term:
+            parent_2_child_set = {p : set(c) for p, c in ont.parent_2_child.items()}
+            
+        # # TODO: have this topological sorting be a part of the code below
+        # graph = ont.to_igraph(include_genes=False, spanning_tree=False)
+        # for c_idx in graph.topological_sorting(mode='in'):
+        #     child = graph.vs[c_idx]['name']
 
-            graph = ont.to_igraph(include_genes=False, spanning_tree=False)
+        for child in ont.topological_sorting(top_down=forward, include_genes=False):
+#            for parent in ont.child_2_parent.get(child, []):
+            for parent in ont.child_2_parent[child]:
+                if gene_term:
+                    if forward:
+                        term_2_gene_set[parent] |= term_2_gene_set[child]
+                    else:
+                        term_2_gene_set[parent] -= term_2_gene_set[child]
+                    
+                if term_term:
+                    if forward:
+                        parent_2_child_set[parent] |= parent_2_child_set[child]
+                    else:
+                        parent_2_child_set[parent] -= parent_2_child_set[child]
 
-            for c_idx in graph.topological_sorting(mode='in'):
-                child = graph.vs[c_idx]['name']
-                for parent in ont.child_2_parent.get(child, []):
-                    term_2_gene_set[parent] -= term_2_gene_set[child]
-
+        if gene_term:
             ont.gene_2_term = invert_dict(term_2_gene_set,
                                           keymap=make_index(ont.terms),
                                           valmap=dict(enumerate(ont.genes)))
             ont.term_2_gene = {a : list(b) for a, b in term_2_gene_set.items()}
-        else:
-            raise Exception('Unsupported propagation direction: %s' % direction)
 
+        if term_term:
+            ont.parent_2_child = {a : list(b) for a, b in parent_2_child_set.items()}
+            ont.child_2_parent = ont._get_child_2_parent()
+
+        ont._check_valid()
+        
         return ont
+
+        # if direction=='forward':
+        #     ont.gene_2_term = ont._propagate_forward()            
+        #     ont._update_fields(reset_term_sizes=True)
+
+        # elif direction=='reverse':
+        #     # This is needed to ensure that the pruning to a parent's
+        #     # gene set can be based on the gene sets of its direct
+        #     # children
+        #     ont.propagate(direction='forward', inplace=True)
+
+        #     term_2_gene_set = {t : set(g) for t, g in ont.term_2_gene.items()}
+        #     if term_term:
+        #         parent_2_child_set = {p : set(c) for p, c in ont.parent_2_child.items()}
+                        
+        #     graph = ont.to_igraph(include_genes=False, spanning_tree=False)
+
+        #     for c_idx in graph.topological_sorting(mode='in'):
+        #         child = graph.vs[c_idx]['name']
+        #         for parent in ont.child_2_parent.get(child, []):
+        #             term_2_gene_set[parent] -= term_2_gene_set[child]
+
+        #             if term_term:
+        #                 parent_2_child_set[parent] - parent_2_child_set[child]
+
+        #     ont.gene_2_term = invert_dict(term_2_gene_set,
+        #                                   keymap=make_index(ont.terms),
+        #                                   valmap=dict(enumerate(ont.genes)))
+        #     ont.term_2_gene = {a : list(b) for a, b in term_2_gene_set.items()}
+
+        #     if term_term:
+        #         ont.parent_2_child = {a : list(b) for a, b in parent_2_child_set.items()}
+        #         ont.child_2_parent = ont._get_child_2_parent()
+                
+        # else:
+        #     raise Exception('Unsupported propagation direction: %s' % direction)
+
+        # return ont
 
     # def propagate_ontotypes(self, ontotypes, prop, ontotype_size, max_ontotype, method='fixed_size'):
     #     """Propagates a list of base ontotypes.
@@ -3652,7 +3789,7 @@ class Ontology(object):
             ndex_pass = ddot.config.ndex_pass
             
         if propagate is not None:
-            ont = self.propagate_annotations(direction=propagate, inplace=False)
+            ont = self.propagate(direction=propagate, inplace=False)
         else:
             ont = self
 
@@ -3895,7 +4032,7 @@ class Ontology(object):
             if hasattr(output, 'write'):
                 json.dump(cx, output)
             else:
-                with open(output, 'w') as f:
+                with io.open(output, 'w') as f:
                     json.dump(cx, f)
 
         return cx        
@@ -3929,7 +4066,7 @@ class Ontology(object):
         if hasattr(output, 'write'):
             nx.write_graphml(G, output)
         else:
-            with open(output, 'w') as f:
+            with io.open(output, 'w') as f:
                 nx.write_graphml(G, f)
 
     def _force_directed_layout(self, G):
@@ -4016,7 +4153,7 @@ class Ontology(object):
 
             The direction ('forward' or 'reverse') to propagate
             gene-term annotations up the hierarchy with
-            Ontology.propagate_annotations(). If None, then don't
+            Ontology.propagate(). If None, then don't
             propagate annotations.
         
         public : bool
@@ -4035,7 +4172,7 @@ class Ontology(object):
             ndex_pass = ddot.config.ndex_pass
         
         if propagate:
-            ont = self.propagate_annotations(direction=propagate, inplace=False)
+            ont = self.propagate(direction=propagate, inplace=False)
         else:
             ont = self
 
@@ -4198,7 +4335,7 @@ class Ontology(object):
 
         """
 
-        ont = self.propagate_annotations(direction='reverse', inplace=False)
+        ont = self.propagate(direction='reverse', inplace=False)
         graph = ont.to_igraph(include_genes=include_genes, spanning_tree=False)
         
         if node_order is None:

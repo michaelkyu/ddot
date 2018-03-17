@@ -5,6 +5,7 @@ import base64
 import time
 import traceback
 import os
+import io
 from math import ceil
 from datetime import datetime
 
@@ -845,6 +846,10 @@ def ndex_to_sim_matrix(ndex_uuid,
         ndex_pass = ddot.config.ndex_user
     if ndex_pass is None:
         ndex_pass = ddot.config.ndex_pass
+
+    if 'http' in ndex_uuid:
+        ndex_server = ndex_uuid.split('v2/network/')[0]
+        ndex_uuid = parse_ndex_uuid(ndex_uuid)
     
     if input_fmt=='cx':
         # Read graph using NDEx client
@@ -1154,7 +1159,7 @@ def make_seed_ontology(sim,
     df = melt_square(df_sq)
 
     # Build data-driven ontology
-    ont = ddot.Ontology.build_from_network(df, **build_kwargs)
+    ont = ddot.Ontology.infer_ontology(df, verbose=verbose, **build_kwargs)
 
     ###############################
     # Align to Reference Ontology #

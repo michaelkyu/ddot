@@ -1312,8 +1312,9 @@ class Ontology(object):
             node attributes 'x_pos' and 'y_pos'. If None, then do not
             perform a layout.
 
-        Returns:
-        --------
+        Returns
+        -------
+
         : nx.DiGraph
 
         """
@@ -1494,6 +1495,7 @@ class Ontology(object):
 
         Parameters
         ----------
+
         table : pandas.DataFrame, file-like object, or filename
 
             A table that lists (child term, parent term) pairs. If
@@ -1552,9 +1554,14 @@ class Ontology(object):
         
         Returns
         -------
+
         : ddot.Ontology.Ontology
 
-        """.format(cls.GENE_TERM_EDGETYPE)
+
+        """
+
+
+        # .format(cls.GENE_TERM_EDGETYPE)
 
         if clixo_format:
             ont = cls.from_table(
@@ -2291,6 +2298,7 @@ class Ontology(object):
 
         Parameters
         ----------
+
         output : filepath or file-like
 
             File to write table. If None, then only return a
@@ -2313,7 +2321,7 @@ class Ontology(object):
         header : bool
 
             If writing to a file, then write the column names as the
-            first row
+            first row.
 
         parent_child : bool
 
@@ -2333,6 +2341,7 @@ class Ontology(object):
 
         Returns
         -------
+
         : pandas.DataFrame
 
             Contains at least three columns: (1) "Parent", (2)
@@ -2421,10 +2430,9 @@ class Ontology(object):
             size. :math:`T_root` is the root term of the ontology.
 
             Resnik, P. (1999). Semantic similarity in a taxonomy: An
-            information-based measure and its application to problems
+            information-based measured and its application to problems
             of ambiguity in natural
-            language. J. Artif. Intell. Res. 11, 95–130.
-
+            language. J. Artif. Intell. Res. 11,95-130.
         """
 
         assert include_genes or include_terms

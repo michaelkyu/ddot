@@ -21,7 +21,6 @@ import ddot.config
 
 def print_time(*s):
     print(' '.join(map(str, s)), datetime.today())
-#    print s, datetime.today()
     sys.stdout.flush()
 
 def invert_dict(dic, sort=True, keymap={}, valmap={}):
@@ -1240,13 +1239,6 @@ def make_network_public(uuid,
                         ndex_pass,
                         timeout=60,
                         error=False):
-    # if ndex_server is None:
-    #     ndex_server = ddot.config.ndex_server
-    # if ndex_user is None:
-    #     ndex_pass = ddot.config.ndex_user
-    # if ndex_pass is None:
-    #     ndex_pass = ddot.config.ndex_pass
-
     ndex = nc.Ndex(ndex_server, ndex_user, ndex_pass)
             
     sleep_time = 0.25

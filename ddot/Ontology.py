@@ -1417,63 +1417,63 @@ class Ontology(object):
             
         return G
 
-    @classmethod
-    def from_pandas(cls,
-                    table,
-                    parent_col='Parent',
-                    child_col='Child',
-                    is_mapping=None,
-                    propagate=False,
-                    verbose=False):
-        """Constructs an Ontology from a pandas Dataframe describing the edges.
+    # @classmethod
+    # def from_pandas(cls,
+    #                 table,
+    #                 parent_col='Parent',
+    #                 child_col='Child',
+    #                 is_mapping=None,
+    #                 propagate=False,
+    #                 verbose=False):
+    #     """Constructs an Ontology from a pandas Dataframe describing the edges.
 
-        TODO: consider deleting this method because it is redundant
-        with from_table. The only non-redundant aspect is that the
-        default is_mapping function is different from from_table.
+    #     TODO: consider deleting this method because it is redundant
+    #     with from_table. The only non-redundant aspect is that the
+    #     default is_mapping function is different from from_table.
         
-        Parameters
-        -----------
-        table : pandas.Dataframe
+    #     Parameters
+    #     -----------
+    #     table : pandas.Dataframe
 
-        parent : int or str
+    #     parent : int or str
 
-            Column for parent terms (index or name of column)
+    #         Column for parent terms (index or name of column)
         
-        child : int or str
+    #     child : int or str
 
-            Column for child terms and genes (index or name of column)
+    #         Column for child terms and genes (index or name of column)
 
-        is_mapping : function
+    #     is_mapping : function
         
-            Function applied on each row to determine if it represents
-            a gene-term annotation. If the function returns True, then
-            row represents a (gene, term) pair. If False, it
-            represents a (child term, parent term) pair. The function
-            is evaluated using df.apply(is_mapping, axis=1).
+    #         Function applied on each row to determine if it represents
+    #         a gene-term annotation. If the function returns True, then
+    #         row represents a (gene, term) pair. If False, it
+    #         represents a (child term, parent term) pair. The function
+    #         is evaluated using df.apply(is_mapping, axis=1).
 
-        propagate : str
+    #     propagate : str
 
-            The direction ('forward' or 'reverse') for propagating
-            gene-term annotations up the hierarchy with
-            Ontology.propagate(). If None, then don't
-            propagate annotations.
+    #         The direction ('forward' or 'reverse') for propagating
+    #         gene-term annotations up the hierarchy with
+    #         Ontology.propagate(). If None, then don't
+    #         propagate annotations.
 
-        Returns
-        -------
-        : ddot.Ontology.Ontology
+    #     Returns
+    #     -------
+    #     : ddot.Ontology.Ontology
 
-        """
+    #     """
 
-        if is_mapping is None:
-            is_mapping = lambda x: x[self.EDGETYPE_ATTR]==self.GENE_TERM_EDGETYPE
+    #     if is_mapping is None:
+    #         is_mapping = lambda x: x[self.EDGETYPE_ATTR]==self.GENE_TERM_EDGETYPE
             
-        return cls.from_table(df,
-                              is_mapping=is_mapping,
-                              parent_col=parent_col,
-                              child_col=child_col,
-                              mapping_file=None,
-                              propagate=propagate,
-                              verbose=verbose)
+    #     return cls.from_table(df,
+    #                           is_mapping=is_mapping,
+    #                           parent_col=parent_col,
+    #                           child_col=child_col,
+    #                           mapping_file=None,
+    #                           propagate=propagate,
+    #                           verbose=verbose)
 
     @classmethod
     def from_table(cls,
@@ -1488,7 +1488,7 @@ class Ontology(object):
                    verbose=False,
                    clixo_format=False,
                    **kwargs):
-        """Create Ontology from a tab-delimited table.
+        """Create Ontology from a tab-delimited table or pandas DataFrame.
 
         Duplicate gene-term or term-term connections in the table are removed.
 
@@ -1659,50 +1659,7 @@ class Ontology(object):
                    propagate=propagate,
                    verbose=verbose,
                    **kwargs)
-
-    # @classmethod
-    # def from_obo_gaf(cls, obo, gaf):
-    #     hierarchy = pd.read_table('go.tab',
-    #                               sep='\t',
-    #                               header=None,
-    #                               names=['Parent', 'Child', 'Relation', 'Namespace'])
-
-    #     mapping = parse_gaf(gaf)
-    #     features = pd.read_table('SGD_features.tab', sep='\t', header=None)
-    #     sgdid_2_orf = features.iloc[:,[0,3]].set_index(0).dropna()[3].to_dict()
-
-                
-    #     go_yeast = Ontology.from_table(
-    #             table=hierarchy,
-    #             parent='Parent',
-    #             child='Child',
-    #             mapping=mapping,
-    #             mapping_child='DB Object ID',
-    #             mapping_parent='GO ID',
-    #             add_root_name='GO:00SUPER')
-    #     go_yeast.clear_node_attr()
-    #     go_yeast.clear_edge_attr()
-    #     go_yeast.rename(genes=sgdid_2_orf, inplace=True)
-    #     go_yeast.delete(to_keep=sgdid_2_orf.values() + go_yeast.terms, inplace=True)
-    #     print go_yeast
-
-    #     go_yeast = go_yeast.collapse_ontology()
-    #     go_yeast.add_root('GO:00SUPER')
-    #     go_yeast.propagate(direction='forward', inplace=True)
-
-    #     go_descriptions = pd.read_table('goID_2_name.tab',
-    #                                                                     header=None,
-    #                                                                     names=['Term', 'Term_Description'],
-    #                                                                     index_col=0)
-    #     go_yeast.update_node_attr(go_descriptions)
-
-    #     go_branches = pd.read_table('goID_2_namespace.tab',
-    #                                                                 header=None,
-    #                                                                 names=['Term', 'Branch'],
-    #                                                                 index_col=0)
-    #     go_yeast.update_node_attr(go_branches)
-    #     print go_yeast
-        
+    
     @classmethod
     def from_ndex(cls,
                   ndex_uuid,
@@ -2081,75 +2038,6 @@ class Ontology(object):
             ont.update_node_attr(pd.DataFrame({'Label':['_'.join(x.split('_')[1:]) for x in new_nodes]}, index=new_nodes))
         
         return ont
-
-
-    def _rebuild_hierarchy(ont,
-                           genes_to_keep,
-                           terms_to_keep,
-                           ont_conn=None,
-                           verbose=False):
-        """
-        (Fan's code)
-
-        :param ont: 
-        :param ont_conn: 
-        :param genes_to_keep: 
-        :param terms_to_keep: 
-        :param verbose: 
-        :return: 
-        """
-
-        if ont_conn is None:
-            ont_conn = ont.connected()
-            
-        assert (genes_to_keep != None) or (terms_to_keep != None), 'None of genes or terms will be removed. No point to rebuild the hierarchy. Exit...'
-        relations = np.where(ont_conn)
-        rows, cols = relations[0], relations[1]
-        if verbose: print('{} total relations'.format(len(rows)))
-        n_genes, n_terms = len(ont.genes), len(ont.terms)
-
-        if genes_to_keep == None:
-            genes_ind_to_keep = [i for i in range(n_genes)]
-        else:
-            genes_ind_to_keep = [ont.gene_index[g] for g in genes_to_keep]
-        if terms_to_keep == None:
-            terms_ind_to_keep = [i for i in range(n_terms)]
-        else:
-            terms_ind_to_keep = [ont.terms_index[t] for t in terms_to_keep]
-
-        G = nx.DiGraph()
-
-        for i in range(len(rows)):
-            r, c = rows[i], cols[i]
-            ci = c - n_genes
-            if r < n_genes:
-                if (r in genes_ind_to_keep) and (ci in terms_ind_to_keep):
-                    G.add_edge(ont.genes[r], ont.terms[ci])
-                else:
-                    ri = r - n_genes
-                    if (ri in terms_ind_to_keep) and (ci in terms_ind_to_keep):
-                        G.add_edge(ont.terms[ri], ont.terms[ci])
-                if verbose and (i % 1000 == 0): print ('Finish adding {} links'.format(i))
-
-        ## connect genes and terms
-        if verbose: print('Finish adding all links')
-
-        ## remove links
-        i = 0
-        G_cp = G.copy()
-        for e in G_cp.edges():
-            # e = G.edges()[i]
-            i += 1
-            if not G.has_edge(*e):
-                continue
-            path = nx.all_simple_paths(G, source=e[0], target=e[1])
-            if len(list(path)) > 1:
-                G.remove_edge(e[0], e[1])
-            if verbose and (i % 1000 == 0): print ('Finish checking {} links'.format(i))
-
-        if verbose: print('Finish removing indirect links')
-
-        return G
     
     def delete(self,
                to_delete=None,
@@ -2225,8 +2113,6 @@ class Ontology(object):
             
         if len(terms) > 0:
             if preserve_transitivity:
-                ### Method 1 (directly modify Ontology attributes)
-                
                 gene_2_term_set = {g : set([ont.terms[s] for s in t]) for g, t in ont.gene_2_term.iteritems()}
                 term_2_gene_set = {a : set(b) for a, b in ont.term_2_gene.iteritems()}
                 child_2_parent_set = {a : set(b) for a, b in ont.child_2_parent.iteritems()}
@@ -2256,93 +2142,7 @@ class Ontology(object):
                 ont.gene_2_term = {g : sorted([terms_index[s] for s in t]) for g, t in gene_2_term_set.iteritems()}
                 ont.child_2_parent = {c : sorted(p) for c, p in child_2_parent_set.iteritems()}
                 ont.parent_2_child = invert_dict(ont.child_2_parent)
-                ont._update_fields()
-                
-                # for t in terms:
-                #     del ont.term_2_gene[t]
-                # ont.child_2_parent = {a : sorted(b) for a, b in child_2_parent_set}
-                # ont.parent_2_child = {a : sorted(b) for a, b in parent_2_child_set}
-                # ont.term_sizes = ont.get_term_sizes(propagate=True)
-
-                ### Method 2 (igraph)
-                
-                # assert not inplace, 'Cannot preserve transitivity inplace'
-                # g = ont.to_igraph(include_genes=True, spanning_tree=False)
-                # for it, t in enumerate(terms):
-                #     _collapse_node(g, t, use_v_name=True, fast_collapse=True)
-
-                # # Need to reassign the edgetypes because the
-                # # fast_collapse above does not calculate it
-                # is_genes = set(self.genes)
-                # g.es[self.EDGETYPE_ATTR] = [self.GENE_TERM_EDGETYPE if g.vs[e.source]['name'] in is_genes else self.CHILD_PARENT_EDGETYPE for e in g.es]
-                
-                # ont_reduced = Ontology.from_igraph(g)
-                
-                # # Remove the EdgeType attribute to prevent further
-                # # redundancies when this ontology is converted back
-                # # into pandas, igraph, or networkx representations
-                # del ont_reduced.edge_attr[self.EDGETYPE_ATTR]
-                
-                # ont_reduced.update_node_attr(ont.node_attr)
-                # ont_reduced.update_edge_attr(ont.edge_attr)
-                # ont = ont_reduced
-
-                # ### Method 3 (Calculate connectivity matrix and then de-propagate)
-                
-                # assert not inplace, 'Cannot preserve transitivity inplace'
-                
-                # terms_keep = sorted(set(ont.terms) - terms)
-                # terms_keep_index = make_index(terms_keep)
-                # term_ancestors_matrix = ont.connected(terms_keep, terms_keep, sparse=True)
-
-                # # import pdb
-                # # pdb.set_trace()
-
-                # tmp = np.arange(len(terms_keep))
-                # term_ancestors_matrix[tmp, tmp] = 0
-                # term_ancestors_matrix.eliminate_zeros()
-                # term_ancestors_matrix.sort_indices()
-
-                # # term_ancestors_matrix = term_ancestors_matrix.toarray()
-                
-                # gene_ancestors_matrix = ont.connected(ont.genes, terms_keep, sparse=True)
-
-                # # gene_ancestors_matrix = gene_ancestors_matrix.toarray()
-
-                # ont.child_2_parent = {}
-                # for t in terms_keep:
-                #     #ancestors = term_ancestors_matrix[terms_keep_index[t], :].nonzero()[0]
-                #     ancestors = term_ancestors_matrix[terms_keep_index[t], :].nonzero()[1]
-                #     tmp = term_ancestors_matrix[ancestors,:][:,ancestors]
-                #     #ont.child_2_parent[t] = [terms_keep[i] for i in ancestors[tmp.sum(0)==0]]
-                #     ont.child_2_parent[t] = [terms_keep[i] for i in ancestors[(tmp.sum(0)==0).getA1()]]
-                #     #ont.child_2_parent[t] = [terms_keep[i] for i in ancestors[np.asarray(tmp.sum(0)==0).flatten()]]
-                # ont.parent_2_child = invert_dict(ont.child_2_parent)
-                
-                # ont.gene_2_term = {}
-                # for g in ont.genes:
-                #     #ancestors = gene_ancestors_matrix[ont.genes_index[g], :].nonzero()[0]
-                #     ancestors = gene_ancestors_matrix[ont.genes_index[g], :].nonzero()[1]
-                #     tmp = term_ancestors_matrix[ancestors,:][:,ancestors]
-                #     #ont.gene_2_term[g] = ancestors[tmp.sum(0)==0]
-                #     ont.gene_2_term[g] = ancestors[(tmp.sum(0)==0).getA1()]
-                #     #ont.gene_2_term[g] = ancestors[np.asarray(tmp.sum(0)==0).flatten()]
-                # ont.terms = terms_keep
-                # ont.terms_index = terms_keep_index
-                # ont._update_fields()
-
-                # ## Method 4 (topological order from top to bottom)
-                # graph = ont.get_igraph(include_genes=False, spanning_tree=False)
-                # for a_idx in graph.topological_sorting(mode='out'):
-                #     curr_terms = set(graph.vs[a_idx]['name'])
-                #     for p in list(curr_terms):
-                #         children = ont.parent_2_child[p]
-                #         for c in children:
-                #             if c in terms:
-                #                 curr_terms.
-                #             else:
-                        
-                
+                ont._update_fields()                
             else:
                 tmp_gene_2_term = {g : [ont.terms[t] for t in t_list]
                                    for g, t_list in ont.gene_2_term.items()}
@@ -2476,7 +2276,6 @@ class Ontology(object):
         assert set(self.terms) == set(self.term_2_gene.keys())
         assert self.edge_attr.index.duplicated().sum()==0
         assert self.node_attr.index.duplicated().sum()==0
-
         
     def to_table(self,
                  output=None,
@@ -2598,22 +2397,16 @@ class Ontology(object):
             setattr(ont, x, copy_val)
     
         return ont
-    
-        # hierarchy = [(c, p) for p, c_list in self.parent_2_child.items() for c in c_list]
-        # mapping = [(g, self.terms[t]) for g, t_list in self.gene_2_term.items() for t in t_list]
-        # return Ontology(hierarchy,
-        #                 mapping,
-        #                 edge_attr=None if (self.edge_attr is None) else self.edge_attr.copy(),
-        #                 node_attr=None if (self.node_attr is None) else self.node_attr.copy(),
-        #                 parent_child=False,
-        #                 verbose=False)
 
     def flatten(self,
                 include_genes=True,
                 include_terms=False,
                 similarity='Resnik'):
         """Flatten the hierarchy into a gene-gene network by calculating a
-        similarity between pair of genes in <genes_subset>.
+        similarity between pair of genes in <genes_subset>. Currently,
+        only the Resnik semantic similarity measure is implemented.
+
+        
 
         Parameters
         -----------        
@@ -2626,6 +2419,11 @@ class Ontology(object):
             T. :math:`T_sca` is the "smallest common ancestor", the
             common ancestral term with the smallest term
             size. :math:`T_root` is the root term of the ontology.
+
+            Resnik, P. (1999). Semantic similarity in a taxonomy: An
+            information-based measure and its application to problems
+            of ambiguity in natural
+            language. J. Artif. Intell. Res. 11, 95–130.
 
         """
 
@@ -2684,10 +2482,8 @@ class Ontology(object):
         anc_bool = conn.sum(0) >= min_nodes
         anc = np.array(self.terms)[anc_bool]
 
-#        print 'anc:', anc
         if minimal:
             anc_conn = self.connected(anc, anc, sparse=False)
-#            print anc_conn.astype(np.int32)
             np.fill_diagonal(anc_conn, 0)
             anc = anc[anc_conn.sum(0) == 0]
 
@@ -3020,29 +2816,6 @@ class Ontology(object):
 
         return terms_list[~ np.any(connectivity_matrix_nodiag[children_list, :][:, terms_list], axis=0)]
 
-    # def _propagate_forward(self):
-    #     child_2_parent_idx = {
-    #         self.terms_index[c] : [self.terms_index[p] for p in p_list]
-    #         for c, p_list in self.child_2_parent.items()
-    #     }
-    #     gene_2_term_set = {
-    #         g : set(t_list)
-    #         for g, t_list in self.gene_2_term.items()
-    #     }
-
-    #     genes_to_update = set(self.gene_2_term.keys())
-    #     while len(genes_to_update) > 0:
-    #         # Iterate over a copy of genes_to_update
-    #         for g in genes_to_update.copy():
-    #             curr_terms = gene_2_term_set[g]
-    #             num_old = len(curr_terms)
-    #             curr_terms.update(
-    #                 set([p for t in curr_terms 
-    #                      for p in child_2_parent_idx.get(t, [])]))
-    #             if len(curr_terms) == num_old:
-    #                 genes_to_update.remove(g)
-    #     return {g : sorted(t_set) for g, t_set in gene_2_term_set.items()}
-
     def propagate(self,
                   direction='forward',
                   gene_term=True,
@@ -3098,16 +2871,7 @@ class Ontology(object):
             # This is needed to ensure that the pruning to a parent's
             # gene set can be based on the gene sets of its direct
             # children
-#            print(gene_term, term_term)
-#            tmp = {k : v[:] for k, v in ont.gene_2_term.items()}
             ont = ont.propagate(gene_term=gene_term, term_term=term_term, direction='forward', inplace=True)
-            # for g in tmp:
-            #     if set(tmp[g]) != set(ont.gene_2_term[g]):
-            #         import pdb
-            #         pdb.set_trace()
-            #         assert False
-                
-#            print(ont)
 
         if gene_term:
             term_2_gene_set = {t : set(g) for t, g in ont.term_2_gene.items()}
@@ -3147,172 +2911,6 @@ class Ontology(object):
         ont._check_valid()
         
         return ont
-
-        # if direction=='forward':
-        #     ont.gene_2_term = ont._propagate_forward()            
-        #     ont._update_fields(reset_term_sizes=True)
-
-        # elif direction=='reverse':
-        #     # This is needed to ensure that the pruning to a parent's
-        #     # gene set can be based on the gene sets of its direct
-        #     # children
-        #     ont.propagate(direction='forward', inplace=True)
-
-        #     term_2_gene_set = {t : set(g) for t, g in ont.term_2_gene.items()}
-        #     if term_term:
-        #         parent_2_child_set = {p : set(c) for p, c in ont.parent_2_child.items()}
-                        
-        #     graph = ont.to_igraph(include_genes=False, spanning_tree=False)
-
-        #     for c_idx in graph.topological_sorting(mode='in'):
-        #         child = graph.vs[c_idx]['name']
-        #         for parent in ont.child_2_parent.get(child, []):
-        #             term_2_gene_set[parent] -= term_2_gene_set[child]
-
-        #             if term_term:
-        #                 parent_2_child_set[parent] - parent_2_child_set[child]
-
-        #     ont.gene_2_term = invert_dict(term_2_gene_set,
-        #                                   keymap=make_index(ont.terms),
-        #                                   valmap=dict(enumerate(ont.genes)))
-        #     ont.term_2_gene = {a : list(b) for a, b in term_2_gene_set.items()}
-
-        #     if term_term:
-        #         ont.parent_2_child = {a : list(b) for a, b in parent_2_child_set.items()}
-        #         ont.child_2_parent = ont._get_child_2_parent()
-                
-        # else:
-        #     raise Exception('Unsupported propagation direction: %s' % direction)
-
-        # return ont
-
-    # def propagate_ontotypes(self, ontotypes, prop, ontotype_size, max_ontotype, method='fixed_size'):
-    #     """Propagates a list of base ontotypes.
-        
-    #     Parameters
-    #     -----------
-    #     ontotypes
-
-    #         An array of ontotypes in scipy.sparse.csr_matrix format.
-    #         Each row is a separate ontotype.
-
-    #     method
-
-    #         If 'fixed_size', then the sum of values in every ontotype
-    #         is exactly the same, namely <ontotype_size>
-
-    #     ontotype_size
-
-    #         If method=='fixed_size', then this is the sum of values in
-    #         every ontotype
-
-    #     """
-
-    #     # Just return the array
-    #     if prop=='genes':
-    #         if method=='fixed_size':
-    #             if ontotype_size == 0:
-    #                 return ontotypes
-
-    #             assert ontotype_size in [1,2]        
-
-    #             ## Each non-zero term in the ontotype is assumed to be hit
-    #             ## by exactly one gene and that term is the only term the
-    #             ## gene hits
-    #             graph = self.to_igraph()
-
-    #             time_print('Calculating node ancestry')
-    #             d = self.connected()
-
-    #             assert d.dtype == ontotypes.dtype
-
-    #             # The usage of np.int8 for <d> requires ontotype size be <= 127
-    #             assert ontotype_size <= 127
-
-    #             time_print('Formatting ontotype array')
-    #             ontotype_arr = scipy.sparse.csr_matrix(ontotypes)
-    #             nnz = ontotype_arr.nonzero()
-
-    #             time_print('Sanity checks')
-
-    #             # # Number of starting perturbations in each ontotype
-    #             # # Currently supporting only 2
-    #             # assert ontotype_size==2
-
-    #             # Check that the number of non-zero elements in every row is equal ontotype_size
-    #             assert( ((ontotype_arr != 0).sum(axis=1) != ontotype_size).sum() == 0 )
-
-    #             # Check that the every consecutive block of <ontotype_size> elements is located in a new row a new row
-    #             assert( (nnz[0][0:len(nnz[0]):ontotype_size,] != range(ontotype_arr.shape[0])).sum() == 0 )
-
-    #             # Check that the non-zero elements were returned in the order of traversing row-by-row
-    #             assert( (np.argsort(np.int64(nnz[0]) * ontotype_arr.shape[1] + np.int64(nnz[1])) != np.array(range(len(nnz[0])))).sum() == 0)
-
-    #             # Check that the number of non-zero elements is a multiple of ontotype_size
-    #             assert( len(nnz[1]) % ontotype_size == 0 )
-
-    #             # import pdb
-    #             # pdb.set_trace()
-
-    #             time_print('Doing propagation')
-    #             # For all ontotypes, calculate the propagation of the
-    #             # first term perturbed as an array, and likewise for the
-    #             # second term.  Then, add the arrays.
-
-    #             if ontotype_size == 2:
-    #                 # Matrix for propagating the first perturbed term
-    #                 a = np.take(d, nnz[1][0:len(nnz[1]):2], axis=0) * \
-    #                     np.reshape(np.array(ontotype_arr[(nnz[0][0:len(nnz[0]):2],
-    #                                                       nnz[1][0:len(nnz[1]):2])]), (len(nnz[0])/2, 1))
-
-    #                 # Matrix for propagating the second perturbed term
-    #                 b = np.take(d, nnz[1][1:len(nnz[1]):2], axis=0) * \
-    #                     np.reshape(np.array(ontotype_arr[(nnz[0][1:len(nnz[0]):2],
-    #                                                       nnz[1][1:len(nnz[1]):2])]), (len(nnz[0])/2, 1))
-
-    #                 # Since the we're propagating genes, we need to limit the ontotype value
-    #                 ontotype_arr = np.minimum(a + b, max_ontotype)
-
-    #             elif ontotype_size == 1:
-    #                 ontotype_arr = np.take(d, nnz[1], axis=0) * \
-    #                     np.reshape(np.array(ontotype_arr[(nnz[0], nnz[1])]), (len(nnz[0]), 1))
-
-    #                 assert (ontotype_arr > max_ontotype).sum().sum() == 0
-    #                 ontotype_arr = np.minimum(ontotype_arr, max_ontotype)
-
-    #             time_print('Done')
-    #             return ontotype_arr
-
-    #         elif method=='topological':
-
-    #             assert ontotypes.dtype == np.int8
-    #             if ontotypes.dtype == np.int8: assert max_ontotype <= 127
-                
-    #             if scipy.sparse.issparse(ontotypes):
-    #                 ontotypes = ontotypes.toarray(order='F')
-    #             else:
-    #                 ontotypes = np.array(ontotypes, order='F')
-
-    #             # Topological sort on terms, going bottom-up the ontology
-    #             for i in self.to_igraph().topological_sorting(mode='out'):
-                    
-    #                 # Add the values from child to all its parents.
-    #                 # Cap the value at <max_ontotype>.  When
-    #                 # propagating the gene-term annotations in an
-    #                 # ontology, you should set max_ontotype=1.
-    #                 child_2_parent_indices = {c : [ont.terms_index[p] for p in p_list] for c,p_list in self.child_2_parent.iteritems()}
-    #                 if self.terms[i] in child_2_parent_indices:
-    #                     parents = np.array(child_2_parent_indices[self.terms[i]])
-    #                     ontotypes[:, parents] = np.minimum(
-    #                         max_ontotype,
-    #                         ontotypes[:, parents] + ontotypes[:, i].reshape(ontotypes.shape[0], 1))
-
-    #                     if not np.all(ontotypes <= max_ontotype):
-    #                         print i
-    #                         assert False
-    #             assert np.all(ontotypes <= max_ontotype)
-
-    #             return ontotypes
 
     def get_ontotype(self,
                      genotypes,
@@ -3711,7 +3309,7 @@ class Ontology(object):
                 term_2_uuid=None,
                 visibility='PUBLIC',
                 verbose=False):
-        """Upload an Ontology to NDEx. The Ontology can be preformatted in
+        """Upload an Ontology object to NDEx. The Ontology can be preformatted in
         several ways including
 
         1. Set a name and description of the Ontology
@@ -3719,7 +3317,6 @@ class Ontology(object):
         3. Propagate gene-term annotations
         4. Layout the nodes.
         5. Apply a visual style, e.g. specifying node and edge colors
-
 
         Parameters
         ----------
@@ -4467,54 +4064,3 @@ class Ontology(object):
     
     def __str__(self):
         return self.summary()
-    
-    # def transitive_closure(self):
-
-        # """Computes the transitive closure on (child term, parent term)
-        # relations. Transitivity rules are defined at
-
-        # http://www.geneontology.org/page/ontology-relations
-
-        # """
-        
-        # relations = ['is_a', 'regulates', 'positively_regulates', 'negatively_regulates', 'has_part', 'part_of', 'gene']
-        # relations_index = make_index(relations)
-        # go_reasoning = dict()
-        # for r in relations:
-        #     go_reasoning[('is_a', r)] = r
-        #     go_reasoning[(r, 'is_a')] = r
-        #     if r != 'has_part':
-        #         go_reasoning[(r, 'part_of')] = 'part_of'
-        # for r in ['regulates', 'positively_regulates', 'negatively_regulates']:
-        #     go_reasoning[(r, 'part_of')] = 'regulates'
-        # go_reasoning[('has_part', 'has_part')] = 'has_part'
-
-        # g = self.to_igraph()
-
-        # # Sort from leaves up
-        # for i in g.topological_sorting(mode='out'):
-        
-        #     # Get parents
-        #     for j in g.neighbors(i, mode='out'):
-                
-        #         # Infer GO relations of new edges
-        #         base_relation = g.es[g.get_eid(i, j)]['relation']
-
-        #         # Iterate over grandparents
-        #         for p in g.neighbors(j, mode='out'):
-        #             r = go_reasoning.get((base_relation, g.es[g.get_eid(j, p)]['relation']), None)
-
-        #             # If a relation can't be inferred, then don't add a new edge
-        #             if r is not None:
-        #                 if -1 != g.get_eid(i, p, error=False):
-        #                     # Edge already exists, so take the higher-ranked relation
-        #                     e = g.es[g.get_eid(i, p)]
-        #                     e['relation'] = r if relations_index[r] > relations_index[e['relation']] else e['relation']
-        #                 else:
-        #                     # Add new edge with relation
-        #                     g.add_edge(i, p, relation=r)                                        
-
-        # return g
-        
-        # ## Update parent_2_child , child_2_parent, child_2_parent_indices
-        

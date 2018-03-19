@@ -5,19 +5,23 @@ An ontology is a hierarchical arrangement of two types of nodes: (1)
 genes at the leaves of the hierarchy and (2) terms at intermediate
 levels of the hierarchy. The hierarchy can be thought of as directed
 acyclic graph (DAG), in which each node can have multiple children or
-multiple parent nodes. In contrast, nodes in a tree (a.k.a. dendogram)
-have at most one parent.
+multiple parent nodes. DAGs are a generalization of trees
+(a.k.a. dendogram), where each node has at most one parent.
 
 The DDOT Python library provides many functions for assembling,
 analyzing, and visualizing ontologies.  The main functionalities are
-implemented by an "Ontology" class. DDOT can handle ontologies that
-are assembled in a data-driven manner as well as manually curated
-ontologies like the Gene Ontology.
+implemented in an object-oriented manner by an "Ontology" class.  This
+class can handle both ontologies that are data-driven as well as those
+that are manually curated like the Gene Ontology.
 
 Creating an Ontology object
 ---------------------------
 
-Instantiations of the Ontology class can be created in several ways
+An Ontology object can be created in several ways. To demonstrate
+this, we will build the following ontology
+
+.. image:: hierarchy.png
+   :width: 100%
 
 1. Through the __init__ constructor::
      
@@ -47,19 +51,19 @@ Instantiations of the Ontology class can be created in several ways
 
 1. Assembly from a similarity network using the CLIXO algorithm::
     
-     ont = Ontology.run_clixo(similarity, ...)
+     ont = Ontology.infer_ontology(similarity, method='clixo')
 
 2. Loading from a tab-delimited table or pandas DataFrame::
-
-     ont = Ontology.from_table('example.txt')
+     
+     ont = Ontology.from_table('toy_ontology.txt')
 
 4. Loading from the Network DataBase Exchange (NDEx)::
 
+     toy_ontology_uuid = 
      ont = Ontology.from_ndex(uuid)
 
    where `uuid` is a specific the unique identifier (UUID) of a
    network on an NDEX server.
-
      
      
 Inspecting the Hierarchical Structure of an Ontology
@@ -67,11 +71,16 @@ Inspecting the Hierarchical Structure of an Ontology
 
 An Ontology stores four fundamental types of information
 
-1. genes : List of genes 
-2. terms : List of term
-3. gene_2_term or term_2_gene : dictionary mapping genes to terms, or vice versa
-4. child_2_parent or parent_2_child  : dictionary mapping child to parent terms, or vice versa
+1. `genes` : List of genes::
 
+      print(ont.genes)
+      
+      
+2. `terms` : List of term
+3. `gene_2_term` or `term_2_gene` : dictionary mapping genes to terms, or vice versa
+4. `child_2_parent` or `parent_2_child`  : dictionary mapping child to parent terms, or vice versa
+
+   
 Alternatively, the hierarchical connections can be viewed as a matrix::
 
   Ontology.connected()

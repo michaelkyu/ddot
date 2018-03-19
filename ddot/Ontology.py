@@ -203,6 +203,10 @@ def align_hierarchies(hier1,
         #calculateFDRs = os.path.join(ddot.config.alignOntology, 'calculateFDRs')
     assert os.path.isfile(calculateFDRs)
 
+    if threads is None:
+        import multiprocessing
+        threads = multiprocessing.cpu_count()
+        
     output_dir = tempfile.mkdtemp(prefix='tmp')
     cmd = '{5} {0} {1} 0.05 criss_cross {2} {3} {4} gene'.format(
               hier1, hier2, output_dir, iterations, threads, calculateFDRs)
@@ -616,10 +620,10 @@ class Ontology(object):
         else:        
             assert node_attr.index.nlevels == 1
             if node_attr.index.name != 'Node':
-                if verbose:
-                    print("Changing node_attr index name from %s to 'Node'" % node_attr.index.name)
-                    # import traceback
-                    # print traceback.print_stack()
+                # if verbose:
+                #     print("Changing node_attr index name from %s to 'Node'" % node_attr.index.name)
+                #     # import traceback
+                #     # print traceback.print_stack()
                     
                 node_attr.index.name = 'Node'                
             self.node_attr = node_attr
@@ -628,10 +632,14 @@ class Ontology(object):
             self.clear_edge_attr()
         else:
             assert edge_attr.index.nlevels == 2
-            if edge_attr.index.names != ['Child', 'Parent']:
-                if verbose:
-                    print("Changing edge_attr index names from %s to ['Child', 'Parent']" % edge_attr.index.names)
-                edge_attr.index.names = ['Child', 'Parent']
+            if 'Child' in edge_attr.index.names and 'Parent' in edge_attr.index.names:
+                edge_attr.index = edge_attr.index[['Child', 'Parent']]
+            else:
+                edge_attr.index.names = ['Child', 'Parent']                
+            # if edge_attr.index.names != ['Child', 'Parent']:
+            #     if verbose:
+            #         print("Changing edge_attr index names from %s to ['Child', 'Parent']" % edge_attr.index.names)
+            #     edge_attr.index.names = ['Child', 'Parent']
             self.edge_attr = edge_attr
 
         self._update_fields()
@@ -803,8 +811,8 @@ class Ontology(object):
 
     def align(self,
               hier,
-              iterations,
-              threads,
+              iterations=100,
+              threads=None,
               update_self=False,
               update_ref=False,
               align_label=None,
@@ -840,7 +848,9 @@ class Ontology(object):
         threads : int
 
             Number of CPU processes to run simultaneously. Used to
-            parallelize the the null model randomizations.
+            parallelize the the null model randomizations. Default:
+            The number of CPU cores returned by
+            multiprocessing.cpu_count()
 
         update_self : bool
 
@@ -1900,7 +1910,7 @@ class Ontology(object):
             assert os.path.isfile(collapseRedundantNodes)
 
             with tempfile.NamedTemporaryFile('w', delete=False) as f:
-                ont.to_table(f, parent_child=True, clixo_format=True)
+                ont.to_table(f, clixo_format=True)
             try:                
                 cmd = '%s %s' % (collapseRedundantNodes, f.name)
                 print('collapse command:', cmd)
@@ -2240,13 +2250,14 @@ class Ontology(object):
                                   for p, c_list in ont.parent_2_child.items()}
             old_term_names = ont.terms
             ont.terms = [terms.get(t,t) for t in ont.terms]
-            
-            if len(ont.terms) != len(set(ont.terms)):
-                # Retain a unique set of term names
-                ont.terms = sorted(set(ont.terms))
-                ont.terms_index = make_index(ont.terms)
 
-                # Need to reindex gene_2_term
+            reindex = len(ont.terms) != len(set(ont.terms))
+
+            # Retain a unique set of term names
+            ont.terms = sorted(set(ont.terms))
+            ont.terms_index = make_index(ont.terms)
+
+            if reindex:
                 ont.gene_2_term = {g : [ont.terms_index[terms[old_term_names[t]]] for t in t_list] for g, t_list in ont.gene_2_term.items()}
 
             ont._update_fields()
@@ -2348,6 +2359,15 @@ class Ontology(object):
             "Child", and (3) "EdgeType".
 
         """
+
+        if clixo_format:
+            return self.to_table(output=output,
+                                 term_2_term=True,
+                                 gene_2_term=True,
+                                 edge_attr=False,
+                                 header=False,
+                                 parent_child=True,
+                                 clixo_format=False)
 
         df = pd.DataFrame(columns=['Parent','Child',self.EDGETYPE_ATTR])
         if term_2_term:
@@ -3066,6 +3086,9 @@ class Ontology(object):
     def infer_ontology(cls,
                        graph,
                        method='clixo',
+                       square=False,
+                       square_names=None,
+                       output=None,
                        **kwargs):        
         if method.lower()=='clixo':
             return cls.run_clixo(graph, **kwargs)
@@ -3075,8 +3098,8 @@ class Ontology(object):
     @classmethod
     def run_clixo(cls,
                   graph,
-                  alpha,
-                  beta,
+                  alpha=0.0,
+                  beta=1.0,
                   min_dt=-10000000,
                   timeout=100000000,
                   square=False,

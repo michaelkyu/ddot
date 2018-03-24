@@ -632,10 +632,11 @@ class Ontology(object):
             self.clear_edge_attr()
         else:
             assert edge_attr.index.nlevels == 2
-            if 'Child' in edge_attr.index.names and 'Parent' in edge_attr.index.names:
-                edge_attr.index = edge_attr.index[['Child', 'Parent']]
-            else:
-                edge_attr.index.names = ['Child', 'Parent']                
+            edge_attr.index.names = ['Child', 'Parent']
+            # if 'Child' in edge_attr.index.names and 'Parent' in edge_attr.index.names:
+            #     edge_attr.index = edge_attr.index[['Child', 'Parent']]
+            # else:
+            #     edge_attr.index.names = ['Child', 'Parent']
             # if edge_attr.index.names != ['Child', 'Parent']:
             #     if verbose:
             #         print("Changing edge_attr index names from %s to ['Child', 'Parent']" % edge_attr.index.names)
@@ -2649,7 +2650,6 @@ class Ontology(object):
                                  for p, children in self.parent_2_child.items()
                                  for c in children]
 
-
             vertex_attrs = self.node_attr.reindex(index=self.genes + self.terms).loc[self.genes + self.terms].to_dict(orient='list')
             vertex_attrs.update({
                 'name':self.genes + self.terms,
@@ -2790,10 +2790,23 @@ class Ontology(object):
                   descendants=None,
                   ancestors=None,
                   sparse=False):
-        """Calculate which terms are descendants/ancestors of other terms
+        """Calculate which genes or terms are descendants of other genes or
+        terms.
 
         Parameters
         -----------
+
+        descendants: list
+
+            A list of genes and/or terms. Default: A list of all genes
+            followed by a list of all terms, in the same order as
+            `self.genes` and `self.terms`.
+
+        ancestors: list
+
+            A list of genes and/or terms. Default: Same as the
+            ``descendants`` parameter.
+
         sparse : bool
 
             If True, return a scipy.sparse matrix. If False, return a
@@ -2803,9 +2816,9 @@ class Ontology(object):
         -------
         d : np.ndarray or scipy.sparse.matrix
 
-            d[i,j] is 1 if term i is a descendant of term j, and 0
-            otherwise. Note that d[i,i] == 1 and d[root,i] == 0, for
-            every i.
+            A descendants-by-ancestors matrix. ``d[i,j]`` is 1 if term
+            i is a descendant of term j, and 0 otherwise. Note that
+            ``d[i,i]==1`` and ``d[root,i]==0``, for every i.
 
         """
             
@@ -2819,19 +2832,19 @@ class Ontology(object):
         return d
 
     def get_leaves(self, terms_list, children_list=None):
-        """Returns terms in <terms_list> that are not ancestors of any term in
-        <children_list>
+        """Returns terms in ``terms_list`` that are not ancestors of any term in
+        ``children_list``.
         
-        If <children_list> is None, then select the terms in
-        <terms_list> that are not ancestors of any of the other terms
-        in <terms_list>.
-
         Parameters
         ----------
         terms_list : list
 
-        children : list
-        
+        children_list : list
+
+            If ``children_list`` is None, then select the terms in
+            <terms_list> that are not ancestors of any of the other
+            terms in <terms_list>.
+
         """
         
         connectivity_matrix_nodiag = self.get_connectivity_matrix_nodiag()
@@ -2852,22 +2865,20 @@ class Ontology(object):
                   inplace=False):
         """Propagate gene-term annotations through the ontology.
 
-        Example) Consider an ontology with one gene g and three terms t1, t2, t3. The connections are
+        As an example, consider an ontology with one gene ``g``, three terms
+        ``t1, t2, t3`` and the following connections:
 
-        Child Term - Parent Term relations:
-        t1 --> t2
-        t2 --> t3
+        ::
 
-        Gene - Term relations:
-        g --> t1
-        g --> t2
+            t1-->t2
+            t2-->t3
+            g-->t1
+            g-->t2
 
-        In 'forward' propagation, a new relation g --> t3 is added. In
-        'reverse' propagation, the relation g --> t2 is deleted
-        because it is an indirect relation inferred from g --> t1 and
-        t1 --> t2.
-
-        TODO: consider 'reverse' instead of 'reverse'
+        In "forward" propagation, a new relation ``g-->t3`` is added. In
+        "reverse" propagation, the relation "g-->t2" is deleted
+        because it is an indirect relation inferred from "g-->t1" and
+        "t1-->t2".
         
         Parameters
         ----------

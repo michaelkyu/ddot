@@ -1429,64 +1429,6 @@ class Ontology(object):
             
         return G
 
-    # @classmethod
-    # def from_pandas(cls,
-    #                 table,
-    #                 parent_col='Parent',
-    #                 child_col='Child',
-    #                 is_mapping=None,
-    #                 propagate=False,
-    #                 verbose=False):
-    #     """Constructs an Ontology from a pandas Dataframe describing the edges.
-
-    #     TODO: consider deleting this method because it is redundant
-    #     with from_table. The only non-redundant aspect is that the
-    #     default is_mapping function is different from from_table.
-        
-    #     Parameters
-    #     -----------
-    #     table : pandas.Dataframe
-
-    #     parent : int or str
-
-    #         Column for parent terms (index or name of column)
-        
-    #     child : int or str
-
-    #         Column for child terms and genes (index or name of column)
-
-    #     is_mapping : function
-        
-    #         Function applied on each row to determine if it represents
-    #         a gene-term annotation. If the function returns True, then
-    #         row represents a (gene, term) pair. If False, it
-    #         represents a (child term, parent term) pair. The function
-    #         is evaluated using df.apply(is_mapping, axis=1).
-
-    #     propagate : str
-
-    #         The direction ('forward' or 'reverse') for propagating
-    #         gene-term annotations up the hierarchy with
-    #         Ontology.propagate(). If None, then don't
-    #         propagate annotations.
-
-    #     Returns
-    #     -------
-    #     : ddot.Ontology.Ontology
-
-    #     """
-
-    #     if is_mapping is None:
-    #         is_mapping = lambda x: x[self.EDGETYPE_ATTR]==self.GENE_TERM_EDGETYPE
-            
-    #     return cls.from_table(df,
-    #                           is_mapping=is_mapping,
-    #                           parent_col=parent_col,
-    #                           child_col=child_col,
-    #                           mapping_file=None,
-    #                           propagate=propagate,
-    #                           verbose=verbose)
-
     @classmethod
     def from_table(cls,
                    table,
@@ -2060,7 +2002,7 @@ class Ontology(object):
     def delete(self,
                to_delete=None,
                to_keep=None,
-               preserve_transitivity=False,
+               preserve_transitivity=True,
                inplace=False):
         """Delete genes and/or terms from the ontology.
 
@@ -2247,19 +2189,16 @@ class Ontology(object):
             ont.genes_index = make_index(ont.genes)
             ont._update_fields()
         if terms:
-            ont.parent_2_child = {terms[p] : [terms[c] for c in c_list]
+            ont.parent_2_child = {terms.get(p, p) : [terms.get(c, c) for c in c_list]
                                   for p, c_list in ont.parent_2_child.items()}
             old_term_names = ont.terms
             ont.terms = [terms.get(t,t) for t in ont.terms]
-
-            reindex = len(ont.terms) != len(set(ont.terms))
 
             # Retain a unique set of term names
             ont.terms = sorted(set(ont.terms))
             ont.terms_index = make_index(ont.terms)
 
-            if reindex:
-                ont.gene_2_term = {g : [ont.terms_index[terms[old_term_names[t]]] for t in t_list] for g, t_list in ont.gene_2_term.items()}
+            ont.gene_2_term = {g : [ont.terms_index[terms.get(t,t)] for t in [old_term_names[t] for t in t_list]] for g, t_list in ont.gene_2_term.items()}
 
             ont._update_fields()
 
@@ -2619,7 +2558,7 @@ class Ontology(object):
 
         return topo
                 
-    def to_igraph(self, include_genes=False, spanning_tree=True):
+    def to_igraph(self, include_genes=True, spanning_tree=False):
 
         """Convert Ontology to an igraph.Graph object. Gene and term names are
            stored in the 'name' vertex attribute of the igraph object.
@@ -2884,7 +2823,7 @@ class Ontology(object):
         ----------
         direction : str
 
-            The direction of propgation. Either 'forward' or 'reverse'
+            The direction of propagation. Either 'forward' or 'reverse'
 
         inplace : bool
 
@@ -2902,7 +2841,7 @@ class Ontology(object):
         else:
             ont = self.copy()
 
-        assert direction in ['forward', 'reverse']
+        assert direction in ['forward', 'reverse'], "Propagation direction must be forward or backward"
 
         forward = direction=='forward'
         
@@ -2923,7 +2862,6 @@ class Ontology(object):
         #     child = graph.vs[c_idx]['name']
 
         for child in ont.topological_sorting(top_down=forward, include_genes=False):
-#            for parent in ont.child_2_parent.get(child, []):
             for parent in ont.child_2_parent[child]:
                 if gene_term:
                     if forward:
@@ -2954,9 +2892,15 @@ class Ontology(object):
     def get_ontotype(self,
                      genotypes,
                      input_format='gene_list',
-                     output_format='sparse',
+                     output_format='dataframe',
                      matrix_columns=None):
         """Transform genotypes to ontotypes.
+
+        .. [1] Yu, M.K., Kramer, M., Dutkowski, J., Srivas, R., Licon,
+               K., Kreisberg, J.F., Ng, C.T., Krogan, N., Sharan,
+               R. and Ideker, T., 2016. "Translation of genotype to
+               phenotype by a hierarchy of cell subsystems". *Cell
+               Systems*, 2(2), pp.77-88.
 
         Parameters
         ----------
@@ -2964,43 +2908,43 @@ class Ontology(object):
 
         input_format : str
 
-            If 'gene_list', then genotypes is interpreted as a list,
-            where each element is an individual genotype represented
-            as a list of genes. Thus, genotypes is a list of list of
-            genes.
+            If "gene_list", then ``genotypes`` is a list of genotypes,
+            where genotype is itself a list of genes mutated. Each
+            gene is assumed to have a mutation value of 1.
 
-            If 'matrix', then genotypes is interpreted as a
-            genotype-by-gene matrix, where the value at position (i,j)
-            represents the mutation value of gene j in genotype i.
+            If 'matrix', then ``genotypes`` is a genotype-by-gene
+            matrix, where the value at position (i,j) represents the
+            mutation value of gene j in genotype i. ``genotypes`` can
+            be a NumPy array, SciPy sparse matrix, or Pandas
+            dataframe.
 
         output_format : str
 
             If 'sparse', then return a sparse matrix as a
-            scipy.sparse.csr_matrix object. 
+            scipy.sparse.csr_matrix object. (default)
 
-            If 'dataframe', then return a pandas.DataFrame
+            If 'dataframe', then return a pandas.DataFrame object.
+
+            If 'array', then return a numpy.ndarray object.
 
         matrix_columns : list
             
-            Must be set when input_format is 'matrix' and genotypes is
-            a NumPy array or SciPy sparse matrix. In this case,
-            matrix_columns represents a list of the genes that are
-            represented by the columns in genotypes.
-
-            Not used when input_format is 'gene_list', or when
-            input_format is 'matrix' and genotypes is a
-            pandas.DataFrame.
+            represents a list of the genes that are represented by the
+            columns of ``genotypes``. Only used when input_format is
+            "matrix" and ``genotypes`` is a NumPy array or SciPy sparse
+            matrix.
 
         Returns
         -------
-        : scipy.sparse.csr_matrix, pandas.DataFrame
+        : scipy.sparse.csr_matrix, pandas.DataFrame, numpy.ndarray
 
-            genotype-by-term matrix. The ordering of genotypes is the
-            same as the input. The ordering of terms is the same as
-            self.terms.
+            genotype-by-term matrix, where the ordering of rows and
+            terms is the same as ``genotypes`` and ``self.terms``
 
         """
 
+        genotypes_names = None
+        
         if input_format=='gene_list':
             gene_2_term = {k: np.array(v) for k, v in self.gene_2_term.items()}
             genotypes_x = [np.concatenate([gene_2_term[g] for g in gset]) if len(gset)>0 else np.array([]) for gset in genotypes]
@@ -3011,15 +2955,18 @@ class Ontology(object):
                 (data, indices, indptr),
                 (len(genotypes), len(self.terms)))
             ontotypes.sum_duplicates()        
-        elif input_format=='matrix':
+        elif input_format=='matrix':            
             if isinstance(genotypes, pd.DataFrame):
                 matrix_columns = genotypes.columns
+                genotypes_names = genotypes.index
                 genotypes = genotypes.values
             elif isinstance(genotypes, np.ndarray) or scipy.sparse.issparse(genotypes):
                 assert matrix_columns is not None
             else:
-                raise Exception('<genotypes> must be a genotype-by-gene matrix or pd.DataFrame')            
-            contained = np.array([self.genes_index.has_key(g) for g in matrix_columns])
+                raise Exception("Parameter <genotypes> must be a genotype-by-gene matrix "
+                                "represented as a Pandas dataframe, NumPy array, or SciPy sparse matrix. "
+                                "Consider changing the <input_format> parameter")
+            contained = np.array([g in self.genes_index for g in matrix_columns])
             genotypes = scipy.sparse.csc_matrix(genotypes)[:,contained]            
             gene_2_term_matrix = scipy.sparse.csr_matrix(self.get_gene_2_term_matrix())
             gene_2_term_matrix = scipy.sparse.csr_matrix(gene_2_term_matrix)[contained,:]
@@ -3029,8 +2976,12 @@ class Ontology(object):
 
         if output_format=='dataframe':
             ontotypes = pd.DataFrame(ontotypes.toarray(), columns=self.terms)
+            if genotypes_names is not None:
+                ontotypes.index = genotypes_names
         elif output_format=='sparse':
             pass
+        elif output_format=='array':
+            ontotypes = ontotypes.toarray()
         else:
             raise Exception('Invalid output format')
             
@@ -4017,7 +3968,7 @@ class Ontology(object):
         """
 
         if graph is None:
-            graph = self.to_igraph()
+            graph = self.to_igraph(include_genes=False, spanning_tree=True)
 
         if method=='priority':
             assert 1 == (parent_priority is not None) + (edge_priority is not None)            

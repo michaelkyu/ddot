@@ -712,7 +712,7 @@ class Ontology(object):
         cp_pairs.sort(key=first)
 
         child_2_parent = {
-            r: tuple(p[1] for p in q) for r, q in 
+            r: [p[1] for p in q] for r, q in 
             itertools.groupby(cp_pairs, key=first)
         }
 

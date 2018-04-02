@@ -1542,8 +1542,6 @@ class Ontology(object):
         if child not in table.columns:
             child = table.columns[child]
         if parent not in table.columns:
-            print(parent, table.columns)
-            print(table.head())
             parent = table.columns[parent]
             
         for col in [child, parent]:
@@ -1965,7 +1963,7 @@ class Ontology(object):
             ont = ont.collapse_ontology(method='python', to_keep=ont.get_roots())
         
         df = ont.to_table(edge_attr=True)
-        
+
         new_connections = []
         for t in ont.terms:
             removed_genes = set([self.genes[g] for g in self.term_2_gene[t]]) - set([ont.genes[g] for g in ont.term_2_gene[t]])
@@ -1987,7 +1985,7 @@ class Ontology(object):
         ont = Ontology.from_table(df)
         ont.update_node_attr(self.node_attr)
         orig_sizes = pd.DataFrame({'Original_Size' : self.term_sizes}, index=self.terms)
-        ont.update_node_attr(orig_sizes)
+        ont.update_node_attr(orig_sizes)        
         if len(new_connections)>0:
             summary_sizes = pd.DataFrame({'Original_Size' : [int(x.split('_')[1]) for x in new_nodes]}, index=new_nodes)
             ont.update_node_attr(summary_sizes)

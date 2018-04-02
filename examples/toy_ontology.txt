@@ -1,3 +1,4 @@
+S2	S5	Child-Parent
 S2	S6	Child-Parent
 S1	S3	Child-Parent
 S1	S4	Child-Parent

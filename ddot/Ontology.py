@@ -1330,10 +1330,12 @@ class Ontology(object):
 
         """
 
-        if layout_params is None:
-            layout_params = {'hidden_parent' : True,
-                             'hidden_child' : False,
-                             'hidden_gene' : False}
+        default_layout_params = {'hidden_parent' : True,
+                                 'hidden_child' : False,
+                                 'hidden_gene' : False}
+        if layout_params is not None:
+            default_layout_params.update(layout_params)
+        layout_params = default_layout_params
             
         if spanning_tree:
             scale = 1
@@ -1376,14 +1378,11 @@ class Ontology(object):
                 tmp = tmp[tmp['is_collect_node']]
                 tmp = tmp[tmp['Label'].apply(decide_delete)]
                 to_delete = tmp.index.tolist()
-
+                
                 ont_red = ont
                 if len(to_delete) > 0:                    
                     # Need fast special delete
                     ont_red = ont_red.delete(to_delete=to_delete, preserve_transitivity=True)
-                    
-                # import pdb
-                # pdb.set_trace()
                     
                 # Set the original term sizes for the original copy of
                 # each term (not the duplicates)
@@ -1861,7 +1860,7 @@ class Ontology(object):
                 collapsed, err = p.communicate()
             finally:
                 os.remove(f.name)
-
+            
             ont = Ontology.from_table(
                 StringIO(collapsed),
                 is_mapping=lambda x: x[2]=='gene',
@@ -2301,13 +2300,19 @@ class Ontology(object):
         """
 
         if clixo_format:
-            return self.to_table(output=output,
-                                 term_2_term=True,
-                                 gene_2_term=True,
-                                 edge_attr=False,
-                                 header=False,
-                                 parent_child=True,
-                                 clixo_format=False)
+            df = self.to_table(output=None,
+                               term_2_term=True,
+                               gene_2_term=True,
+                               edge_attr=False,
+                               header=False,
+                               parent_child=True,
+                               clixo_format=False)
+
+            df.replace({self.EDGETYPE_ATTR : {self.GENE_TERM_EDGETYPE : 'gene', self.CHILD_PARENT_EDGETYPE : 'default'}}, inplace=True)
+            
+            if output is not None:
+                df.to_csv(output, header=False, index=False, sep='\t')
+            return df
 
         df = pd.DataFrame(columns=['Parent','Child',self.EDGETYPE_ATTR])
         if term_2_term:
@@ -2326,9 +2331,6 @@ class Ontology(object):
         first_two = ['Parent', 'Child'] if parent_child else ['Child', 'Parent']
         df = df[first_two + [x for x in df.columns if x not in first_two]]
 
-        if clixo_format:
-            df.replace({self.EDGETYPE_ATTR : {self.GENE_TERM_EDGETYPE : 'gene', self.CHILD_PARENT_EDGETYPE : 'default'}}, inplace=True)
-            
         if output is not None:
             df.to_csv(output, header=header, index=False, sep='\t')        
         

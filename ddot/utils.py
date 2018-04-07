@@ -48,7 +48,7 @@ def invert_dict(dic, sort=True, keymap={}, valmap={}):
         k = keymap.get(k, k)
         for v in v_list:
             v = valmap.get(v, v)
-            if dic_inv.has_key(v):
+            if v in dic_inv:
                 dic_inv[v].append(k)
             else:
                 dic_inv[v] = [k]
@@ -157,9 +157,9 @@ def split_indices(n, k):
     try:
         tmp = iter(n)
         indices = n
-    except TypeError, te:
+    except TypeError:
         assert type(n)==type(int(1))
-        indices = range(n)
+        indices = list(range(n))
 
     chunk_size = int(ceil(float(len(indices)) / k))
 
@@ -169,8 +169,8 @@ def split_indices_chunk(n, k):
     try:
         iter(n)
         n = len(n)
-    except TypeError, te:
-        assert isinstance(n, int) or isinstance(n, long)
+    except TypeError:
+        assert isinstance(n, int)
 
     return [(k*i, min(k*(i+1), n)) for i in range(int(ceil(float(n) / k)))]
 
@@ -258,36 +258,36 @@ def melt_square(df, columns=['Gene1', 'Gene2'], similarity='similarity', empty_v
     tmp.rename(similarity, inplace=True)
     return tmp.reset_index()
 
-def get_gene_name_converter(genes, scopes='symbol', fields='entrezgene', species='human', target='gene'):
-    """Query mygene.info to get a dictionary mapping gene names in the ID
-    namespace scopes to the ID namespace in fields
+# def get_gene_name_converter(genes, scopes='symbol', fields='entrezgene', species='human', target='gene'):
+#     """Query mygene.info to get a dictionary mapping gene names in the ID
+#     namespace scopes to the ID namespace in fields
 
-    Weird behavior with mygene.info: for Entrez genes, use fields
-    'entrezgene'. For ENSEMBL genes, use fields "ensembl"
+#     Weird behavior with mygene.info: for Entrez genes, use fields
+#     'entrezgene'. For ENSEMBL genes, use fields "ensembl"
 
-    """
+#     """
 
-    if hasattr(genes, '__iter__') and not isinstance(genes, (str, unicode)):
-        genes = ','.join(genes)
+#     if hasattr(genes, '__iter__') and not isinstance(genes, (str, unicode)):
+#         genes = ','.join(genes)
         
-    import requests
-    r = requests.post('http://mygene.info/v3/query',
-                      data={'q': genes,
-                            'scopes': scopes,
-                            'fields': fields,
-                            'species': species})
+#     import requests
+#     r = requests.post('http://mygene.info/v3/query',
+#                       data={'q': genes,
+#                             'scopes': scopes,
+#                             'fields': fields,
+#                             'species': species})
     
     
-    def parse_field(x):
-        if isinstance(x, dict):
-            return [unicode(x[target])]
-        elif isinstance(x, list):
-            return [unicode(y[target]) for y in x]
-        else:
-            return unicode(x)
+#     def parse_field(x):
+#         if isinstance(x, dict):
+#             return [unicode(x[target])]
+#         elif isinstance(x, list):
+#             return [unicode(y[target]) for y in x]
+#         else:
+#             return unicode(x)
     
-    dic = {x['query'] : parse_field(x[fields]) for x in r.json() if x.has_key(fields)}
-    return dic
+#     dic = {x['query'] : parse_field(x[fields]) for x in r.json() if x.has_key(fields)}
+#     return dic
 
 def update_nx_with_alignment(G,
                              alignment,
@@ -357,8 +357,8 @@ def set_node_attributes_from_pandas(G, node_attr):
     G_nodes = set(G.nodes())
     node_attr = node_attr.loc[[x for x in node_attr.index if x in G_nodes], :]
     if node_attr is not None:
-        for feature_name, feature in node_attr.iteritems():
-            for n, v in feature.dropna().iteritems():
+        for feature_name, feature in node_attr.items():
+            for n, v in feature.dropna().items():
                 try:
                     # If v is actually a NumPy scalar type,
                     # e.g. np.float or np.int, then convert it to a
@@ -383,8 +383,8 @@ def set_edge_attributes_from_pandas(G, edge_attr):
     G_edges = set(G.edges())
     edge_attr = edge_attr.loc[[x for x in edge_attr.index if x in G_edges], :]
     if edge_attr is not None:
-        for feature_name, feature in edge_attr.iteritems():
-            for (e1,e2), v in feature.dropna().iteritems():
+        for feature_name, feature in edge_attr.items():
+            for (e1,e2), v in feature.dropna().items():
                 try:
                     v = v.item()
                 except:
@@ -545,7 +545,7 @@ def nx_to_NdexGraph(G_nx, discard_null=True):
         if discard_null:
             node_attr = {k:v for k,v in node_attr.items() if not pd.isnull(v)}
 
-        if node_attr.has_key('name'):
+        if 'name' in node_attr:
             #G.add_node(node_id, node_attr)
             G.add_node(node_id, **node_attr)
         else:
@@ -889,7 +889,7 @@ def ndex_to_sim_matrix(ndex_uuid,
 
         if subset is not None:
             idx = make_index(sim_names)
-            idx = np.array([idx[g] for g in subset if idx.has_key(g)])
+            idx = np.array([idx[g] for g in subset if g in idx])
             sim = sim[idx, :][:, idx]
             sim_names = sim_names[idx]
 

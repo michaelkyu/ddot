@@ -1,6 +1,5 @@
-import config
-import Ontology
-import utils
+from __future__ import absolute_import
 
-from Ontology import *
-from utils import *
+from ddot.config import *
+from ddot.Ontology import *
+from ddot.utils import *

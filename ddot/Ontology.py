@@ -10,7 +10,7 @@ import inspect
 import shlex
 import shutil
 import io
-from StringIO import StringIO
+from io import StringIO
 import json
 import datetime
 
@@ -46,7 +46,7 @@ def _collapse_node(g,
     """
 
     if use_v_name:
-        assert isinstance(v, (unicode, str))
+        assert isinstance(v, str)
         v = g.vs.find(name_eq=v).index
 
     try:
@@ -382,12 +382,12 @@ def parse_obo(obo,
             curr_term = line.split('id:')[1].strip()
         elif 'alt_id:' in line:
             alt_term = line.split('alt_id:')[1].strip()
-            if alt_id.has_key(curr_term):  alt_id[curr_term].append(alt_term)
+            if curr_term in alt_id:  alt_id[curr_term].append(alt_term)
             else:                          alt_id[curr_term] = [alt_term]
             id2name[alt_term] = name
         elif 'name:' in line:
             name = line.split('name:')[1].strip()
-            assert not id2name.has_key(curr_term)
+            assert not curr_term in id2name
             id2name[curr_term] = name
         elif 'is_a:' in line:
             parent = line.split('is_a:')[1].strip()
@@ -400,7 +400,7 @@ def parse_obo(obo,
             stanza.append((parent, curr_term, relation))
         elif 'namespace:' == line[:10]:
             namespace = line.split('namespace:')[1].strip()
-            assert not id2namespace.has_key(curr_term)
+            assert not curr_term in id2namespace
             id2namespace[curr_term] = namespace
         elif 'default-namespace:' == line[:18]:
             namespace = line.split('default-namespace:')[1].strip()
@@ -690,7 +690,7 @@ class Ontology(object):
         ont.terms.append(root_name)
         ont.terms_index = make_index(sorted(ont.terms))
 
-        for g, t_list in ont.gene_2_term.iteritems():
+        for g, t_list in ont.gene_2_term.items():
             ont.gene_2_term[g] = [ont.terms_index[ont.terms[t]] for t in t_list]
 
         ont.terms.sort()
@@ -908,7 +908,7 @@ class Ontology(object):
         # Set labels based on ontology alignment
         if align_label and (('Aligned_%s' % align_label) in self.node_attr.columns):
             label_attr = self.node_attr['Aligned_%s' % align_label]            
-            label_attr = {k : '%s\n%s' % (k,v) for k, v in label_attr.iteritems() if not pd.isnull(v)}
+            label_attr = {k : '%s\n%s' % (k,v) for k, v in label_attr.items() if not pd.isnull(v)}
             label_attr = pd.Series(label_attr, name='Label').to_frame()
             self.update_node_attr(label_attr)
 
@@ -1856,6 +1856,7 @@ class Ontology(object):
                 print('collapse command:', cmd)
                 p = Popen(shlex.split(cmd), shell=False, stdout=PIPE, stderr=PIPE)
                 collapsed, err = p.communicate()
+                collapsed = collapsed.decode()
             finally:
                 os.remove(f.name)
             
@@ -2064,16 +2065,16 @@ class Ontology(object):
         if len(genes) > 0:
             ont.genes = [g for g in ont.genes if g not in genes]
             ont.genes_index = make_index(ont.genes)
-            ont.gene_2_term = {g : t for g, t in ont.gene_2_term.iteritems()
+            ont.gene_2_term = {g : t for g, t in ont.gene_2_term.items()
                                if g not in genes}
             ont._update_fields()
             
         if len(terms) > 0:
             if preserve_transitivity:
-                gene_2_term_set = {g : set([ont.terms[s] for s in t]) for g, t in ont.gene_2_term.iteritems()}
-                term_2_gene_set = {a : set(b) for a, b in ont.term_2_gene.iteritems()}
-                child_2_parent_set = {a : set(b) for a, b in ont.child_2_parent.iteritems()}
-                parent_2_child_set = {a : set(b) for a, b in ont.parent_2_child.iteritems()}
+                gene_2_term_set = {g : set([ont.terms[s] for s in t]) for g, t in ont.gene_2_term.items()}
+                term_2_gene_set = {a : set(b) for a, b in ont.term_2_gene.items()}
+                child_2_parent_set = {a : set(b) for a, b in ont.child_2_parent.items()}
+                parent_2_child_set = {a : set(b) for a, b in ont.parent_2_child.items()}
                 for t in terms:
                     t_parents = child_2_parent_set[t]
                     t_genes = term_2_gene_set[t]
@@ -2096,8 +2097,8 @@ class Ontology(object):
                 ont.terms = [t for t in ont.terms if t not in terms]
                 terms_index = make_index(ont.terms)
                 ont.terms_index = terms_index
-                ont.gene_2_term = {g : sorted([terms_index[s] for s in t]) for g, t in gene_2_term_set.iteritems()}
-                ont.child_2_parent = {c : sorted(p) for c, p in child_2_parent_set.iteritems()}
+                ont.gene_2_term = {g : sorted([terms_index[s] for s in t]) for g, t in gene_2_term_set.items()}
+                ont.child_2_parent = {c : sorted(p) for c, p in child_2_parent_set.items()}
                 ont.parent_2_child = invert_dict(ont.child_2_parent)
                 ont._update_fields()                
             else:
@@ -2173,7 +2174,7 @@ class Ontology(object):
             new_gene_2_term = {}
             for g in ont.genes:
                 new_g = genes.get(g, g)
-                if hasattr(new_g, '__iter__') and not isinstance(new_g, (unicode, str)):
+                if hasattr(new_g, '__iter__') and not isinstance(new_g, str):
                     for new_gg in new_g:
                         new_genes.add(new_gg)
                         new_gene_2_term[new_gg] = ont.gene_2_term[g]
@@ -2362,7 +2363,7 @@ class Ontology(object):
         for x in ['genes_index', 'terms_index']:
             setattr(ont, x, getattr(self, x).copy())            
         for x in ['gene_2_term', 'term_2_gene', 'child_2_parent', 'parent_2_child']:
-            copy_val = {k : v[:] for k, v in getattr(self, x).iteritems()}
+            copy_val = {k : v[:] for k, v in getattr(self, x).items()}
             setattr(ont, x, copy_val)
     
         return ont
@@ -2466,7 +2467,7 @@ class Ontology(object):
             valmap=dict(enumerate(self.terms)))
 
         for t in self.terms:
-            if not term_2_gene.has_key(t):
+            if not t in term_2_gene:
                 term_2_gene[t] = []
         return term_2_gene
 
@@ -2609,7 +2610,7 @@ class Ontology(object):
                                  vertex_attrs={'name':self.terms},
                                  edge_attrs={self.EDGETYPE_ATTR : [self.CHILD_PARENT_EDGETYPE for x in edges]})
         if spanning_tree:
-            parent_priority = [self.term_sizes[self.terms_index[v['name']]] if self.terms_index.has_key(v['name']) else 1 for v in graph.vs]
+            parent_priority = [self.term_sizes[self.terms_index[v['name']]] if (v['name'] in self.terms_index) else 1 for v in graph.vs]
 
             # Identify spanning tree
             graph = self._make_tree_igraph(
@@ -3219,11 +3220,8 @@ class Ontology(object):
                          'Current dt: %s: Output: %s') % (p.pid, curr_dt, output_log))
                 break
 
-            line = p.stdout.readline()
-
-            # Remove newline character
-            line = line[:-1]
-
+            line = p.stdout.readline().decode().rstrip()
+            
             # Break if the min_dt has been met
             if '# dt: ' in line:
                 curr_dt = float(line.split('# dt: ')[1])

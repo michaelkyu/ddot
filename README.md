@@ -10,7 +10,7 @@ http://the-data-driven-ontology-toolkit-ddot.readthedocs.io/en/latest/?
 Python >=2.7
 Python >=3.6
 
-- by anaconda (recommended)
+* by anaconda (recommended)
 
   This is the recommended method for installing ddot because it has a
   reliable means to install dependencies and is more lightweight than
@@ -19,16 +19,13 @@ Python >=3.6
   of Python . It is optional but recommended that you create a conda
   virtual environment
 
-  ..
-
-     # Create environment (specify a name)
+  ```# Create environment (specify a name)
      conda create -n <environment_name>
 
      # Activate virtual environment
      source activate <environment_name>
 
-  ..
-   
+  
      # Update conda
      conda update conda
    
@@ -40,20 +37,19 @@ Python >=3.6
    
      # Install ddot
      conda install -c conda-forge ddot
+  ```
 
-- by pip
+* by pip
 
-  ..
-     pip install ddot
+  `pip install ddot`
 
   This will attempt to install the dependencies, but it is recommended that you install dependencies separately to more easily debug any installation errors. 
 
-- from the repository
+* from the repository
 
   Download the repository and then run
 
-  ..
-     python setup.py install
+  `python setup.py install`
 
   This will attempt to install the dependencies, but it is recommended that you install dependencies separately to more easily debug any installation errors. 
 
@@ -71,19 +67,18 @@ Python >=3.6
 
 A docker image of DDOT can be pulled from Docker Hub.
 
-..
-
-    # image with DDOT installed in anaconda3 (Python 3.6)
-    docker pull michaelkyu/ddot-anaconda3
-    docker run -i -t michaelkyu/ddot-anaconda3
-    
-    # image with DDOT installed in anaconda2 (Python 2.7)
-    docker pull michaelkyu/ddot-anaconda2
-    docker run -i -t michaelkyu/ddot-anaconda2
+```# image with DDOT installed in anaconda3 (Python 3.6)
+   docker pull michaelkyu/ddot-anaconda3
+   docker run -i -t michaelkyu/ddot-anaconda3
+   
+   # image with DDOT installed in anaconda2 (Python 2.7)
+   docker pull michaelkyu/ddot-anaconda2
+   docker run -i -t michaelkyu/ddot-anaconda2
+```
 
 # Getting started
 
-The `examples` folder contains a tutorial (`Tutorial.ipynb`) for
+The [examples](examples) folder contains a tutorial (`Tutorial.ipynb`) for
 learning basic usage of DDOT. See the other example Jupyter notebooks.
 
 # Citing DDOT

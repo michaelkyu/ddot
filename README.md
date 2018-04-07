@@ -9,13 +9,16 @@ http://the-data-driven-ontology-toolkit-ddot.readthedocs.io/en/latest/?
 
 # Installation
 
-* by anaconda (recommended)
+There are multiple ways to install DDOT.
 
-  This is the recommended method for installing ddot because it is the easiest way to install dependencies. First, install the [Anaconda
-  distribution]((https://conda.io/docs/user-guide/install/download.html))
+* Install by anaconda (recommended)
+
+  This is the easiest method to install dependencies. First, install the [Anaconda
+  distribution](https://conda.io/docs/user-guide/install/download.html)
   of Python.
 
-  ```# Create anad activate a virtual environment (optional but recommended)
+  ```bash
+  # Create anad activate a virtual environment (optional but recommended)
   conda create -n <environment_name>
   source activate <environment_name>
 
@@ -29,35 +32,42 @@ http://the-data-driven-ontology-toolkit-ddot.readthedocs.io/en/latest/?
   pip install tulip-python ndex-dev
    
   # Install ddot
-  conda install -c conda-forge ddot```
+  conda install -c conda-forge ddot
+  ```
 
-* by pip
+* Install by pip
 
-  `pip install ddot`
+  ```bash
+  pip install ddot
+  ```
 
   This will attempt to install the dependencies, but it is recommended that you install dependencies separately to more easily debug any installation errors. 
 
-* by downloading the repository and then running
+* Install by downloading the repository and then running
 
-  `python setup.py install`
+  ```bash
+  python setup.py install
+  ```
 
   This will attempt to install the dependencies, but it is recommended that you install dependencies separately to more easily debug any installation errors. 
 
 # Dependencies
 
-* [networkx=1.11](https://networkx.github.io/) (You might have networkx>=2.0 already installed, but this is incompatible with ddot)
-* [python-igraph](http://igraph.org/python/) (Install through conda or pip)
-* [pandas>=0.20](http://pandas.pydata.org/)
+* Python v2.7 or >=3.6
 * [numpy](https://docs.scipy.org/doc/)
 * [scipy](https://docs.scipy.org/doc/)
-* [ndex-dev](https://github.com/ndexbio/ndex-python) (Install through pip)
-* [tuplip-python](https://pypi.python.org/pypi/tulip-python) (Install through pip)
+* [pandas>=0.20](http://pandas.pydata.org/)
+* [networkx=1.11](https://networkx.github.io/) You might have networkx>=2.0 already installed, but this is incompatible with ddot.
+* [python-igraph](http://igraph.org/python/) Recommend installing through [conda](https://anaconda.org/conda-forge/python-igraph) or [pip](https://pypi.python.org/pypi/python-igraph/0.7).
+* [ndex-dev](https://github.com/ndexbio/ndex-python) Recommend installing through [pip](https://pypi.python.org/pypi/ndex-dev).
+* [tuplip-python](https://pypi.python.org/pypi/tulip-python) Recommend installing through [pip](https://pypi.python.org/pypi/tulip-python).
 
 # Docker image
 
 A docker image of DDOT can be pulled from Docker Hub.
 
-```# image with DDOT installed in anaconda3 (Python 3.6)
+```bash
+# image with DDOT installed in anaconda3 (Python 3.6)
 docker pull michaelkyu/ddot-anaconda3
 docker run -i -t michaelkyu/ddot-anaconda3
    

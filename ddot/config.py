@@ -1,8 +1,11 @@
 from __future__ import absolute_import
 
-import ddot
 import os, inspect, io
+import json
+
 from ndex.networkn import NdexGraph
+
+import ddot
 
 ###########################################
 # Default NDEx server, username, password #
@@ -16,13 +19,15 @@ ndex_pass = 'scratch'
 # Read CX Visual styles #
 #########################
 
-top_level = os.path.dirname(os.path.abspath(inspect.getfile(ddot)))
-import json
-with io.open(os.path.join(top_level, 'ontology_style.cx')) as f:
-    ontology_style = NdexGraph(json.load(f))
+passthrough_style = None
 
-with io.open(os.path.join(top_level, 'passthrough_style.cx')) as f:
-    passthrough_style = NdexGraph(json.load(f))
+def get_passthrough_style():
+    global passthrough_style
+    if passthrough_style is None:
+        top_level = os.path.dirname(os.path.abspath(inspect.getfile(ddot)))
+        with io.open(os.path.join(top_level, 'passthrough_style.cx')) as f:
+            passthrough_style = NdexGraph(json.load(f))
+    return passthrough_style        
 
 ##################################
 # NDEx URLs for example networks #

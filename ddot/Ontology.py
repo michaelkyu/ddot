@@ -3528,7 +3528,7 @@ class Ontology(object):
                     for v, data in G.nodes(data=True):
                         data['Vis:Size'] = (data['Vis:Size'] - base_size) * (desired_ratio / max_ratio) + base_size
                     
-            style = ddot.config.passthrough_style
+            style = ddot.config.get_passthrough_style()
         else:
             raise Exception('Unsupported style')
                 

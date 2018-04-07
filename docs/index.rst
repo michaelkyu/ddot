@@ -9,7 +9,7 @@ Welcome to Data-Driven Ontology Toolkit's documentation!
 .. toctree::
    :hidden:
 
-   tutorial
+   Tutorial
    ontology
    utils
    

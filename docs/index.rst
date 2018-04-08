@@ -6,23 +6,16 @@
 Welcome to Data-Driven Ontology Toolkit's documentation!
 ========================================================
 
+.. include:: intro.rst
+	     
 .. toctree::
-   :hidden:
-
+   :maxdepth: 1
+	      
    Tutorial
    ontology
    utils
+
    
-.. include:: intro.rst
-
-..   intro
-..   tutorial
-..   ontology
-..   utils
-
-..
-   :caption: Contents:
-
 Indices and tables
 ==================
 

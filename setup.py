@@ -34,7 +34,3 @@ setup(name='ddot',
       install_requires=['pandas>=0.20', 'numpy', 'scipy', 'ndex-dev', 'python-igraph', 'networkx==1.11', 'tulip-python'],
       include_package_data=True,
       zip_safe=False)
-
-      # package_data={
-      #     '':['config.py', 'site.cfg'],
-      # },

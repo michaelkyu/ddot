@@ -1,4 +1,4 @@
-Ontology class
+Ontology Class
 ==============
 
 .. autoclass:: ddot.Ontology

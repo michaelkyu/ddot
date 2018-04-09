@@ -1,6 +1,12 @@
+Welcome to Data-Driven Ontology Toolkit's documentation!
+========================================================
+
 The Data-Driven Ontology Toolkit (DDOT) Python library simplifies the
 assembly, analysis, and visualization of biological hierarchies using
 a data structure called an ontology.
+
+.. image:: software_pipeline_23jan2018.png
+   :width: 100%
 
 Features
 --------
@@ -68,10 +74,6 @@ Features
    Pandas, NetworkX, igraph, and matplotlib.
 
 
-.. image:: software_pipeline_23jan2018.png
-   :width: 60%
-
-
 Installation and source code
 ----------------------------
 
@@ -122,4 +124,3 @@ References
 #. Dutkowski, J., Kramer, M., Surma, M.A., Balakrishnan, R., Cherry,
    J.M., Krogan, N.J. and Ideker, T., 2013. "A gene ontology inferred
    from molecular networks." *Nature biotechnology*, 31(1).
-

@@ -122,6 +122,7 @@ html_theme = 'nature'
 # html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 html_sidebars = { '**': ['globaltoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html'], }
+#html_sidebars = { '**': ['globaltoc.html']}
 
 
 # -- Options for HTMLHelp output ------------------------------------------

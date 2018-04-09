@@ -4,5 +4,3 @@ python-igraph
 networkx
 numpy
 ndex-dev
-sphinx_bootstrap_theme
-sphinx_nature_theme

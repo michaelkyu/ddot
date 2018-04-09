@@ -876,8 +876,6 @@ Visualization in HiView (http://hiview.ucsd.edu)
 After reading this tutorial
 ---------------------------
 
-You should check out the list of functions of the `Ontology
-class <http://the-data-driven-ontology-toolkit-ddot.readthedocs.io/en/latest/ontology.html>`__
-and a list of `utility
-functions <http://the-data-driven-ontology-toolkit-ddot.readthedocs.io/en/latest/utils.html>`__
+You should check out the list of functions of the `Ontology class <http://the-data-driven-ontology-toolkit-ddot.readthedocs.io/en/latest/ontology.html>`__
+and a list of `utility functions <http://the-data-driven-ontology-toolkit-ddot.readthedocs.io/en/latest/utils.html>`__
 that may help you build more concise pipelines

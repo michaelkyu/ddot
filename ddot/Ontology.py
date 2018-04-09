@@ -2399,7 +2399,7 @@ class Ontology(object):
         assert include_genes or include_terms
             
         if similarity=='Resnik':
-            sca, nodes = self.get_best_ancestor_matrix(include_genes=include_genes)    
+            sca, nodes = self.get_best_ancestors(include_genes=include_genes)    
             nodes_subset = self.genes if include_genes else []
             nodes_subset += self.terms if include_terms else []
             nodes_idx = ddot.utils.make_index(nodes)
@@ -3895,7 +3895,7 @@ class Ontology(object):
                     
         return term_2_uuid
 
-    def get_best_ancestor_matrix(self, node_order=None, verbose=False, include_genes=True):
+    def get_best_ancestors(self, node_order=None, verbose=False, include_genes=True):
         """Compute the 'best' ancestor for every pair of terms. 'Best' is
         specified by a ranking of terms. For example, if terms are
         ranked by size, from smallest to largest, then the smallest
@@ -4004,51 +4004,51 @@ class Ontology(object):
         """Loads an Ontology object from a pickled state.""" 
         return pandas.io.pickle.read_pickle(file, compression=compression)
 
-    def to_adjacency(self, include_genes=False):
-        """Returns the adjacency matrix between genes and terms.
+    # def to_adjacency(self, include_genes=False):
+    #     """Returns the adjacency matrix between genes and terms.
 
-        Parameters
-        ----------
-        include_genes : bool
+    #     Parameters
+    #     ----------
+    #     include_genes : bool
                         
-            Include genes in the adjacency matrix such that the rows
-            (and columns) represent both genes and terms in the order
-            (self.genes + self.terms).
+    #         Include genes in the adjacency matrix such that the rows
+    #         (and columns) represent both genes and terms in the order
+    #         (self.genes + self.terms).
 
-        Returns
-        -------
-        : scipy.sparse.csr_matrix
+    #     Returns
+    #     -------
+    #     : scipy.sparse.csr_matrix
 
-        """
+    #     """
 
-        edges = [(self.terms_index[c], self.terms_index[p]) for c in self.terms for p in self.child_2_parent.get(c, [])]
-        i, j = zip(*edges)
-        child_2_parent_adj = coo_matrix((np.ones(len(edges), np.bool), (i,j)), shape=(len(self.terms), len(self.terms)))
-        child_2_parent_adj = child_2_parent_adj.tocsr()
+    #     edges = [(self.terms_index[c], self.terms_index[p]) for c in self.terms for p in self.child_2_parent.get(c, [])]
+    #     i, j = zip(*edges)
+    #     child_2_parent_adj = coo_matrix((np.ones(len(edges), np.bool), (i,j)), shape=(len(self.terms), len(self.terms)))
+    #     child_2_parent_adj = child_2_parent_adj.tocsr()
 
-        adj = child_2_parent_adj
+    #     adj = child_2_parent_adj
 
-        if include_genes:
-            tmp = [self.gene_2_term[g] for g in self.genes]
-            indices = np.concatenate(tmp)
-            indptr = np.append(0, np.cumsum([len(x) for x in tmp]))
-            data = np.ones(indices.size, np.bool)
-            gene_2_term_adj = csr_matrix((data,indices,indptr), shape=(len(self.genes), len(self.terms)))
+    #     if include_genes:
+    #         tmp = [self.gene_2_term[g] for g in self.genes]
+    #         indices = np.concatenate(tmp)
+    #         indptr = np.append(0, np.cumsum([len(x) for x in tmp]))
+    #         data = np.ones(indices.size, np.bool)
+    #         gene_2_term_adj = csr_matrix((data,indices,indptr), shape=(len(self.genes), len(self.terms)))
 
-            empty1 = csr_matrix((len(self.genes),len(self.genes))).astype(np.bool)
-            empty2 = csr_matrix((len(self.terms),len(self.genes))).astype(np.bool)
+    #         empty1 = csr_matrix((len(self.genes),len(self.genes))).astype(np.bool)
+    #         empty2 = csr_matrix((len(self.terms),len(self.genes))).astype(np.bool)
                     
-            hstack, vstack = scipy.sparse.hstack, scipy.sparse.vstack
+    #         hstack, vstack = scipy.sparse.hstack, scipy.sparse.vstack
             
-            adj = vstack([hstack([empty1, gene_2_term_adj]).tocsr(),
-                          hstack([empty2, adj]).tocsr()])
-            adj = adj.tocsr()
+    #         adj = vstack([hstack([empty1, gene_2_term_adj]).tocsr(),
+    #                       hstack([empty2, adj]).tocsr()])
+    #         adj = adj.tocsr()
 
-            nodes = self.genes + self.terms
-        else:
-            nodes = self.terms
+    #         nodes = self.genes + self.terms
+    #     else:
+    #         nodes = self.terms
             
-        return adj, nodes
+    #     return adj, nodes
 
     def __repr__(self):
         return self.summary()

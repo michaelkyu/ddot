@@ -7,9 +7,10 @@
 .. include:: intro.rst
 	     
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
-   Tutorial 
+   install	      
+   tutorial
    ontology
    utils
 

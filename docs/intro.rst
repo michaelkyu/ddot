@@ -5,12 +5,17 @@ The Data-Driven Ontology Toolkit (DDOT) Python library simplifies the
 assembly, analysis, and visualization of biological hierarchies using
 a data structure called an ontology.
 
-.. image:: software_pipeline_23jan2018.png
-   :width: 100%
+- `Source code <https://github.com/michaelkyu/ddot>`_ under MIT license
+- Supports Python 2.7 or >=3.6.
+- Please post any questions or issues to the DDOT forum at https://groups.google.com/forum/#!forum/ontology
 
 Features
 --------
 
+.. image:: software_pipeline_23jan2018.png
+   :width: 75%
+   :align: center
+      
 #. **Build Data-Driven Ontology:** Given a set of genes and a gene
    similarity network, hierarchically cluster the genes to infer
    cellular subsystems using the CliXO algorithm (Kramer et
@@ -73,12 +78,6 @@ Features
    Cytoscape, and other programming libraries in Python, such as the
    Pandas, NetworkX, igraph, and matplotlib.
 
-
-Installation and source code
-----------------------------
-
-Please see https://github.com/michaelkyu/ontology
-
 How to cite
 -----------
 
@@ -89,10 +88,6 @@ Aaron Gary, Jing Chen, Barry Demchak, Dexter Pratt, Trey Ideker. "A
 swiss-army knife for hierarchical modeling of biological systems." (in
 preparation)
    
-Help
-----
-
-Please post any questions or issues to the DDOT forum at https://groups.google.com/forum/#!forum/ontology
 
 References
 ----------

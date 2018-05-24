@@ -1,18 +1,15 @@
 # The Data-Driven Ontology Toolkit (DDOT)
 A Python library for constructing, analyzing, and visualizing hierarchical models.
 
-Supports Python v2.7 and >=3.6
-
 # Documentation
 
-http://the-data-driven-ontology-toolkit-ddot.readthedocs.io/en/latest/?
+http://ddot.readthedocs.io/
 
 # Installation
 
-## Installation Dependencies
+DDOT requires the following
 
-DDOT requires the following Python packages
-
+* Python v2.7 or >=3.6
 * [numpy](https://docs.scipy.org/doc/)
 * [scipy](https://docs.scipy.org/doc/)
 * [pandas>=0.20](http://pandas.pydata.org/)
@@ -21,16 +18,11 @@ DDOT requires the following Python packages
 * [ndex-dev](https://github.com/ndexbio/ndex-python) Recommend installing through [pip](https://pypi.python.org/pypi/ndex-dev).
 * [tuplip-python](https://pypi.python.org/pypi/tulip-python) Recommend installing through [pip](https://pypi.python.org/pypi/tulip-python).
 
-The recommended way to install these dependencies is to create a Anaconda virtual environment, and then installing packages from the conda and pip repositories.
-
-* Install by anaconda (recommended)
-
-  This is the easiest method to install dependencies. First, install the [Anaconda
-  distribution](https://conda.io/docs/user-guide/install/download.html)
-  of Python.
+The recommended method for installing these dependencies is to use the [Anaconda](https://conda.io/docs/user-guide/install/download.html) distrubution of Python, and then install Python packages via the conda and pip repositories.
 
   ```bash
-  # Create anad activate a virtual environment (optional but recommended)
+  # Create anad activate a virtual environment (optional, but recommended).
+  # Read more about virtual environments at https://conda.io/docs/user-guide/tasks/manage-environments.html
   conda create -n <environment_name>
   source activate <environment_name>
 
@@ -41,16 +33,18 @@ The recommended way to install these dependencies is to create a Anaconda virtua
   conda install pandas numpy scipy networkx=1.11
   conda install -c conda-forge python-igraph
   conda install libiconv # Needed for igraph to run properly
-  pip install tulip-python ndex-dev
+  pip install tulip-python
+  pip install ndex-dev
    
-## Install ddot
+Once the dependencies are satisfied, you can install ddot as follows
+
+## Install `ddot` Python package with `pip`
   ```bash
   pip install git+git://github.com/michaelkyu/ontology.git@v0.2rc1
   conda install -c conda-forge ddot
   ```
-  This will attempt to install the dependencies, but it is recommended that you install dependencies separately to more easily debug any installation errors. 
 
-# Docker image
+## Docker image
 
 A docker image of DDOT can be pulled from Docker Hub.
 
@@ -76,7 +70,7 @@ If you find DDOT helpful in your research, please cite
 Michael Ku Yu, Jianzhu Ma, Keiichiro Ono, Fan Zheng, Samson Fong,
 Aaron Gary, Jing Chen, Barry Demchak, Dexter Pratt, Trey Ideker. "A
 swiss-army knife for hierarchical modeling of biological systems." (in
-preparation)
+review)
 
 # Help
 

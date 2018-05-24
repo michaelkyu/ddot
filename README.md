@@ -9,18 +9,19 @@ http://the-data-driven-ontology-toolkit-ddot.readthedocs.io/en/latest/?
 
 # Installation
 
-## Dependencies
+## Installation Dependencies
 
-* Python v2.7 or >=3.6
+DDOT requires the following Python packages
+
 * [numpy](https://docs.scipy.org/doc/)
 * [scipy](https://docs.scipy.org/doc/)
 * [pandas>=0.20](http://pandas.pydata.org/)
-* [networkx=1.11](https://networkx.github.io/) You might have networkx>=2.0 already installed, but this is incompatible with ddot.
-* [python-igraph](http://igraph.org/python/) Recommend installing through [conda](https://anaconda.org/conda-forge/python-igraph) or [pip](https://pypi.python.org/pypi/python-igraph/0.7).
+* [networkx=1.11](https://networkx.github.io/) networkx>=2.0 is incompatible with ddot.
+* [python-igraph](http://igraph.org/python/) Recommend installing through [anaconda](https://anaconda.org/conda-forge/python-igraph) or [pip](https://pypi.python.org/pypi/python-igraph/0.7).
 * [ndex-dev](https://github.com/ndexbio/ndex-python) Recommend installing through [pip](https://pypi.python.org/pypi/ndex-dev).
 * [tuplip-python](https://pypi.python.org/pypi/tulip-python) Recommend installing through [pip](https://pypi.python.org/pypi/tulip-python).
 
-There are multiple ways to install DDOT.
+The recommended way to install these dependencies is to create a Anaconda virtual environment, and then installing packages from the conda and pip repositories.
 
 * Install by anaconda (recommended)
 
@@ -42,27 +43,12 @@ There are multiple ways to install DDOT.
   conda install libiconv # Needed for igraph to run properly
   pip install tulip-python ndex-dev
    
-  # Install ddot
+## Install ddot
+  ```bash
   pip install git+git://github.com/michaelkyu/ontology.git@v0.2rc1
   conda install -c conda-forge ddot
   ```
-
-* Install by pip
-
-  ```bash
-  pip install ddot
-  ```
-
   This will attempt to install the dependencies, but it is recommended that you install dependencies separately to more easily debug any installation errors. 
-
-* Install by downloading the repository and then running
-
-  ```bash
-  python setup.py install
-  ```
-
-  This will attempt to install the dependencies, but it is recommended that you install dependencies separately to more easily debug any installation errors. 
-
 
 # Docker image
 
@@ -94,4 +80,4 @@ preparation)
 
 # Help
 
-TBD: Google Groups Forum
+Please post any questions or issues to the DDOT forum at https://groups.google.com/forum/#!forum/ontology

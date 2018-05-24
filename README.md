@@ -9,6 +9,17 @@ http://the-data-driven-ontology-toolkit-ddot.readthedocs.io/en/latest/?
 
 # Installation
 
+## Dependencies
+
+* Python v2.7 or >=3.6
+* [numpy](https://docs.scipy.org/doc/)
+* [scipy](https://docs.scipy.org/doc/)
+* [pandas>=0.20](http://pandas.pydata.org/)
+* [networkx=1.11](https://networkx.github.io/) You might have networkx>=2.0 already installed, but this is incompatible with ddot.
+* [python-igraph](http://igraph.org/python/) Recommend installing through [conda](https://anaconda.org/conda-forge/python-igraph) or [pip](https://pypi.python.org/pypi/python-igraph/0.7).
+* [ndex-dev](https://github.com/ndexbio/ndex-python) Recommend installing through [pip](https://pypi.python.org/pypi/ndex-dev).
+* [tuplip-python](https://pypi.python.org/pypi/tulip-python) Recommend installing through [pip](https://pypi.python.org/pypi/tulip-python).
+
 There are multiple ways to install DDOT.
 
 * Install by anaconda (recommended)
@@ -32,6 +43,7 @@ There are multiple ways to install DDOT.
   pip install tulip-python ndex-dev
    
   # Install ddot
+  pip install git+git://github.com/michaelkyu/ontology.git@v0.2rc1
   conda install -c conda-forge ddot
   ```
 
@@ -51,16 +63,6 @@ There are multiple ways to install DDOT.
 
   This will attempt to install the dependencies, but it is recommended that you install dependencies separately to more easily debug any installation errors. 
 
-# Dependencies
-
-* Python v2.7 or >=3.6
-* [numpy](https://docs.scipy.org/doc/)
-* [scipy](https://docs.scipy.org/doc/)
-* [pandas>=0.20](http://pandas.pydata.org/)
-* [networkx=1.11](https://networkx.github.io/) You might have networkx>=2.0 already installed, but this is incompatible with ddot.
-* [python-igraph](http://igraph.org/python/) Recommend installing through [conda](https://anaconda.org/conda-forge/python-igraph) or [pip](https://pypi.python.org/pypi/python-igraph/0.7).
-* [ndex-dev](https://github.com/ndexbio/ndex-python) Recommend installing through [pip](https://pypi.python.org/pypi/ndex-dev).
-* [tuplip-python](https://pypi.python.org/pypi/tulip-python) Recommend installing through [pip](https://pypi.python.org/pypi/tulip-python).
 
 # Docker image
 

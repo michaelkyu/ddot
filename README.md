@@ -8,7 +8,7 @@ The Data-Driven Ontology Toolkit (DDOT) Python library simplifies the assembly, 
 
 # Documentation
 
-For a quick start, please see the [tutorial](`examples/DDOT_tutorial.ipynb`) and other Jupyter notebooks in the [examples](examples) folder.
+For a quick start, please see the [tutorial](examples/DDOT_tutorial.ipynb) and other Jupyter notebooks in the [examples](examples) folder.
 
 For further documentation, please see http://ddot.readthedocs.io/. This includes a description of the [Ontology class](http://ddot.readthedocs.io/en/latest/ontology.html) and a list of [utility functions](http://ddot.readthedocs.io/en/latest/utils.html)
 

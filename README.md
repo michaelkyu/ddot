@@ -3,9 +3,9 @@ A Python library for constructing, analyzing, and visualizing hierarchical model
 
 # Documentation
 
-To get a quick start on DDOT, please see the tutorial (`examples/DDOT_tutorial.ipynb`) in the [examples](examples) folder. Please see the other example Jupyter notebooks.
+For a quick start, please see the tutorial (`examples/DDOT_tutorial.ipynb`) and other Jupyter notebooks in the [examples](examples) folder.
 
-Further documentation is provided at http://ddot.readthedocs.io/. It includes a description of the [Ontology class](http://ddot.readthedocs.io/en/latest/ontology.html) and a list of [utility functions](http://ddot.readthedocs.io/en/latest/utils.html)
+For further documentation, please see http://ddot.readthedocs.io/. This includes a description of the [Ontology class](http://ddot.readthedocs.io/en/latest/ontology.html) and a list of [utility functions](http://ddot.readthedocs.io/en/latest/utils.html)
 
 # Installation
 
@@ -37,10 +37,13 @@ The recommended method for installing these dependencies is to use the [Anaconda
   conda install libiconv # Needed for igraph to run properly
   pip install tulip-python
   pip install ndex-dev
-   
-Once the dependencies are satisfied, you can install ddot as follows
+  ```   
+
 
 ## Install `ddot` Python package with `pip`
+
+Once the dependencies are satisfied, you can install ddot as follows
+
   ```bash
   pip install git+git://github.com/michaelkyu/ontology.git@v0.2rc1
   conda install -c conda-forge ddot

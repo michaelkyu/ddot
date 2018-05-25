@@ -44,7 +44,7 @@ The recommended method for installing these dependencies is to use the [Anaconda
 After dependencies are satisfied, install ddot with pip
 
   ```bash
-  pip install git+git://github.com/michaelkyu/ontology.git@v0.2rc1
+  pip install git+git://github.com/michaelkyu/ddot.git
   ```
 
 ## Docker image

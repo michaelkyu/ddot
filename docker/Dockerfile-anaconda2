@@ -10,4 +10,4 @@ RUN conda install networkx=1.11
 RUN conda install libiconv
 
 RUN pip install tulip-python ndex-dev
-RUN pip install git+git://github.com/michaelkyu/ddot.git@v1.0rc0
+RUN pip install git+git://github.com/michaelkyu/ddot.git@v1.0rc2

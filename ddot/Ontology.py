@@ -80,17 +80,17 @@ def _collapse_node(g,
 
                 in_neigh, out_neigh = e_in.source, e_out.target
 
-                # Only add an edge if it doesn't already exist                                                                                                                   
+                # Only add an edge if it doesn't already exist                                         
                 if g[in_neigh, out_neigh] == 0:
                     g.add_edge(in_neigh, out_neigh)
                     e = g.es[g.get_eid(in_neigh, out_neigh)]
                     if combine_attrs is not None:
-                        # Set default value of edge attributes to 0                                                                                                              
+                        # Set default value of edge attributes to 0                                         
                         for key in combine_attrs:  e[key] = None
 
                 e = g.es[g.get_eid(in_neigh, out_neigh)]
 
-                # Update attributes                                                                                                                                              
+                # Update attributes
                 if combine_attrs is not None:
                     for key in combine_attrs:
                         e[key] = combine_attrs[key](e_in, e_out, e)

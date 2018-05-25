@@ -1,12 +1,6 @@
 # Use an official Python runtime as a parent image
 FROM continuumio/anaconda3
 
-# # Set the working directory to /app
-# WORKDIR /app
-
-# # Copy the current directory contents into the container at /app
-# ADD . /app
-
 # Install any needed packages specified in requirements.txt
 RUN conda update conda
 RUN conda install -c conda-forge python-igraph 
@@ -16,13 +10,4 @@ RUN conda install networkx=1.11
 RUN conda install libiconv
 
 RUN pip install tulip-python ndex-dev
-RUN pip install git+git://github.com/michaelkyu/ontology.git@v0.2rc1
-
-# Make port 80 available to the world outside this container
-#EXPOSE 80
-
-# Define environment variable
-# ENV NAME World
-
-# Run app.py when the container launches
-#CMD ["python", "app.py"]
+RUN pip install git+git://github.com/michaelkyu/ddot.git@v1.0rc0

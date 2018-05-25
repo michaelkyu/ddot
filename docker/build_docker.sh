@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version="v0.2rc1"
+version="v1.0rc0"
 
 docker build -t michaelkyu/ddot-anaconda2:$version -f Dockerfile-anaconda2 .
 

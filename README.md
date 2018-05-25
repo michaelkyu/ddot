@@ -3,7 +3,9 @@ A Python library for constructing, analyzing, and visualizing hierarchical model
 
 # Documentation
 
-http://ddot.readthedocs.io/
+To get a quick start on DDOT, please see the tutorial (`DDOT_tutorial.ipynb`) in the [examples](examples) folder. Please see the other example Jupyter notebooks.
+
+Further documentation is provided at http://ddot.readthedocs.io/. It includes a description of the [Ontology class](http://ddot.readthedocs.io/en/latest/ontology.html) and a list of [utility functions](http://ddot.readthedocs.io/en/latest/utils.html)
 
 # Installation
 
@@ -58,10 +60,6 @@ docker pull michaelkyu/ddot-anaconda2
 docker run -i -t michaelkyu/ddot-anaconda2
 ```
 
-# Getting started
-
-The [examples](examples) folder contains a tutorial (`Tutorial.ipynb`) for
-learning basic usage of DDOT. See the other example Jupyter notebooks.
 
 # Citing DDOT
 

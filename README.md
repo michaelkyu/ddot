@@ -3,7 +3,7 @@ A Python library for constructing, analyzing, and visualizing hierarchical model
 
 # Documentation
 
-For a quick start, please see the tutorial (`examples/DDOT_tutorial.ipynb`) and other Jupyter notebooks in the [examples](examples) folder.
+For a quick start, please see the [tutorial](`examples/DDOT_tutorial.ipynb`) and other Jupyter notebooks in the [examples](examples) folder.
 
 For further documentation, please see http://ddot.readthedocs.io/. This includes a description of the [Ontology class](http://ddot.readthedocs.io/en/latest/ontology.html) and a list of [utility functions](http://ddot.readthedocs.io/en/latest/utils.html)
 
@@ -15,7 +15,7 @@ DDOT requires the following
 * [numpy](https://docs.scipy.org/doc/)
 * [scipy](https://docs.scipy.org/doc/)
 * [pandas>=0.20](http://pandas.pydata.org/)
-* [networkx=1.11](https://networkx.github.io/) networkx>=2.0 is incompatible with ddot.
+* [networkx=1.11](https://networkx.github.io/) Note that networkx>=2.0 is incompatible with ddot.
 * [python-igraph](http://igraph.org/python/) Recommend installing through [anaconda](https://anaconda.org/conda-forge/python-igraph) or [pip](https://pypi.python.org/pypi/python-igraph/0.7).
 * [ndex-dev](https://github.com/ndexbio/ndex-python) Recommend installing through [pip](https://pypi.python.org/pypi/ndex-dev).
 * [tuplip-python](https://pypi.python.org/pypi/tulip-python) Recommend installing through [pip](https://pypi.python.org/pypi/tulip-python).
@@ -39,14 +39,12 @@ The recommended method for installing these dependencies is to use the [Anaconda
   pip install ndex-dev
   ```   
 
-
 ## Install `ddot` Python package with `pip`
 
-Once the dependencies are satisfied, you can install ddot as follows
+After dependencies are satisfied, install ddot with pip
 
   ```bash
   pip install git+git://github.com/michaelkyu/ontology.git@v0.2rc1
-  conda install -c conda-forge ddot
   ```
 
 ## Docker image
@@ -62,7 +60,6 @@ docker run -i -t michaelkyu/ddot-anaconda3
 docker pull michaelkyu/ddot-anaconda2
 docker run -i -t michaelkyu/ddot-anaconda2
 ```
-
 
 # Citing DDOT
 

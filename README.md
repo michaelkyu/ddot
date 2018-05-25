@@ -1,6 +1,6 @@
 # The Data-Driven Ontology Toolkit (DDOT)
 
-The Data-Driven Ontology Toolkit (DDOT) Python library simplifies the assembly, analysis, and visualization of biological hierarchies using a data structure called an ontology.
+The Data-Driven Ontology Toolkit (DDOT) facilitates the inference, analysis, and visualization of biological hierarchies, represented by a data structure called an ontology.
 
 * Supports Python 2.7 or >=3.6.
 * Open source under MIT license
@@ -28,7 +28,7 @@ DDOT requires the following
 The recommended method for installing these dependencies is to use the [Anaconda](https://conda.io/docs/user-guide/install/download.html) distrubution of Python, and then install Python packages via the conda and pip repositories.
 
   ```bash
-  # Create anad activate a virtual environment (optional, but recommended).
+  # Create and activate a virtual environment (optional, but recommended).
   # Read more about virtual environments at https://conda.io/docs/user-guide/tasks/manage-environments.html
   conda create -n <environment_name>
   source activate <environment_name>

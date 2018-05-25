@@ -1,3 +1,5 @@
+.. _ontology-ref:
+
 Ontology Class
 ==============
 
@@ -24,7 +26,7 @@ NetworkX and igraph
 .. automethod:: ddot.Ontology.to_igraph	
 		
 Inspecting structure
--------------------
+--------------------
 
 .. automethod:: ddot.Ontology.connected
 .. automethod:: ddot.Ontology.get_best_ancestors

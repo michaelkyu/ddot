@@ -1,14 +1,21 @@
 Welcome to Data-Driven Ontology Toolkit's documentation!
 ========================================================
 
-The Data-Driven Ontology Toolkit (DDOT) Python library simplifies the
+The Data-Driven Ontology Toolkit (DDOT) Python package facilitates the
 assembly, analysis, and visualization of biological hierarchies using
 a data structure called an ontology.
 
 - `Source code <https://github.com/michaelkyu/ddot>`_ under MIT license
 - Supports Python 2.7 or >=3.6.
-- Please post any questions or issues to the DDOT forum at https://groups.google.com/forum/#!forum/ontology
 
+Getting started
+---------------
+
+1. Install DDOT using the instruction on the `github page <https://github.com/michaelkyu/ddot>`_
+2. Go through the `tutorial` <https://github.com/michaelkyu/ddot/blob/master/examples/DDOT_tutorial.ipynb>`_.
+3. A reference list of DDOT functions is provided at :ref:`ontology-ref` and :ref:`utils-ref`.
+4. Please post any questions or issues to the DDOT forum at https://groups.google.com/forum/#!forum/ontology
+  
 Features
 --------
 

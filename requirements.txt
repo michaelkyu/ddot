@@ -1,0 +1,7 @@
+numpy
+scipy
+pandas>=0.2
+networkx=1.11
+python-igraph
+ndex-dev
+tulip-python

@@ -357,8 +357,8 @@ def set_node_attributes_from_pandas(G, node_attr):
     G_nodes = set(G.nodes())
     node_attr = node_attr.loc[[x for x in node_attr.index if x in G_nodes], :]
     if node_attr is not None:
-        for feature_name, feature in node_attr.items():
-            for n, v in feature.dropna().items():
+        for feature_name, feature in node_attr.iteritems():
+            for n, v in feature.dropna().iteritems():
                 try:
                     # If v is actually a NumPy scalar type,
                     # e.g. np.float or np.int, then convert it to a
@@ -383,8 +383,8 @@ def set_edge_attributes_from_pandas(G, edge_attr):
     G_edges = set(G.edges())
     edge_attr = edge_attr.loc[[x for x in edge_attr.index if x in G_edges], :]
     if edge_attr is not None:
-        for feature_name, feature in edge_attr.items():
-            for (e1,e2), v in feature.dropna().items():
+        for feature_name, feature in edge_attr.iteritems():
+            for (e1,e2), v in feature.dropna().iteritems():
                 try:
                     v = v.item()
                 except:

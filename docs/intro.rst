@@ -2,7 +2,7 @@ Welcome to Data-Driven Ontology Toolkit's documentation!
 ========================================================
 
 The Data-Driven Ontology Toolkit (DDOT) Python package facilitates the
-assembly, analysis, and visualization of biological hierarchies using
+inference, analysis, and visualization of biological hierarchies using
 a data structure called an ontology.
 
 - `Source code <https://github.com/michaelkyu/ddot>`_ under MIT license

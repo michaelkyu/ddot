@@ -3,7 +3,7 @@ A Python library for constructing, analyzing, and visualizing hierarchical model
 
 # Documentation
 
-To get a quick start on DDOT, please see the tutorial (`DDOT_tutorial.ipynb`) in the [examples](examples) folder. Please see the other example Jupyter notebooks.
+To get a quick start on DDOT, please see the tutorial (`examples/DDOT_tutorial.ipynb`) in the [examples](examples) folder. Please see the other example Jupyter notebooks.
 
 Further documentation is provided at http://ddot.readthedocs.io/. It includes a description of the [Ontology class](http://ddot.readthedocs.io/en/latest/ontology.html) and a list of [utility functions](http://ddot.readthedocs.io/en/latest/utils.html)
 

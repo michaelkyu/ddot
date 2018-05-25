@@ -1,5 +1,10 @@
 # The Data-Driven Ontology Toolkit (DDOT)
-A Python library for constructing, analyzing, and visualizing hierarchical models.
+
+The Data-Driven Ontology Toolkit (DDOT) Python library simplifies the assembly, analysis, and visualization of biological hierarchies using a data structure called an ontology.
+
+* Supports Python 2.7 or >=3.6.
+* Open source under MIT license
+* Please post any questions or issues to the DDOT forum at https://groups.google.com/forum/#!forum/ontology
 
 # Documentation
 
@@ -69,7 +74,3 @@ Michael Ku Yu, Jianzhu Ma, Keiichiro Ono, Fan Zheng, Samson Fong,
 Aaron Gary, Jing Chen, Barry Demchak, Dexter Pratt, Trey Ideker. "A
 swiss-army knife for hierarchical modeling of biological systems." (in
 review)
-
-# Help
-
-Please post any questions or issues to the DDOT forum at https://groups.google.com/forum/#!forum/ontology

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='ddot',
-      version='0.2rc1',
+      version='1.0rc1',
       description='Data-Driven Ontology Toolkit',
       url='http://github.com/michaelkyu/ontology',
       author='Michael Ku Yu',

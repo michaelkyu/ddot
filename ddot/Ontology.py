@@ -3266,6 +3266,9 @@ class Ontology(object):
         else:
             delete_output_log = False
 
+        if debug:
+            delete_output_log = False
+
         if rerun:            
             try:
                 return cls.run_clixo(
@@ -3293,6 +3296,17 @@ class Ontology(object):
         cmd = ("""{0} {1} {2} {3} | awk""".format(clixo_cmd, graph, alpha, beta) + 
                """ '{if ( $1 ~ /^#/ ) {print "\#", strftime("%Y-%m-%d %H:%M:%S"), $0 ; fflush() } else {print $0}}'""" + 
                """ | tee {}""".format(output_log))
+
+        # For timestamping everyline:
+        # awk '{ print strftime("%Y-%m-%d %H:%M:%S"), $0; fflush(); }'
+        # while IFS= read -r line; do printf '[%s] %s\\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$line"; done
+        # cmd = ("""{0} {1} {2} {3} """.format(clixo_cmd, graph, alpha, beta) +
+        #        """ | while IFS= read -r line; do printf '[%s] %s\\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$line"; done """ +
+        #        """ | tee {}""".format(output_log))
+
+        cmd = ("""{0} {1} {2} {3} """.format(clixo_cmd, graph, alpha, beta) +
+               """ | tee {}""".format(output_log))
+        
         if verbose:
             print('CLIXO command:', cmd)
 

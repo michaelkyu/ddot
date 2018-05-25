@@ -3163,7 +3163,8 @@ class Ontology(object):
                   square_names=None,
                   output=None,
                   output_log=None,
-                  verbose=False):
+                  verbose=False,
+                  debug=False):
         """Runs the CLIXO algorithm and returns the result as an Ontology object.
 
         Acts as a wrapper for the C++ package at
@@ -3252,7 +3253,10 @@ class Ontology(object):
             rerun, delete_graph = True, True
         else:
             delete_graph = False
-                                         
+
+        if debug:
+            delete_graph = False
+            
         if not (isinstance(output_log, str) and os.path.exists(output_log)):
             output_log_file = tempfile.NamedTemporaryFile('w', delete=False)
             output_log = output_log_file.name

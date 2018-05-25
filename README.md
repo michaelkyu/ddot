@@ -39,7 +39,7 @@ The recommended method for installing these dependencies is to use the [Anaconda
   pip install ndex-dev
   ```   
 
-## Install `ddot` Python package with `pip`
+## Install `ddot` Python package with pip
 
 After dependencies are satisfied, install ddot with pip
 

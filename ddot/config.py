@@ -33,7 +33,7 @@ def get_passthrough_style():
 ##################################
 
 HUMAN_GENE_SIMILARITIES_URL = 'http://dev2.ndexbio.org/v2/d2dfa5cc-56de-11e7-a2e2-0660b7976219'
-GO_HUMAN_URL = 'http://dev2.ndexbio.org/v2/network/3305f6f3-10f9-11e8-84e4-0660b7976219'
+GO_HUMAN_URL = 'http://dev2.ndexbio.org/v2/network/328639dc-6044-11e8-9d1c-0660b7976219'
 PHAROS_URL = 'http://dev2.ndexbio.org/v2/network/a94f1c0f-789a-11e7-a1d1-0660b7976219'
 MONARCH_DISEASE_GENE_URL = 'http://dev2.ndexbio.org/v2/network/3772cf51-5c75-11e8-9d1c-0660b7976219'
 MONARCH_DISEASE_GENE_SLIM_URL = 'http://dev2.ndexbio.org/v2/network/9a890eed-5c81-11e8-9d1c-0660b7976219'

@@ -1,19 +1,16 @@
 Welcome to Data-Driven Ontology Toolkit's documentation!
 ========================================================
 
-The Data-Driven Ontology Toolkit (DDOT) Python package facilitates the
-inference, analysis, and visualization of biological hierarchies using
-a data structure called an ontology.
-
-- `Source code <https://github.com/michaelkyu/ddot>`_ under MIT license
-- Supports Python 2.7 or >=3.6.
+The Data-Driven Ontology Toolkit (DDOT) is an open source package that
+facilitates the inference, analysis, and visualization of biological
+hierarchies using a data structure called an ontology.
 
 Getting started
 ---------------
 
 1. Install DDOT using the instruction on the `github page <https://github.com/michaelkyu/ddot>`_
-2. Go through the `tutorial` <https://github.com/michaelkyu/ddot/blob/master/examples/DDOT_tutorial.ipynb>`_.
-3. A reference list of DDOT functions is provided at :ref:`ontology-ref` and :ref:`utils-ref`.
+2. Go through the `tutorial <https://github.com/michaelkyu/ddot/blob/master/examples/DDOT_tutorial.ipynb>`_.
+3. A reference list of functions is provided for the :ref:`ontology-ref` and :ref:`utils-ref`.
 4. Please post any questions or issues to the DDOT forum at https://groups.google.com/forum/#!forum/ontology
   
 Features
@@ -98,31 +95,25 @@ preparation)
 
 References
 ----------
-
-#. Michael Ku Yu, Jianzhu Ma, Keiichiro Ono, Fan Zheng, Samson Fong,
-   Barry Demchak, Dexter Pratt, Trey Ideker. "A swiss-army knife for
-   hierarchical modeling of biological systems." (in preparation)
    
-#. Yu, M.K., Kramer, M., Dutkowski, J., Srivas, R., Licon, K.,
-   Kreisberg, J.F., Ng, C.T., Krogan, N., Sharan, R. and Ideker,
-   T., 2016. "Translation of genotype to phenotype by a hierarchy of
-   cell subsystems". *Cell Systems*, 2(2), pp.77-88.
+#. Yu MK, Kramer M, Dutkowski J, Srivas R, Licon K, Kreisberg JF, Ng
+   CT, Krogan N, Sharan R, Ideker T. "Translation of genotype to
+   phenotype by a hierarchy of cell subsystems". *Cell Systems*, 2(2),
+   pp.77-88. 2016.
 
-#. Kramer, M., Dutkowski, J., Yu, M., Bafna, V. and Ideker,
-   T., 2014. "Inferring gene ontologies from pairwise similarity
-   data." *Bioinformatics*, 30(12), pp.i34-i42.
+#. Kramer M, Dutkowski J, Yu M, Bafna V, Ideker T. "Inferring gene
+   ontologies from pairwise similarity data." *Bioinformatics*,
+   30(12), pp.i34-i42. 2014.
 
-#. Kramer, M.H., Farre, J.C., Mitra, K., Yu, M.K., Ono, K., Demchak,
-   B., Licon, K., Flagg, M., Balakrishnan, R., Cherry, J.M. and
-   Subramani, S., 2017. "Active Interaction Mapping Reveals the
-   Hierarchical Organization of Autophagy". *Molecular Cell*, 65(4),
-   pp.761-774.
+#. Kramer MH, Farre JC, Mitra, K, Yu MK, Ono K, Demchak B, Licon K,
+   Flagg M, Balakrishnan R, Cherry JM, Subramani S, Ideker T. "Active
+   Interaction Mapping Reveals the Hierarchical Organization of
+   Autophagy". *Molecular Cell*, 65(4), pp.761-774. 2017.
 
-#. Dutkowski, J., Ono, K., Kramer, M., Yu, M., Pratt, D.,
-   Demchak, B. and Ideker, T., 2013. "NeXO Web: the NeXO ontology
-   database and visualization platform." *Nucleic acids research*,
-   42(D1), pp.D1269-D1274.
+#. Dutkowski J, Ono K, Kramer M, Yu M, Pratt D, Demchak B,
+   Ideker T. "NeXO Web: the NeXO ontology database and visualization
+   platform." *Nucleic Acids Research*, 42(D1), pp.D1269-D1274. 2013.
 
-#. Dutkowski, J., Kramer, M., Surma, M.A., Balakrishnan, R., Cherry,
-   J.M., Krogan, N.J. and Ideker, T., 2013. "A gene ontology inferred
-   from molecular networks." *Nature biotechnology*, 31(1).
+#. Dutkowski J, Kramer M, Surma MA, Balakrishnan R, Cherry JM, Krogan
+   NJ, Ideker T. "A gene ontology inferred from molecular
+   networks." *Nature Biotechnology*, 31(1). 2013.

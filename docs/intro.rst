@@ -8,10 +8,10 @@ hierarchies using a data structure called an ontology.
 Getting started
 ---------------
 
-1. Install DDOT using the instruction on the `github page <https://github.com/michaelkyu/ddot>`_
+1. Install DDOT using the instructions on the `github page <https://github.com/michaelkyu/ddot>`_.
 2. Go through the `tutorial <https://github.com/michaelkyu/ddot/blob/master/examples/DDOT_tutorial.ipynb>`_.
-3. A reference list of functions is provided for the :ref:`ontology-ref` and :ref:`utils-ref`.
-4. Please post any questions or issues to the DDOT forum at https://groups.google.com/forum/#!forum/ontology
+3. Browse a list of DDOT functions in :ref:`ontology-ref` and :ref:`utils-ref`.
+4. Post questions or issues to the `Google Groups forum <https://groups.google.com/forum/#!forum/ontology>`_.
   
 Features
 --------
@@ -85,12 +85,11 @@ Features
 How to cite
 -----------
 
-If you find DDOT helpful in your research, please cite 
+If you use DDOT for your research, please cite
 
-Michael Ku Yu, Jianzhu Ma, Keiichiro Ono, Fan Zheng, Samson Fong,
-Aaron Gary, Jing Chen, Barry Demchak, Dexter Pratt, Trey Ideker. "A
-swiss-army knife for hierarchical modeling of biological systems." (in
-preparation)
+Yu MK, Ma J, Ono K, Zheng F, Fong S, Gary A, Chen J, Demchak B, Pratt
+D, Ideker T. "A swiss-army knife for hierarchical modeling of
+biological systems." (in preparation)
    
 
 References

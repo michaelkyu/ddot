@@ -1475,9 +1475,11 @@ class Ontology(object):
                    mapping=None,
                    mapping_parent=0,
                    mapping_child=1,
+                   header=0,
                    propagate=False,
                    verbose=False,
                    clixo_format=False,
+                   clear_default_attr=True,
                    **kwargs):
         """Create Ontology from a tab-delimited table or pandas DataFrame.
 
@@ -1524,6 +1526,21 @@ class Ontology(object):
 
             Column for genes in mapping table (index or name of column)
 
+        header : int or None
+
+            Row number to use as the column names, which are then
+            stored in the resulting Ontology object's `edge_attr`
+            field. For example if `header=0` (default), then the first
+            row is assumed to be column names. If `header=None`, then
+            no column names are assumed.
+
+        propagate : None or str
+
+            The direction ('forward' or 'reverse') for propagating
+            gene-term annotations up the hierarchy with
+            Ontology.propagate(). If None, then don't
+            propagate annotations.
+
         clixo_format : bool
 
             If True, The table is assumed to be in the same format
@@ -1535,23 +1552,22 @@ class Ontology(object):
             Column 3) The string "gene" if the row is a
                       gene-term mapping, otherwise the string "default".
 
-        propagate : None or str
+            The table is also assumed to have no column headers (i.e. header=False)
 
-            The direction ('forward' or 'reverse') for propagating
-            gene-term annotations up the hierarchy with
-            Ontology.propagate(). If None, then don't
-            propagate annotations.
+        clear_default_attr: bool
+
+            If True (default), then remove the edge attribute
+            'EdgeType' created using Ontology.to_table(). This
+            attribute was created to make the table be an equivalent
+            representation of an Ontology object; however, it is no
+            longer necessary after reconstructing the Ontology object.
         
         Returns
         -------
 
         : ddot.Ontology.Ontology
 
-
-        """
-
-
-        # .format(cls.GENE_TERM_EDGETYPE)
+        """.format(cls.GENE_TERM_EDGETYPE)
 
         if clixo_format:
             ont = cls.from_table(
@@ -1559,8 +1575,12 @@ class Ontology(object):
                 parent=0,
                 child=1,
                 is_mapping=lambda x: x[2]=='gene',
-                clixo_format=False)
-            del ont.edge_attr[2]
+                header=None,
+                clixo_format=False,
+                verbose=verbose)
+            ont.edge_attr.columns = map(str, ont.edge_attr.columns)
+            del ont.edge_attr['2']
+
             return ont
         
         if is_mapping is None:
@@ -1573,7 +1593,7 @@ class Ontology(object):
                 
         # Read table
         try:
-            table = pd.read_table(table, comment='#', header=None)
+            table = pd.read_table(table, comment='#', header=header)
         except:
             assert isinstance(table, pd.DataFrame)
 
@@ -1588,25 +1608,16 @@ class Ontology(object):
         edge_attr = table.set_index([child, parent])
         edge_attr.index.rename(['Child', 'Parent'], inplace=True)
 
-#        print 'child, parent', child, parent
-        
         if mapping is None:
-#            print '======'
-#            from collections import Counter
-            
-#            print Counter([is_mapping(x) for x in table.loc[:,2]])
-            
             # Extract gene-term connections from table
             mask = table.apply(is_mapping, axis=1)
-#            print table.head()
-#            print mask.value_counts()
             mapping = table.loc[mask, :].loc[:,[child, parent]]
             hierarchy = table.loc[~mask, :].loc[:,[child, parent]]
             mapping_child, mapping_parent = child, parent
         else:
             # Read separate table of gene-term connections
             try:
-                mapping = pd.read_table(mapping, comment='#', header=None)
+                mapping = pd.read_table(mapping, comment='#', header=header)
             except:
                 assert isinstance(mapping, pd.DataFrame)
                 
@@ -1636,15 +1647,12 @@ class Ontology(object):
             hierarchy.drop_duplicates([child, parent], inplace=True)
 
         edge_attr = edge_attr.loc[~ edge_attr.index.duplicated(), :]
-
-#        node_attr.index.name = 'Node'
         edge_attr.index.names = ['Child', 'Parent']
 
-        # print 'mapping---'
-        # print mapping.head()
-        # print 'hierarchy---'
-        # print hierarchy.head()
-        
+        if clear_default_attr:
+            if cls.EDGETYPE_ATTR in edge_attr:
+                del edge_attr[cls.EDGETYPE_ATTR]
+            
         mapping, hierarchy = mapping.values.tolist(), hierarchy.values.tolist()        
         
         return cls(hierarchy,
@@ -1745,7 +1753,7 @@ class Ontology(object):
                       G,
                       edgetype_attr=None,
                       edgetype_value=None,
-                      clear_ddot_attr=True):
+                      clear_default_attr=True):
         """Converts a NetworkX object to an Ontology object. Gene and terms
         are distinguished by an edge attribute.
 
@@ -1767,12 +1775,11 @@ class Ontology(object):
             If True (default), then remove the node and edge
             attributes that are created in a NetworkX graph using
             Ontology.to_networkx() or Ontology.to_ndex(). These
-            attributes, such as 'Label', 'Size', 'NodeType', and
-            'EdgeType', were created to make the NetworkX graph be an
-            equivalent representation of an Ontology object. However,
-            the attributes become no longer necessary after creating
-            the Ontology object.
-
+            attributes include 'Label', 'Size', 'NodeType', and
+            'EdgeType'. These attributes were created to make the
+            NetworkX graph be an equivalent representation of an
+            Ontology object; however, they are no longer necessary
+            after reconstrcting the Ontology object.
 
         Returns
         -------
@@ -1784,7 +1791,7 @@ class Ontology(object):
             edgetype_attr=cls.EDGETYPE_ATTR
         if edgetype_value is None:
             edgetype_value=cls.GENE_TERM_EDGETYPE
-
+            
         hierarchy = []
         mapping = []
         for u, v, attr in G.edges(data=True):
@@ -1801,13 +1808,14 @@ class Ontology(object):
                   node_attr=node_attr,
                   edge_attr=edge_attr)
 
-        for attr in [Ontology.NODETYPE_ATTR, 'Label', 'Size', 'isRoot', 'x_pos', 'y_pos']:
-            if attr in ont.node_attr.columns:
-                del ont.node_attr[attr]
-            
-        for attr in [edgetype_attr, 'Is_Tree_Edge']:
-            if attr in ont.edge_attr.columns:
-                del ont.edge_attr[attr]            
+        if clear_default_attr:
+            for attr in [Ontology.NODETYPE_ATTR, 'Label', 'Size', 'isRoot', 'x_pos', 'y_pos']:
+                if attr in ont.node_attr.columns:
+                    del ont.node_attr[attr]
+
+            for attr in [edgetype_attr, 'Is_Tree_Edge']:
+                if attr in ont.edge_attr.columns:
+                    del ont.edge_attr[attr]            
 
         return ont
     
@@ -2005,7 +2013,8 @@ class Ontology(object):
               branches=None,
               genes=None,
               collapse=False,
-              root=True):
+              root=True,
+              verbose=True):
         """
 
         """
@@ -2015,10 +2024,12 @@ class Ontology(object):
         to_keep = np.array(self.genes + self.terms)
         if branches is not None:
             to_keep = to_keep[self.connected(to_keep, branches).sum(1) > 0]
-            print('Genes and Terms to keep:', to_keep.size)
+            if verbose:
+                print('Genes and Terms to keep:', to_keep.size)
         if genes is not None:
             to_keep = to_keep[self.connected(genes, to_keep).sum(0) > 0]
-            print('Genes and Terms to keep:', to_keep.size)
+            if verbose:
+                print('Genes and Terms to keep:', to_keep.size)
 
         if root:
             while True:
@@ -2061,7 +2072,6 @@ class Ontology(object):
         # if len(new_connections)>0:
         #     summary_sizes = pd.DataFrame({'Original_Size' : [int(x.split('_')[1]) for x in new_nodes]}, index=new_nodes)
         #     ont.update_node_attr(summary_sizes)
-        del ont.edge_attr[self.EDGETYPE_ATTR]        
 
         if len(new_connections) > 0:
             ont.update_node_attr(pd.DataFrame({'Label':['_'.join(x.split('_')[1:]) for x in new_nodes]}, index=new_nodes))
@@ -2309,7 +2319,7 @@ class Ontology(object):
                  term_2_term=True,
                  gene_2_term=True,
                  edge_attr=False,
-                 header=False,
+                 header=True,
                  parent_child=True,
                  clixo_format=False):
         """Convert Ontology to a table representation. Return a
@@ -2340,8 +2350,8 @@ class Ontology(object):
 
         header : bool
 
-            If writing to a file, then write the column names as the
-            first row.
+            If True (default), then write the column names as the
+            first row of the table.
 
         parent_child : bool
 
@@ -2843,8 +2853,8 @@ class Ontology(object):
 
         sparse : bool
 
-            If True, return a scipy.sparse matrix. If False, return a
-            NumPy array
+            If True, return a scipy.sparse matrix. If False (default),
+            return a NumPy array.
 
         Returns
         -------
@@ -3314,6 +3324,7 @@ class Ontology(object):
 
         # p = Popen(shlex.split(cmd), shell=False, stdout=PIPE, stderr=STDOUT, bufsize=1)
 
+        ## This version prints out timestamps, but the function strftime is not recognized across all platforms
         # p_cmd = "{0} {1} {2} {3} | awk""".format(clixo_cmd, graph, alpha, beta)
         # p2_cmd = """awk '{if ( $1 ~ /^#/ ) {print "\#", strftime("%Y-%m-%d %H:%M:%S"), $0 ; fflush() } else {print $0}}'"""
         # print 'CLIXO command:', cmd
@@ -3349,8 +3360,6 @@ class Ontology(object):
             # If line was empty, then sleep a bit
             if line=='':  time.sleep(0.01)
 
-#        print 'return code:', p.returncode
-
         # if not os.path.isfile(table):
         #     raise Exception(
         #         "CliXO script did not produce a file. One of the common reasons is the"
@@ -3379,15 +3388,17 @@ class Ontology(object):
         if verbose:
             time_print('Elapsed time (sec): %s' % (time.time() - start))
 
-        ont = cls.from_table(
-            output,
-            is_mapping=lambda x: x[2]=='gene',
-            verbose=verbose)
+        # ont = cls.from_table(
+        #     output,
+        #     is_mapping=lambda x: x[2]=='gene',
+        #     header=0,
+        #     verbose=verbose)
+        ont = cls.from_table(output, clixo_format=True)
         ont.rename(terms=lambda x: 'S:%s' % x, inplace=True)
-        
-        ont.edge_attr.columns = map(str, ont.edge_attr.columns)
-        ont.edge_attr.drop('2', inplace=True, axis=1)
         ont.edge_attr.rename(columns={'3':'CLIXO_score'}, inplace=True)
+        
+        # ont.edge_attr.columns = map(str, ont.edge_attr.columns)
+        # ont.edge_attr.drop('2', inplace=True, axis=1)
 
         if verbose:
             print('Ontology:', ont)

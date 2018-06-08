@@ -173,98 +173,102 @@ def align_hierarchies(hier1,
                                      calculateFDRs=calculateFDRs,
                                      verbose=verbose)
 
+    common_genes = set(hier1.genes) & set(hier2.genes)
+
     hier1_orig, hier2_orig = hier1, hier2
-    if mutual_collapse:
-        hier1, hier2 = Ontology.mutual_collapse(hier1, hier2, verbose=verbose)
-        hier1.clear_node_attr()
-        hier1.clear_edge_attr()
-        hier2.clear_node_attr()
-        hier2.clear_edge_attr()
-        hier1.propagate('reverse', inplace=True)
-        hier2.propagate('reverse', inplace=True)
         
-    def to_file(hier):
-        if isinstance(hier, Ontology):
-            with tempfile.NamedTemporaryFile('w', delete=False) as f:
-                hier.to_table(f, clixo_format=True)
-            hier = f.name
-        else:
-            assert isinstance(hier, file) or os.path.exists(hier)
-        return hier
-    
-    hier1 = to_file(hier1)
-    hier2 = to_file(hier2)
+    if len(common_genes) > 0:
+        if mutual_collapse:
+            hier1, hier2 = Ontology.mutual_collapse(hier1, hier2, verbose=verbose)
+            hier1.clear_node_attr()
+            hier1.clear_edge_attr()
+            hier2.clear_node_attr()
+            hier2.clear_edge_attr()
+            hier1.propagate('reverse', inplace=True)
+            hier2.propagate('reverse', inplace=True)
 
-    if calculateFDRs is None:
-        top_level = os.path.dirname(os.path.abspath(inspect.getfile(ddot)))
-        calculateFDRs = os.path.join(top_level, 'alignOntology', 'calculateFDRs')
+        def to_file(hier):
+            if isinstance(hier, Ontology):
+                with tempfile.NamedTemporaryFile('w', delete=False) as f:
+                    hier.to_table(f, clixo_format=True)
+                hier = f.name
+            else:
+                assert isinstance(hier, file) or os.path.exists(hier)
+            return hier
 
-        #assert os.path.isdir(ddot.config.alignOntology)
-        #calculateFDRs = os.path.join(ddot.config.alignOntology, 'calculateFDRs')
-    assert os.path.isfile(calculateFDRs)
+        hier1 = to_file(hier1)
+        hier2 = to_file(hier2)
 
-    if threads is None:
-        import multiprocessing
-        threads = multiprocessing.cpu_count()
-        
-    output_dir = tempfile.mkdtemp(prefix='tmp')
-    cmd = '{5} {0} {1} 0.05 criss_cross {2} {3} {4} gene'.format(
-              hier1, hier2, output_dir, iterations, threads, calculateFDRs)
-    print('Alignment command:', cmd)
+        if calculateFDRs is None:
+            top_level = os.path.dirname(os.path.abspath(inspect.getfile(ddot)))
+            calculateFDRs = os.path.join(top_level, 'alignOntology', 'calculateFDRs')
 
-    p = Popen(shlex.split(cmd), shell=False)
-    
-    try:        
-        p.wait()
-        shutil.copy(os.path.join(output_dir, 'alignments_FDR_0.1_t_0.1'), output)
-    finally:
-        if os.path.isdir(output_dir):
-            shutil.rmtree(output_dir)
+            #assert os.path.isdir(ddot.config.alignOntology)
+            #calculateFDRs = os.path.join(ddot.config.alignOntology, 'calculateFDRs')
+        assert os.path.isfile(calculateFDRs)
 
-        if p.poll() is None:
-            if verbose: time_print('Killing alignment process %s. Output: %s' % (p.pid, output))
-            p.kill()  # Kill the process
+        if threads is None:
+            import multiprocessing
+            threads = multiprocessing.cpu_count()
 
+        output_dir = tempfile.mkdtemp(prefix='tmp')
+        cmd = '{5} {0} {1} 0.05 criss_cross {2} {3} {4} gene'.format(
+                  hier1, hier2, output_dir, iterations, threads, calculateFDRs)
+        print('Alignment command:', cmd)
+
+        p = Popen(shlex.split(cmd), shell=False)
+
+        try:        
+            p.wait()
+            shutil.copy(os.path.join(output_dir, 'alignments_FDR_0.1_t_0.1'), output)
+        finally:
+            if os.path.isdir(output_dir):
+                shutil.rmtree(output_dir)
+
+            if p.poll() is None:
+                if verbose: time_print('Killing alignment process %s. Output: %s' % (p.pid, output))
+                p.kill()  # Kill the process
         align1 = read_alignment_file(output)[['Term', 'Similarity', 'FDR']]
-        align2 = align1.copy()
-        align2.index, align2['Term'] = align2['Term'].values.copy(), align2.index.values.copy()
-        
-        append_prefix = lambda x: 'Aligned_%s' % x
+    else:    
+        align1 = pd.DataFrame(columns=['Term', 'Similarity', 'FDR'])
+    
+    align2 = align1.copy()
+    align2.index, align2['Term'] = align2['Term'].values.copy(), align2.index.values.copy()
 
-        if update_hier1:
-            if hasattr(update_hier1, '__iter__'):
-                node_attr = hier2_orig.node_attr[update_hier1]
-            else:
-                node_attr = hier2_orig.node_attr
-                
-            hier2_import = pd.merge(pd.DataFrame(index=align2.index), node_attr, left_index=True, right_index=True, how='left')
-            assert (hier2_import.index == align2.index).all()
-            # Change index to terms in hier1
-            hier2_import.index = align2['Term'].copy()
-            hier2_import.rename(columns=append_prefix, inplace=True)
-            
-        if update_hier2:
-            if hasattr(update_hier2, '__iter__'):
-                node_attr = hier1_orig.node_attr[update_hier2]
-            else:
-                node_attr = hier1_orig.node_attr
-                
-            hier1_import = pd.merge(pd.DataFrame(index=align1.index), node_attr, left_index=True, right_index=True, how='left')
-            assert (hier1_import.index == align1.index).all()
-            # Change index to terms in hier2
-            hier1_import.index = align1['Term'].copy()
-            hier1_import.rename(columns=append_prefix, inplace=True)
-            
-        if update_hier1:
-            hier1_orig.update_node_attr(align1.rename(columns=append_prefix))
-            hier1_orig.update_node_attr(hier2_import)
-#            hier1_orig.node_attr.dropna(axis=1, how='all', inplace=True)
-        if update_hier2:
-            hier2_orig.update_node_attr(align2.rename(columns=append_prefix))
-            hier2_orig.update_node_attr(hier1_import)
-#            hier2_orig.node_attr.dropna(axis=1, how='all', inplace=True)
+    append_prefix = lambda x: 'Aligned_%s' % x
 
-        return align1
+    if update_hier1:
+        if hasattr(update_hier1, '__iter__'):
+            node_attr = hier2_orig.node_attr[update_hier1]
+        else:
+            node_attr = hier2_orig.node_attr
+
+        hier2_import = pd.merge(pd.DataFrame(index=align2.index), node_attr, left_index=True, right_index=True, how='left')
+        assert (hier2_import.index == align2.index).all()
+        # Change index to terms in hier1
+        hier2_import.index = align2['Term'].copy()
+        hier2_import.rename(columns=append_prefix, inplace=True)
+
+    if update_hier2:
+        if hasattr(update_hier2, '__iter__'):
+            node_attr = hier1_orig.node_attr[update_hier2]
+        else:
+            node_attr = hier1_orig.node_attr
+
+        hier1_import = pd.merge(pd.DataFrame(index=align1.index), node_attr, left_index=True, right_index=True, how='left')
+        assert (hier1_import.index == align1.index).all()
+        # Change index to terms in hier2
+        hier1_import.index = align1['Term'].copy()
+        hier1_import.rename(columns=append_prefix, inplace=True)
+
+    if update_hier1:
+        hier1_orig.update_node_attr(align1.rename(columns=append_prefix))
+        hier1_orig.update_node_attr(hier2_import)
+    if update_hier2:
+        hier2_orig.update_node_attr(align2.rename(columns=append_prefix))
+        hier2_orig.update_node_attr(hier1_import)
+
+    return align1
 
 def parse_obo(obo,
               output_file=None,
@@ -1998,10 +2002,13 @@ class Ontology(object):
         if verbose:
             print('Common genes:', len(common_genes))
 
-        ont1 = ont1.delete(to_delete=set(ont1.genes) - common_genes, inplace=False)
-        ont1_collapsed = ont1.collapse_ontology(method='mhkramer')
-        ont2 = ont2.delete(to_delete=set(ont2.genes) - common_genes, inplace=False)
-        ont2_collapsed = ont2.collapse_ontology(method='mhkramer')
+        if len(common_genes) > 0:
+            ont1 = ont1.delete(to_delete=set(ont1.genes) - common_genes, inplace=False)
+            ont1_collapsed = ont1.collapse_ontology(method='mhkramer')
+            ont2 = ont2.delete(to_delete=set(ont2.genes) - common_genes, inplace=False)
+            ont2_collapsed = ont2.collapse_ontology(method='mhkramer')
+        else:
+            raise Exception('No common genes between ontologies')
 
         if verbose:
             print('ont1_collapsed:', ont1_collapsed.summary())

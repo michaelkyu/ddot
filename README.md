@@ -11,7 +11,7 @@ For a quick start, please see the [tutorial](examples/Tutorial.ipynb) and other 
 
 For further documentation, please see http://ddot.readthedocs.io/. This includes a description of the [Ontology class](http://ddot.readthedocs.io/en/latest/ontology.html) and a list of [utility functions](http://ddot.readthedocs.io/en/latest/utils.html)
 
-Please post questions or issues to the `Google Groups forum <https://groups.google.com/forum/#!forum/ontology>`_.
+Please post questions or issues to the [Google Groups forum](https://groups.google.com/forum/#!forum/ontology)
 
 # Installation
 

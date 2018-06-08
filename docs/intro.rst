@@ -9,7 +9,7 @@ Getting started
 ---------------
 
 1. Install DDOT using the instructions on the `github page <https://github.com/michaelkyu/ddot>`_.
-2. Go through the `tutorial <https://github.com/michaelkyu/ddot/blob/master/examples/DDOT_tutorial.ipynb>`_.
+2. Go through the `tutorial <https://github.com/michaelkyu/ddot/blob/master/examples/Tutorial.ipynb>`_.
 3. Browse a list of DDOT functions in :ref:`ontology-ref` and :ref:`utils-ref`.
 4. Post questions or issues to the `Google Groups forum <https://groups.google.com/forum/#!forum/ontology>`_.
   

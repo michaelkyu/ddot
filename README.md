@@ -4,17 +4,18 @@ The Data-Driven Ontology Toolkit (DDOT) facilitates the inference, analysis, and
 
 * Open source under MIT license.
 * Supports Python 2.7 or >=3.6.
-* Please post any questions or issues to the DDOT forum at https://groups.google.com/forum/#!forum/ontology
 
 # Documentation
 
-For a quick start, please see the [tutorial](examples/DDOT_tutorial.ipynb) and other Jupyter notebooks in the [examples](examples) folder.
+For a quick start, please see the [tutorial](examples/Tutorial.ipynb) and other Jupyter notebooks in the [examples](examples) folder.
 
 For further documentation, please see http://ddot.readthedocs.io/. This includes a description of the [Ontology class](http://ddot.readthedocs.io/en/latest/ontology.html) and a list of [utility functions](http://ddot.readthedocs.io/en/latest/utils.html)
 
+Please post questions or issues to the `Google Groups forum <https://groups.google.com/forum/#!forum/ontology>`_.
+
 # Installation
 
-DDOT requires the following
+DDOT requires the following software
 
 * Python v2.7 or >=3.6
 * [numpy](https://docs.scipy.org/doc/)
@@ -52,6 +53,12 @@ After dependencies are satisfied, install ddot with pip
   pip install git+git://github.com/michaelkyu/ddot.git
   ```
 
+If a previous version of ddot is already installed, then force an upgrade with the `--upgrade` option
+
+  ```bash
+  pip install --upgrade git+git://github.com/michaelkyu/ddot.git
+  ```
+
 ## Docker image
 
 A docker image of DDOT can be pulled from Docker Hub.
@@ -70,7 +77,6 @@ docker run -i -t michaelkyu/ddot-anaconda2
 
 If you find DDOT helpful in your research, please cite
 
-Michael Ku Yu, Jianzhu Ma, Keiichiro Ono, Fan Zheng, Samson Fong,
-Aaron Gary, Jing Chen, Barry Demchak, Dexter Pratt, Trey Ideker. "A
-swiss-army knife for hierarchical modeling of biological systems." (in
-review)
+Yu MK, Ma J, Ono K, Zheng F, Fong S, Gary A, Chen J, Demchak B, Pratt
+D, Ideker T. "A swiss-army knife for hierarchical modeling of
+biological systems." (in preparation)

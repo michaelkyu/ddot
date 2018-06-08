@@ -9,9 +9,9 @@ The Data-Driven Ontology Toolkit (DDOT) facilitates the inference, analysis, and
 
 For a quick start, please see the [tutorial](examples/Tutorial.ipynb) and other Jupyter notebooks in the [examples](examples) folder.
 
-For further documentation, please see http://ddot.readthedocs.io/. This includes a description of the [Ontology class](http://ddot.readthedocs.io/en/latest/ontology.html) and a list of [utility functions](http://ddot.readthedocs.io/en/latest/utils.html)
+For further documentation, please see http://ddot.readthedocs.io/. This includes a description of the [Ontology class](http://ddot.readthedocs.io/en/latest/ontology.html) and a list of [utility functions](http://ddot.readthedocs.io/en/latest/utils.html).
 
-Please post questions or issues to the [Google Groups forum](https://groups.google.com/forum/#!forum/ontology)
+Please post questions or issues to the [Google Groups forum](https://groups.google.com/forum/#!forum/ontology).
 
 # Installation
 
@@ -21,10 +21,10 @@ DDOT requires the following software
 * [numpy](https://docs.scipy.org/doc/)
 * [scipy](https://docs.scipy.org/doc/)
 * [pandas>=0.20](http://pandas.pydata.org/)
-* [networkx=1.11](https://networkx.github.io/) Note that networkx>=2.0 is incompatible with ddot.
-* [python-igraph](http://igraph.org/python/) Recommend installing through [anaconda](https://anaconda.org/conda-forge/python-igraph) or [pip](https://pypi.python.org/pypi/python-igraph/0.7).
-* [ndex-dev](https://github.com/ndexbio/ndex-python) Recommend installing through [pip](https://pypi.python.org/pypi/ndex-dev).
-* [tulip-python](https://pypi.python.org/pypi/tulip-python) Recommend installing through [pip](https://pypi.python.org/pypi/tulip-python).
+* [networkx=1.11](https://networkx.github.io/). Note that networkx>=2.0 is incompatible with ddot.
+* [python-igraph](http://igraph.org/python/). Recommend installing through [anaconda](https://anaconda.org/conda-forge/python-igraph) or [pip](https://pypi.python.org/pypi/python-igraph/0.7).
+* [ndex-dev](https://github.com/ndexbio/ndex-python). Recommend installing through [pip](https://pypi.python.org/pypi/ndex-dev).
+* [tulip-python](https://pypi.python.org/pypi/tulip-python). Recommend installing through [pip](https://pypi.python.org/pypi/tulip-python).
 
 The recommended method for installing these dependencies is to use the [Anaconda](https://conda.io/docs/user-guide/install/download.html) distrubution of Python, and then install Python packages via the conda and pip repositories.
 
@@ -47,13 +47,13 @@ The recommended method for installing these dependencies is to use the [Anaconda
 
 ## Install the `ddot` Python package
 
-After dependencies are satisfied, install ddot with pip
+After dependencies are satisfied, install ddot with pip.
 
   ```bash
   pip install git+git://github.com/michaelkyu/ddot.git
   ```
 
-If a previous version of ddot is already installed, then force an upgrade with the `--upgrade` option
+If a previous version of ddot is already installed, then force an upgrade with the `--upgrade` option.
 
   ```bash
   pip install --upgrade git+git://github.com/michaelkyu/ddot.git

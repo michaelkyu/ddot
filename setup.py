@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
 setup(name='ddot',
-      version='1.0rc3',
+      version='1.0rc4',
       description='Data-Driven Ontology Toolkit',
-      url='http://github.com/michaelkyu/ontology',
+      url='http://github.com/michaelkyu/ddot',
       author='Michael Ku Yu',
       author_email='michaelyu@alum.mit.edu',
       license='MIT',

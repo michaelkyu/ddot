@@ -1040,7 +1040,7 @@ class Ontology(object):
                 elif orig in ont.terms_index:
                     merge.loc[node, 'Size'] = ont.term_sizes[ont.terms_index[orig]]
             
-        # Append attributes for the new nodes
+        # Append attributes for the new nodes        
         ont_collect.node_attr = pd.concat([ont.node_attr, merge], 0)
         
         ########################################

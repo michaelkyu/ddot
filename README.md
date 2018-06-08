@@ -1,9 +1,9 @@
 # The Data-Driven Ontology Toolkit (DDOT)
 
-The Data-Driven Ontology Toolkit (DDOT) facilitates the inference, analysis, and visualization of biological hierarchies using a data structure called an ontology.
+The Data-Driven Ontology Toolkit (DDOT) facilitates the inference, analysis, and visualization of biological hierarchies using a data structure called an ontology. 
 
-* Open source under MIT license.
-* Supports Python 2.7 or >=3.6.
+* Open-source Python package under MIT license. Supports Python 2.7 or >=3.6.
+* The [HiView](http://hiview.ucsd.edu) web application visualizes hierarchical structure and the biological evidence for that structure.
 
 # Documentation
 

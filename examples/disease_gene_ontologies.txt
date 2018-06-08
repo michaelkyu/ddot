@@ -1,652 +1,652 @@
-	seed_genes	total_genes	subsystems	subystems_aligned_to_GO	NDEx_URL	UUID
-3_m_syndrome	3	3	1	1	http://dev2.ndexbio.org/v2/network/e915f290-6b52-11e8-9d1c-0660b7976219	e915f290-6b52-11e8-9d1c-0660b7976219
-3_methylcrotonyl_coa_carboxylase_1_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/bd054729-6b52-11e8-9d1c-0660b7976219	bd054729-6b52-11e8-9d1c-0660b7976219
-3_methylcrotonylglycinuria__3_methylcrotonyl_coa_carboxylase_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/c1377f89-6b52-11e8-9d1c-0660b7976219	c1377f89-6b52-11e8-9d1c-0660b7976219
-3_methylglutaconic_aciduria_type_2	2	278	108	53	http://dev2.ndexbio.org/v2/network/da331112-6b52-11e8-9d1c-0660b7976219	da331112-6b52-11e8-9d1c-0660b7976219
-3m_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/e13d9583-6b52-11e8-9d1c-0660b7976219	e13d9583-6b52-11e8-9d1c-0660b7976219
-3mc_syndrome	2	6	2	1	http://dev2.ndexbio.org/v2/network/d4f3fc92-6b52-11e8-9d1c-0660b7976219	d4f3fc92-6b52-11e8-9d1c-0660b7976219
-46_xx_ovotesticular_disorder_of_sex_development	2	2	1	1	http://dev2.ndexbio.org/v2/network/d600d8bb-6b52-11e8-9d1c-0660b7976219	d600d8bb-6b52-11e8-9d1c-0660b7976219
-46_xx_sex_reversal_1	3	9	4	0	http://dev2.ndexbio.org/v2/network/e6610b69-6b52-11e8-9d1c-0660b7976219	e6610b69-6b52-11e8-9d1c-0660b7976219
-46_xy_disorder_of_sex_development	2	223	111	47	http://dev2.ndexbio.org/v2/network/ff7e561e-6b52-11e8-9d1c-0660b7976219	ff7e561e-6b52-11e8-9d1c-0660b7976219
-46_xy_disorder_of_sex_development_due_to_testicular_17_20_desmolase_deficiency	2	4	2	1	http://dev2.ndexbio.org/v2/network/e3c0e548-6b52-11e8-9d1c-0660b7976219	e3c0e548-6b52-11e8-9d1c-0660b7976219
-aceruloplasminemia	2	4	4	0	http://dev2.ndexbio.org/v2/network/e45e36de-6b52-11e8-9d1c-0660b7976219	e45e36de-6b52-11e8-9d1c-0660b7976219
-acne_inversa__hidradenitis_suppurativa	3	6	1	1	http://dev2.ndexbio.org/v2/network/d84e7250-6b52-11e8-9d1c-0660b7976219	d84e7250-6b52-11e8-9d1c-0660b7976219
-acth_deficiency__isolated	2	424	196	82	http://dev2.ndexbio.org/v2/network/338dd291-6b53-11e8-9d1c-0660b7976219	338dd291-6b53-11e8-9d1c-0660b7976219
-activated_pi3k_delta_syndrome	2	3	2	2	http://dev2.ndexbio.org/v2/network/c4dd2e26-6b52-11e8-9d1c-0660b7976219	c4dd2e26-6b52-11e8-9d1c-0660b7976219
-activated_protein_c_resistance	2	31	11	4	http://dev2.ndexbio.org/v2/network/dc2d818b-6b52-11e8-9d1c-0660b7976219	dc2d818b-6b52-11e8-9d1c-0660b7976219
-acute_basophilic_leukemia	2	10	8	1	http://dev2.ndexbio.org/v2/network/e4b92830-6b52-11e8-9d1c-0660b7976219	e4b92830-6b52-11e8-9d1c-0660b7976219
-acute_myeloid_leukemia_with_t_8_16__p11_p13__translocation	2	5	3	0	http://dev2.ndexbio.org/v2/network/f5808206-6b52-11e8-9d1c-0660b7976219	f5808206-6b52-11e8-9d1c-0660b7976219
-acute_myeloid_leukemia_with_t_9_11__p22_q23_	2	8	2	1	http://dev2.ndexbio.org/v2/network/e4dba45a-6b52-11e8-9d1c-0660b7976219	e4dba45a-6b52-11e8-9d1c-0660b7976219
-addison_s_disease	2	30	12	1	http://dev2.ndexbio.org/v2/network/e61f485c-6b52-11e8-9d1c-0660b7976219	e61f485c-6b52-11e8-9d1c-0660b7976219
-adenosine_monophosphate_deaminase_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/db1bea76-6b52-11e8-9d1c-0660b7976219	db1bea76-6b52-11e8-9d1c-0660b7976219
-adrenal_insufficiency	2	3	1	1	http://dev2.ndexbio.org/v2/network/fab339b1-6b52-11e8-9d1c-0660b7976219	fab339b1-6b52-11e8-9d1c-0660b7976219
-adult_junctional_epidermolysis_bullosa	3	15	5	2	http://dev2.ndexbio.org/v2/network/e76caf90-6b52-11e8-9d1c-0660b7976219	e76caf90-6b52-11e8-9d1c-0660b7976219
-afibrinogenemia__congenital	3	3	1	1	http://dev2.ndexbio.org/v2/network/df9f9de8-6b52-11e8-9d1c-0660b7976219	df9f9de8-6b52-11e8-9d1c-0660b7976219
-afibrinogenemia__dysfibrinogenemia	3	3	1	1	http://dev2.ndexbio.org/v2/network/f8bd3648-6b52-11e8-9d1c-0660b7976219	f8bd3648-6b52-11e8-9d1c-0660b7976219
-age_related_macular_degeneration_14	2	5	3	0	http://dev2.ndexbio.org/v2/network/e8966204-6b52-11e8-9d1c-0660b7976219	e8966204-6b52-11e8-9d1c-0660b7976219
-alagille_syndrome	2	3	2	0	http://dev2.ndexbio.org/v2/network/f8caf1f1-6b52-11e8-9d1c-0660b7976219	f8caf1f1-6b52-11e8-9d1c-0660b7976219
-albinism__ocular__with_sensorineural_deafness	2	39	16	5	http://dev2.ndexbio.org/v2/network/0e563bc5-6b53-11e8-9d1c-0660b7976219	0e563bc5-6b53-11e8-9d1c-0660b7976219
-albinism__oculocutaneous__type_2	2	10	5	2	http://dev2.ndexbio.org/v2/network/e80c994f-6b52-11e8-9d1c-0660b7976219	e80c994f-6b52-11e8-9d1c-0660b7976219
-alcoholic_hepatitis	2	3	2	0	http://dev2.ndexbio.org/v2/network/ea22cf2b-6b52-11e8-9d1c-0660b7976219	ea22cf2b-6b52-11e8-9d1c-0660b7976219
-alport_syndrome__autosomal_dominant	2	2	1	1	http://dev2.ndexbio.org/v2/network/e6a6c715-6b52-11e8-9d1c-0660b7976219	e6a6c715-6b52-11e8-9d1c-0660b7976219
-alternating_hemiplegia_of_childhood	2	8	2	0	http://dev2.ndexbio.org/v2/network/e864074e-6b52-11e8-9d1c-0660b7976219	e864074e-6b52-11e8-9d1c-0660b7976219
-alzheimer_disease_4	3	11	10	0	http://dev2.ndexbio.org/v2/network/f5d9015e-6b52-11e8-9d1c-0660b7976219	f5d9015e-6b52-11e8-9d1c-0660b7976219
-alzheimer_s_disease__ad_	4	6	3	1	http://dev2.ndexbio.org/v2/network/fc011608-6b52-11e8-9d1c-0660b7976219	fc011608-6b52-11e8-9d1c-0660b7976219
-andersen_tawil_syndrome	2	6	1	1	http://dev2.ndexbio.org/v2/network/f8648edc-6b52-11e8-9d1c-0660b7976219	f8648edc-6b52-11e8-9d1c-0660b7976219
-anon1	2	194	71	30	http://dev2.ndexbio.org/v2/network/077537db-6b53-11e8-9d1c-0660b7976219	077537db-6b53-11e8-9d1c-0660b7976219
-anthracosis	4	10	7	1	http://dev2.ndexbio.org/v2/network/0c97c2dc-6b53-11e8-9d1c-0660b7976219	0c97c2dc-6b53-11e8-9d1c-0660b7976219
-antley_bixler_syndrome_without_genital_anomalies_or_disordered_steroidogenesis	2	9	2	0	http://dev2.ndexbio.org/v2/network/f58cde1b-6b52-11e8-9d1c-0660b7976219	f58cde1b-6b52-11e8-9d1c-0660b7976219
-aortic_valve_disease_2	2	14	10	3	http://dev2.ndexbio.org/v2/network/fc80cd91-6b52-11e8-9d1c-0660b7976219	fc80cd91-6b52-11e8-9d1c-0660b7976219
-aplastic_anemia__aa_	2	474	209	102	http://dev2.ndexbio.org/v2/network/4bb041d8-6b53-11e8-9d1c-0660b7976219	4bb041d8-6b53-11e8-9d1c-0660b7976219
-appendicitis	2	18	9	2	http://dev2.ndexbio.org/v2/network/fa366857-6b52-11e8-9d1c-0660b7976219	fa366857-6b52-11e8-9d1c-0660b7976219
-arachnodactyly	2	342	160	62	http://dev2.ndexbio.org/v2/network/43393450-6b53-11e8-9d1c-0660b7976219	43393450-6b53-11e8-9d1c-0660b7976219
-arc_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/e85b2da7-6b52-11e8-9d1c-0660b7976219	e85b2da7-6b52-11e8-9d1c-0660b7976219
-arteritis	3	205	79	50	http://dev2.ndexbio.org/v2/network/f2dadce0-6b52-11e8-9d1c-0660b7976219	f2dadce0-6b52-11e8-9d1c-0660b7976219
-arthrogryposis__renal_dysfunction__and_cholestasis__arc_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/d600d8bc-6b52-11e8-9d1c-0660b7976219	d600d8bc-6b52-11e8-9d1c-0660b7976219
-asphyxiating_thoracic_dystrophy__jeune_syndrome	4	7	3	0	http://dev2.ndexbio.org/v2/network/d4f4bfe4-6b52-11e8-9d1c-0660b7976219	d4f4bfe4-6b52-11e8-9d1c-0660b7976219
-atrial_fibrillation__familial__3	2	3	1	1	http://dev2.ndexbio.org/v2/network/e13e31c5-6b52-11e8-9d1c-0660b7976219	e13e31c5-6b52-11e8-9d1c-0660b7976219
-atrial_septal_defect	5	22	13	6	http://dev2.ndexbio.org/v2/network/cbf4ac3b-6b52-11e8-9d1c-0660b7976219	cbf4ac3b-6b52-11e8-9d1c-0660b7976219
-atrial_standstill	2	42	25	12	http://dev2.ndexbio.org/v2/network/c149a7fc-6b52-11e8-9d1c-0660b7976219	c149a7fc-6b52-11e8-9d1c-0660b7976219
-atrophia_bulborum_hereditaria	2	2	1	1	http://dev2.ndexbio.org/v2/network/bd232f6f-6b52-11e8-9d1c-0660b7976219	bd232f6f-6b52-11e8-9d1c-0660b7976219
-atypical_glycine_encephalopathy	3	3	2	2	http://dev2.ndexbio.org/v2/network/e917c752-6b52-11e8-9d1c-0660b7976219	e917c752-6b52-11e8-9d1c-0660b7976219
-atypical_hemolytic_uremic_syndrome_with_anti_factor_h_antibodies	4	5	2	0	http://dev2.ndexbio.org/v2/network/e4b83dce-6b52-11e8-9d1c-0660b7976219	e4b83dce-6b52-11e8-9d1c-0660b7976219
-atypical_juvenile_parkinsonism	2	32	9	0	http://dev2.ndexbio.org/v2/network/dc2d818c-6b52-11e8-9d1c-0660b7976219	dc2d818c-6b52-11e8-9d1c-0660b7976219
-auriculocondylar_syndrome_1	2	17	5	4	http://dev2.ndexbio.org/v2/network/c4de1888-6b52-11e8-9d1c-0660b7976219	c4de1888-6b52-11e8-9d1c-0660b7976219
-autoimmune_hepatits_type_1	2	301	112	54	http://dev2.ndexbio.org/v2/network/21204340-6b53-11e8-9d1c-0660b7976219	21204340-6b53-11e8-9d1c-0660b7976219
-autoinflammatory_syndrome_with_pyogenic_bacterial_infection_and_amylopectinosis	2	4	1	1	http://dev2.ndexbio.org/v2/network/d848a5ed-6b52-11e8-9d1c-0660b7976219	d848a5ed-6b52-11e8-9d1c-0660b7976219
-autosomal_dominant_hypohidrotic_ectodermal_dysplasia	3	80	38	15	http://dev2.ndexbio.org/v2/network/e817e3f5-6b52-11e8-9d1c-0660b7976219	e817e3f5-6b52-11e8-9d1c-0660b7976219
-autosomal_dominant_nocturnal_frontal_lobe_epilepsy__adnfle___nocturnal_frontal_lobe_epilepsy__nfle_	3	3	1	1	http://dev2.ndexbio.org/v2/network/e3bb8e15-6b52-11e8-9d1c-0660b7976219	e3bb8e15-6b52-11e8-9d1c-0660b7976219
-autosomal_dominant_polycystic_kidney_disease	2	116	50	28	http://dev2.ndexbio.org/v2/network/fd23eb91-6b52-11e8-9d1c-0660b7976219	fd23eb91-6b52-11e8-9d1c-0660b7976219
-autosomal_dominant_secondary_polycythemia	2	2	1	1	http://dev2.ndexbio.org/v2/network/e614c105-6b52-11e8-9d1c-0660b7976219	e614c105-6b52-11e8-9d1c-0660b7976219
-autosomal_dominant_severe_congenital_neutropenia	3	244	83	43	http://dev2.ndexbio.org/v2/network/f47fda95-6b52-11e8-9d1c-0660b7976219	f47fda95-6b52-11e8-9d1c-0660b7976219
-autosomal_dominant_striatal_degeneration__adsd_	2	4	2	0	http://dev2.ndexbio.org/v2/network/fb0180e6-6b52-11e8-9d1c-0660b7976219	fb0180e6-6b52-11e8-9d1c-0660b7976219
-autosomal_recessive_alport_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/db1bea75-6b52-11e8-9d1c-0660b7976219	db1bea75-6b52-11e8-9d1c-0660b7976219
-autosomal_recessive_centronuclear_myopathy	2	81	37	21	http://dev2.ndexbio.org/v2/network/ea11b81c-6b52-11e8-9d1c-0660b7976219	ea11b81c-6b52-11e8-9d1c-0660b7976219
-autosomal_recessive_cutis_laxa_type_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/df9f76d7-6b52-11e8-9d1c-0660b7976219	df9f76d7-6b52-11e8-9d1c-0660b7976219
-autosomal_recessive_distal_renal_tubular_acidosis	2	7	1	1	http://dev2.ndexbio.org/v2/network/f8c7e4ae-6b52-11e8-9d1c-0660b7976219	f8c7e4ae-6b52-11e8-9d1c-0660b7976219
-autosomal_recessive_early_onset_parkinson_disease_15	2	43	20	10	http://dev2.ndexbio.org/v2/network/fc797a8f-6b52-11e8-9d1c-0660b7976219	fc797a8f-6b52-11e8-9d1c-0660b7976219
-autosomal_recessive_infantile_hypercalcemia	2	187	66	32	http://dev2.ndexbio.org/v2/network/f3008d58-6b52-11e8-9d1c-0660b7976219	f3008d58-6b52-11e8-9d1c-0660b7976219
-autosomal_recessive_limb_girdle_muscular_dystrophy_type_2h	2	312	135	48	http://dev2.ndexbio.org/v2/network/36d5837d-6b53-11e8-9d1c-0660b7976219	36d5837d-6b53-11e8-9d1c-0660b7976219
-autosomal_recessive_lymphoproliferative_disease	2	29	22	5	http://dev2.ndexbio.org/v2/network/eb588f96-6b52-11e8-9d1c-0660b7976219	eb588f96-6b52-11e8-9d1c-0660b7976219
-autosomal_recessive_nonsyndromic_deafness_1b	2	5	3	0	http://dev2.ndexbio.org/v2/network/e80b87dd-6b52-11e8-9d1c-0660b7976219	e80b87dd-6b52-11e8-9d1c-0660b7976219
-autosomal_recessive_pseudohypoaldosteronism_type_1	3	4	1	1	http://dev2.ndexbio.org/v2/network/e6a6c714-6b52-11e8-9d1c-0660b7976219	e6a6c714-6b52-11e8-9d1c-0660b7976219
-autosomal_recessive_stickler_syndrome	4	31	16	8	http://dev2.ndexbio.org/v2/network/e898abf9-6b52-11e8-9d1c-0660b7976219	e898abf9-6b52-11e8-9d1c-0660b7976219
-axenfeld_anomaly	2	2	1	1	http://dev2.ndexbio.org/v2/network/f593e2ff-6b52-11e8-9d1c-0660b7976219	f593e2ff-6b52-11e8-9d1c-0660b7976219
-axenfeld_rieger_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/fae7b749-6b52-11e8-9d1c-0660b7976219	fae7b749-6b52-11e8-9d1c-0660b7976219
-axenfeld_rieger_syndrome__ars_	2	2	1	1	http://dev2.ndexbio.org/v2/network/f8a80091-6b52-11e8-9d1c-0660b7976219	f8a80091-6b52-11e8-9d1c-0660b7976219
-azotemia	2	22	13	4	http://dev2.ndexbio.org/v2/network/fa9ca465-6b52-11e8-9d1c-0660b7976219	fa9ca465-6b52-11e8-9d1c-0660b7976219
-b__and_t_cell_mixed_leukemia	2	246	116	48	http://dev2.ndexbio.org/v2/network/33dc66f7-6b53-11e8-9d1c-0660b7976219	33dc66f7-6b53-11e8-9d1c-0660b7976219
-baraitser_winter_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/f56f43f0-6b52-11e8-9d1c-0660b7976219	f56f43f0-6b52-11e8-9d1c-0660b7976219
-bardet_biedl_syndrome_11	2	312	135	48	http://dev2.ndexbio.org/v2/network/1a307194-6b53-11e8-9d1c-0660b7976219	1a307194-6b53-11e8-9d1c-0660b7976219
-bardet_biedl_syndrome_14	2	12	4	1	http://dev2.ndexbio.org/v2/network/f945794d-6b52-11e8-9d1c-0660b7976219	f945794d-6b52-11e8-9d1c-0660b7976219
-bare_lymphocyte_syndrome__bls__type1	3	3	1	1	http://dev2.ndexbio.org/v2/network/f71fb276-6b52-11e8-9d1c-0660b7976219	f71fb276-6b52-11e8-9d1c-0660b7976219
-bare_lymphocyte_syndrome__bls__type2	4	57	21	7	http://dev2.ndexbio.org/v2/network/ee437a53-6b52-11e8-9d1c-0660b7976219	ee437a53-6b52-11e8-9d1c-0660b7976219
-bare_lymphocyte_syndrome__type_2	4	57	21	7	http://dev2.ndexbio.org/v2/network/ef363f26-6b52-11e8-9d1c-0660b7976219	ef363f26-6b52-11e8-9d1c-0660b7976219
-bare_lymphocyte_syndrome_type_1	4	15	8	3	http://dev2.ndexbio.org/v2/network/f83c464f-6b52-11e8-9d1c-0660b7976219	f83c464f-6b52-11e8-9d1c-0660b7976219
-bartter_disease	4	37	14	9	http://dev2.ndexbio.org/v2/network/edea368f-6b52-11e8-9d1c-0660b7976219	edea368f-6b52-11e8-9d1c-0660b7976219
-bartter_disease_type_4a	3	3	1	1	http://dev2.ndexbio.org/v2/network/eba74bf6-6b52-11e8-9d1c-0660b7976219	eba74bf6-6b52-11e8-9d1c-0660b7976219
-bartter_syndrome	6	197	83	47	http://dev2.ndexbio.org/v2/network/04b2474b-6b53-11e8-9d1c-0660b7976219	04b2474b-6b53-11e8-9d1c-0660b7976219
-bartter_syndrome__type_4b	2	2	1	1	http://dev2.ndexbio.org/v2/network/fe36e286-6b52-11e8-9d1c-0660b7976219	fe36e286-6b52-11e8-9d1c-0660b7976219
-basal_cell_nevus_syndrome__nevoid_basal_cell_carcinoma_syndrome__gorlin_syndrome	3	484	245	32	http://dev2.ndexbio.org/v2/network/55902e1d-6b53-11e8-9d1c-0660b7976219	55902e1d-6b53-11e8-9d1c-0660b7976219
-behr_syndrome	2	78	39	4	http://dev2.ndexbio.org/v2/network/034d11c1-6b53-11e8-9d1c-0660b7976219	034d11c1-6b53-11e8-9d1c-0660b7976219
-benign_ependymoma	2	222	111	26	http://dev2.ndexbio.org/v2/network/1c33bb66-6b53-11e8-9d1c-0660b7976219	1c33bb66-6b53-11e8-9d1c-0660b7976219
-benign_epilepsy_with_centrotemporal_spikes	3	169	54	32	http://dev2.ndexbio.org/v2/network/08972276-6b53-11e8-9d1c-0660b7976219	08972276-6b53-11e8-9d1c-0660b7976219
-benign_familial_hematuria	2	2	1	1	http://dev2.ndexbio.org/v2/network/fec0d231-6b52-11e8-9d1c-0660b7976219	fec0d231-6b52-11e8-9d1c-0660b7976219
-benign_familial_hematuria__thin_basement_membrane_nephropathy	2	2	1	1	http://dev2.ndexbio.org/v2/network/006a8b51-6b53-11e8-9d1c-0660b7976219	006a8b51-6b53-11e8-9d1c-0660b7976219
-benign_familial_neonatal_epilepsy	2	2	1	1	http://dev2.ndexbio.org/v2/network/00a08f92-6b53-11e8-9d1c-0660b7976219	00a08f92-6b53-11e8-9d1c-0660b7976219
-benign_familial_neonatal_infantile_seizures	2	223	79	35	http://dev2.ndexbio.org/v2/network/11e025eb-6b53-11e8-9d1c-0660b7976219	11e025eb-6b53-11e8-9d1c-0660b7976219
-bernard_soulier_syndrome	3	3	1	1	http://dev2.ndexbio.org/v2/network/00ce7c73-6b53-11e8-9d1c-0660b7976219	00ce7c73-6b53-11e8-9d1c-0660b7976219
-bernard_soulier_syndrome__giant_platelet_syndrome	3	3	1	1	http://dev2.ndexbio.org/v2/network/0022d3c0-6b53-11e8-9d1c-0660b7976219	0022d3c0-6b53-11e8-9d1c-0660b7976219
-bethlem_myopathy	4	7	2	1	http://dev2.ndexbio.org/v2/network/0078951a-6b53-11e8-9d1c-0660b7976219	0078951a-6b53-11e8-9d1c-0660b7976219
-bethlem_myopathy_1	3	3	1	1	http://dev2.ndexbio.org/v2/network/00579f83-6b53-11e8-9d1c-0660b7976219	00579f83-6b53-11e8-9d1c-0660b7976219
-bifunctional_peroxisomal_enzyme_deficiency	3	24	8	6	http://dev2.ndexbio.org/v2/network/0116d031-6b53-11e8-9d1c-0660b7976219	0116d031-6b53-11e8-9d1c-0660b7976219
-bloom_syndrome	2	278	105	54	http://dev2.ndexbio.org/v2/network/1e4efa18-6b53-11e8-9d1c-0660b7976219	1e4efa18-6b53-11e8-9d1c-0660b7976219
-blue_cone_monochromacy	2	7	3	2	http://dev2.ndexbio.org/v2/network/2cb09e52-6b53-11e8-9d1c-0660b7976219	2cb09e52-6b53-11e8-9d1c-0660b7976219
-brachydactyly__type_a2	3	10	6	0	http://dev2.ndexbio.org/v2/network/0739b55f-6b53-11e8-9d1c-0660b7976219	0739b55f-6b53-11e8-9d1c-0660b7976219
-brain_diseases__metabolic	2	82	45	14	http://dev2.ndexbio.org/v2/network/0b956e73-6b53-11e8-9d1c-0660b7976219	0b956e73-6b53-11e8-9d1c-0660b7976219
-branchiootic_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/06c48525-6b53-11e8-9d1c-0660b7976219	06c48525-6b53-11e8-9d1c-0660b7976219
-branchiootorenal_syndrome	3	5	4	0	http://dev2.ndexbio.org/v2/network/07044d64-6b53-11e8-9d1c-0660b7976219	07044d64-6b53-11e8-9d1c-0660b7976219
-breast_fibroadenoma	2	169	69	21	http://dev2.ndexbio.org/v2/network/187e54ac-6b53-11e8-9d1c-0660b7976219	187e54ac-6b53-11e8-9d1c-0660b7976219
-bronchial_disease	3	361	127	77	http://dev2.ndexbio.org/v2/network/3fcce48c-6b53-11e8-9d1c-0660b7976219	3fcce48c-6b53-11e8-9d1c-0660b7976219
-bronchiectasis	3	40	10	5	http://dev2.ndexbio.org/v2/network/071600aa-6b53-11e8-9d1c-0660b7976219	071600aa-6b53-11e8-9d1c-0660b7976219
-bronchiectasis_with_or_without_elevated_sweat_chloride	3	4	1	1	http://dev2.ndexbio.org/v2/network/082a5697-6b53-11e8-9d1c-0660b7976219	082a5697-6b53-11e8-9d1c-0660b7976219
-bronchitis__chronic	2	487	207	108	http://dev2.ndexbio.org/v2/network/7d57e5d1-6b53-11e8-9d1c-0660b7976219	7d57e5d1-6b53-11e8-9d1c-0660b7976219
-brown_vialetto_van_laere_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/07c811fa-6b53-11e8-9d1c-0660b7976219	07c811fa-6b53-11e8-9d1c-0660b7976219
-bullous_congenital_ichthyosiform_erythroderma__bcie___epidermolytic_hyperkeratosis__ehk_	2	6	2	1	http://dev2.ndexbio.org/v2/network/2146b624-6b53-11e8-9d1c-0660b7976219	2146b624-6b53-11e8-9d1c-0660b7976219
-c1q_deficiency	3	3	2	1	http://dev2.ndexbio.org/v2/network/08272243-6b53-11e8-9d1c-0660b7976219	08272243-6b53-11e8-9d1c-0660b7976219
-cadds	2	284	112	59	http://dev2.ndexbio.org/v2/network/2dc28353-6b53-11e8-9d1c-0660b7976219	2dc28353-6b53-11e8-9d1c-0660b7976219
-cafe_au_lait_spots__multiple	2	10	5	2	http://dev2.ndexbio.org/v2/network/085ab587-6b53-11e8-9d1c-0660b7976219	085ab587-6b53-11e8-9d1c-0660b7976219
-caffey_disease	2	384	174	16	http://dev2.ndexbio.org/v2/network/366b28b9-6b53-11e8-9d1c-0660b7976219	366b28b9-6b53-11e8-9d1c-0660b7976219
-cap_myopathy	3	29	10	8	http://dev2.ndexbio.org/v2/network/09088114-6b53-11e8-9d1c-0660b7976219	09088114-6b53-11e8-9d1c-0660b7976219
-carcinosarcoma	2	2	1	1	http://dev2.ndexbio.org/v2/network/0804a607-6b53-11e8-9d1c-0660b7976219	0804a607-6b53-11e8-9d1c-0660b7976219
-cardiac_arrest	2	2	1	1	http://dev2.ndexbio.org/v2/network/21a1807d-6b53-11e8-9d1c-0660b7976219	21a1807d-6b53-11e8-9d1c-0660b7976219
-cardiofaciocutaneous_syndrome_1	4	12	8	3	http://dev2.ndexbio.org/v2/network/08f7e03d-6b53-11e8-9d1c-0660b7976219	08f7e03d-6b53-11e8-9d1c-0660b7976219
-cardiovirus_infections	2	418	203	51	http://dev2.ndexbio.org/v2/network/57058ff0-6b53-11e8-9d1c-0660b7976219	57058ff0-6b53-11e8-9d1c-0660b7976219
-carnevale_syndrome	2	6	2	1	http://dev2.ndexbio.org/v2/network/08318294-6b53-11e8-9d1c-0660b7976219	08318294-6b53-11e8-9d1c-0660b7976219
-carney_triad	3	4	3	0	http://dev2.ndexbio.org/v2/network/082d63da-6b53-11e8-9d1c-0660b7976219	082d63da-6b53-11e8-9d1c-0660b7976219
-cd8_deficiency__familial	2	38	20	5	http://dev2.ndexbio.org/v2/network/0e19f5f4-6b53-11e8-9d1c-0660b7976219	0e19f5f4-6b53-11e8-9d1c-0660b7976219
-celiac_disease__susceptibility_to__1	2	3	2	0	http://dev2.ndexbio.org/v2/network/0e2f04a0-6b53-11e8-9d1c-0660b7976219	0e2f04a0-6b53-11e8-9d1c-0660b7976219
-centronuclear_myopathy	3	406	169	76	http://dev2.ndexbio.org/v2/network/4dd98a0f-6b53-11e8-9d1c-0660b7976219	4dd98a0f-6b53-11e8-9d1c-0660b7976219
-cerebral_amyloid_angiopathy__caa___hereditary_cerebral_hemorrhage_with_amyloidosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/17b5119f-6b53-11e8-9d1c-0660b7976219	17b5119f-6b53-11e8-9d1c-0660b7976219
-cerebral_cavernous_malformation	3	4	3	0	http://dev2.ndexbio.org/v2/network/0e439e19-6b53-11e8-9d1c-0660b7976219	0e439e19-6b53-11e8-9d1c-0660b7976219
-cerebral_sinovenous_thrombosis	2	4	2	2	http://dev2.ndexbio.org/v2/network/0fcfbc3d-6b53-11e8-9d1c-0660b7976219	0fcfbc3d-6b53-11e8-9d1c-0660b7976219
-cerebro_facio_articular_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/0e2148f7-6b53-11e8-9d1c-0660b7976219	0e2148f7-6b53-11e8-9d1c-0660b7976219
-cerebro_oculo_facio_skeletal_syndrome	3	3	1	1	http://dev2.ndexbio.org/v2/network/1813aba5-6b53-11e8-9d1c-0660b7976219	1813aba5-6b53-11e8-9d1c-0660b7976219
-cfhr5_deficiency	2	5	1	1	http://dev2.ndexbio.org/v2/network/172f669a-6b53-11e8-9d1c-0660b7976219	172f669a-6b53-11e8-9d1c-0660b7976219
-charcot_marie_tooth_disease__axonal__type_2e	2	119	40	17	http://dev2.ndexbio.org/v2/network/1db52bd6-6b53-11e8-9d1c-0660b7976219	1db52bd6-6b53-11e8-9d1c-0660b7976219
-chlamydia_infections	2	2	1	1	http://dev2.ndexbio.org/v2/network/1859676c-6b53-11e8-9d1c-0660b7976219	1859676c-6b53-11e8-9d1c-0660b7976219
-cholesterol_embolism	2	3	1	1	http://dev2.ndexbio.org/v2/network/16f19a2a-6b53-11e8-9d1c-0660b7976219	16f19a2a-6b53-11e8-9d1c-0660b7976219
-cholesterol_monooxygenase__side_chain_cleaving__deficiency	2	7	4	2	http://dev2.ndexbio.org/v2/network/1862b644-6b53-11e8-9d1c-0660b7976219	1862b644-6b53-11e8-9d1c-0660b7976219
-chondrodysplasia__grebe_type	2	3	2	1	http://dev2.ndexbio.org/v2/network/18861ce4-6b53-11e8-9d1c-0660b7976219	18861ce4-6b53-11e8-9d1c-0660b7976219
-chondroma	2	2	1	1	http://dev2.ndexbio.org/v2/network/1803f41e-6b53-11e8-9d1c-0660b7976219	1803f41e-6b53-11e8-9d1c-0660b7976219
-chromosome_17_deletion	2	8	5	1	http://dev2.ndexbio.org/v2/network/19fb099b-6b53-11e8-9d1c-0660b7976219	19fb099b-6b53-11e8-9d1c-0660b7976219
-chromosome_17p13_3__centromeric__duplication_syndrome	2	113	41	16	http://dev2.ndexbio.org/v2/network/1abc0ffa-6b53-11e8-9d1c-0660b7976219	1abc0ffa-6b53-11e8-9d1c-0660b7976219
-chromosome_17q23_1_q23_2_deletion_syndrome	2	9	3	2	http://dev2.ndexbio.org/v2/network/1bc80117-6b53-11e8-9d1c-0660b7976219	1bc80117-6b53-11e8-9d1c-0660b7976219
-chromosome_22q11_2_deletion_syndrome__distal	3	36	21	7	http://dev2.ndexbio.org/v2/network/1a5d9c29-6b53-11e8-9d1c-0660b7976219	1a5d9c29-6b53-11e8-9d1c-0660b7976219
-chromosome_breakage	4	426	142	71	http://dev2.ndexbio.org/v2/network/644c7530-6b53-11e8-9d1c-0660b7976219	644c7530-6b53-11e8-9d1c-0660b7976219
-chronic_myelomonocytic_leukemia	2	6	4	0	http://dev2.ndexbio.org/v2/network/187d1c29-6b53-11e8-9d1c-0660b7976219	187d1c29-6b53-11e8-9d1c-0660b7976219
-cirrhosis__familial	2	2	1	1	http://dev2.ndexbio.org/v2/network/1809c086-6b53-11e8-9d1c-0660b7976219	1809c086-6b53-11e8-9d1c-0660b7976219
-citrullinemia__ctln_	2	301	115	63	http://dev2.ndexbio.org/v2/network/42961632-6b53-11e8-9d1c-0660b7976219	42961632-6b53-11e8-9d1c-0660b7976219
-classic_maple_syrup_urine_disease	3	4	1	1	http://dev2.ndexbio.org/v2/network/1c4b892c-6b53-11e8-9d1c-0660b7976219	1c4b892c-6b53-11e8-9d1c-0660b7976219
-clear_cell_adenocarcinoma	2	8	2	0	http://dev2.ndexbio.org/v2/network/18a4c890-6b53-11e8-9d1c-0660b7976219	18a4c890-6b53-11e8-9d1c-0660b7976219
-cockayne_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/189c6417-6b53-11e8-9d1c-0660b7976219	189c6417-6b53-11e8-9d1c-0660b7976219
-cockayne_syndrome__type_3	2	2	1	1	http://dev2.ndexbio.org/v2/network/179888d6-6b53-11e8-9d1c-0660b7976219	179888d6-6b53-11e8-9d1c-0660b7976219
-cockayne_syndrome_type_1	3	8	4	1	http://dev2.ndexbio.org/v2/network/1d9c4c99-6b53-11e8-9d1c-0660b7976219	1d9c4c99-6b53-11e8-9d1c-0660b7976219
-cockayne_syndrome_type_2	3	24	9	5	http://dev2.ndexbio.org/v2/network/1a6452ec-6b53-11e8-9d1c-0660b7976219	1a6452ec-6b53-11e8-9d1c-0660b7976219
-cofs_syndrome	4	29	9	7	http://dev2.ndexbio.org/v2/network/19dcfa34-6b53-11e8-9d1c-0660b7976219	19dcfa34-6b53-11e8-9d1c-0660b7976219
-cold_induced_sweating_syndrome__ciss__and_crisponi_syndrome__crisps_	2	2	1	1	http://dev2.ndexbio.org/v2/network/2042b3e4-6b53-11e8-9d1c-0660b7976219	2042b3e4-6b53-11e8-9d1c-0660b7976219
-cole_carpenter_syndrome	2	360	141	86	http://dev2.ndexbio.org/v2/network/5c5f58b6-6b53-11e8-9d1c-0660b7976219	5c5f58b6-6b53-11e8-9d1c-0660b7976219
-combined_deficiency_of_factor_v_and_factor_viii	2	47	20	10	http://dev2.ndexbio.org/v2/network/22063603-6b53-11e8-9d1c-0660b7976219	22063603-6b53-11e8-9d1c-0660b7976219
-combined_deficiency_of_factor_v_and_factor_viii__1	2	47	20	11	http://dev2.ndexbio.org/v2/network/237619e6-6b53-11e8-9d1c-0660b7976219	237619e6-6b53-11e8-9d1c-0660b7976219
-combined_deficiency_of_factors_v_and_viii__f5f8d_	2	47	20	10	http://dev2.ndexbio.org/v2/network/261c81bb-6b53-11e8-9d1c-0660b7976219	261c81bb-6b53-11e8-9d1c-0660b7976219
-combined_deficiency_of_vitamin_k_dependent_clotting_factors__vkcfd_	2	70	29	10	http://dev2.ndexbio.org/v2/network/217d087b-6b53-11e8-9d1c-0660b7976219	217d087b-6b53-11e8-9d1c-0660b7976219
-combined_immunodeficiency_with_skin_granulomas	2	2	1	1	http://dev2.ndexbio.org/v2/network/2213a38b-6b53-11e8-9d1c-0660b7976219	2213a38b-6b53-11e8-9d1c-0660b7976219
-complete_atrioventricular_canal_fallot_tetralogy_syndrome	2	20	10	2	http://dev2.ndexbio.org/v2/network/20b39e61-6b53-11e8-9d1c-0660b7976219	20b39e61-6b53-11e8-9d1c-0660b7976219
-complete_atrioventricular_canal_left_heart_obstruction_syndrome	2	20	10	2	http://dev2.ndexbio.org/v2/network/23b8c858-6b53-11e8-9d1c-0660b7976219	23b8c858-6b53-11e8-9d1c-0660b7976219
-congenital_adrenal_hyperplasia__cah_	6	9	6	3	http://dev2.ndexbio.org/v2/network/22e32842-6b53-11e8-9d1c-0660b7976219	22e32842-6b53-11e8-9d1c-0660b7976219
-congenital_amegakaryocytic_thrombocytopenia__camt_	2	2	1	1	http://dev2.ndexbio.org/v2/network/2255409f-6b53-11e8-9d1c-0660b7976219	2255409f-6b53-11e8-9d1c-0660b7976219
-congenital_disorder_of_glycosylation	2	3	2	2	http://dev2.ndexbio.org/v2/network/2978a54b-6b53-11e8-9d1c-0660b7976219	2978a54b-6b53-11e8-9d1c-0660b7976219
-congenital_dyserythropoietic_anemia_type_i	2	68	30	0	http://dev2.ndexbio.org/v2/network/2c979802-6b53-11e8-9d1c-0660b7976219	2c979802-6b53-11e8-9d1c-0660b7976219
-congenital_erythropoietic_porphyria	2	99	33	19	http://dev2.ndexbio.org/v2/network/2f075f55-6b53-11e8-9d1c-0660b7976219	2f075f55-6b53-11e8-9d1c-0660b7976219
-congenital_factor_xiii_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/2a1b4d7e-6b53-11e8-9d1c-0660b7976219	2a1b4d7e-6b53-11e8-9d1c-0660b7976219
-congenital_fiber_type_disproportion	4	23	15	3	http://dev2.ndexbio.org/v2/network/2b61afe5-6b53-11e8-9d1c-0660b7976219	2b61afe5-6b53-11e8-9d1c-0660b7976219
-congenital_hypoplastic_anemia	2	417	145	77	http://dev2.ndexbio.org/v2/network/65e2a5ab-6b53-11e8-9d1c-0660b7976219	65e2a5ab-6b53-11e8-9d1c-0660b7976219
-congenital_mesoblastic_nephroma	2	93	34	15	http://dev2.ndexbio.org/v2/network/2e4177c1-6b53-11e8-9d1c-0660b7976219	2e4177c1-6b53-11e8-9d1c-0660b7976219
-congenital_mirror_movements__cmm_	2	345	134	55	http://dev2.ndexbio.org/v2/network/59db453b-6b53-11e8-9d1c-0660b7976219	59db453b-6b53-11e8-9d1c-0660b7976219
-congenital_myasthenic_syndrome_1b	3	3	2	2	http://dev2.ndexbio.org/v2/network/2dec529c-6b53-11e8-9d1c-0660b7976219	2dec529c-6b53-11e8-9d1c-0660b7976219
-congenital_myasthenic_syndromes_with_glycosylation_defect	5	412	157	71	http://dev2.ndexbio.org/v2/network/6a8f8c41-6b53-11e8-9d1c-0660b7976219	6a8f8c41-6b53-11e8-9d1c-0660b7976219
-congenital_myopathy	2	3	1	1	http://dev2.ndexbio.org/v2/network/2d9f6ad1-6b53-11e8-9d1c-0660b7976219	2d9f6ad1-6b53-11e8-9d1c-0660b7976219
-congenital_nephrogenic_diabetes_insipidus__ndi_	2	24	13	5	http://dev2.ndexbio.org/v2/network/2b66e007-6b53-11e8-9d1c-0660b7976219	2b66e007-6b53-11e8-9d1c-0660b7976219
-congenital_or_early_infantile_cach_syndrome	5	5	1	1	http://dev2.ndexbio.org/v2/network/2a7506b6-6b53-11e8-9d1c-0660b7976219	2a7506b6-6b53-11e8-9d1c-0660b7976219
-congenital_reticular_ichthyosiform_erythroderma	2	6	2	1	http://dev2.ndexbio.org/v2/network/28a3ef79-6b53-11e8-9d1c-0660b7976219	28a3ef79-6b53-11e8-9d1c-0660b7976219
-congenital_short_bowel_syndrome	2	358	163	51	http://dev2.ndexbio.org/v2/network/64e8dcac-6b53-11e8-9d1c-0660b7976219	64e8dcac-6b53-11e8-9d1c-0660b7976219
-congenital_symmetric_circumferential_skin_creases__kunze_riehm_syndrome__michelin_tire_baby_syndrome	2	322	120	56	http://dev2.ndexbio.org/v2/network/5c6bb4cd-6b53-11e8-9d1c-0660b7976219	5c6bb4cd-6b53-11e8-9d1c-0660b7976219
-corneal_neovascularization	2	262	92	59	http://dev2.ndexbio.org/v2/network/46d594cd-6b53-11e8-9d1c-0660b7976219	46d594cd-6b53-11e8-9d1c-0660b7976219
-cornelia_de_lange_syndrome__cdls_	3	13	9	4	http://dev2.ndexbio.org/v2/network/2afef706-6b53-11e8-9d1c-0660b7976219	2afef706-6b53-11e8-9d1c-0660b7976219
-cortisone_reductase_deficiency_1	2	36	16	5	http://dev2.ndexbio.org/v2/network/2b3326ad-6b53-11e8-9d1c-0660b7976219	2b3326ad-6b53-11e8-9d1c-0660b7976219
-cortisone_reductase_deficiency__crd_	2	36	16	4	http://dev2.ndexbio.org/v2/network/2c187d92-6b53-11e8-9d1c-0660b7976219	2c187d92-6b53-11e8-9d1c-0660b7976219
-cowden_like_syndrome	2	4	3	0	http://dev2.ndexbio.org/v2/network/2a38c0be-6b53-11e8-9d1c-0660b7976219	2a38c0be-6b53-11e8-9d1c-0660b7976219
-cowden_syndrome_2	2	4	3	0	http://dev2.ndexbio.org/v2/network/3cb03aeb-6b53-11e8-9d1c-0660b7976219	3cb03aeb-6b53-11e8-9d1c-0660b7976219
-cranioectodermal_dysplasia	2	3	2	0	http://dev2.ndexbio.org/v2/network/2ab9d751-6b53-11e8-9d1c-0660b7976219	2ab9d751-6b53-11e8-9d1c-0660b7976219
-cree_leukoencephalopathy	5	5	1	1	http://dev2.ndexbio.org/v2/network/325e044d-6b53-11e8-9d1c-0660b7976219	325e044d-6b53-11e8-9d1c-0660b7976219
-crisponi_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/32e005fb-6b53-11e8-9d1c-0660b7976219	32e005fb-6b53-11e8-9d1c-0660b7976219
-cryptorchidism__unilateral_or_bilateral	2	51	10	4	http://dev2.ndexbio.org/v2/network/339e7468-6b53-11e8-9d1c-0660b7976219	339e7468-6b53-11e8-9d1c-0660b7976219
-currarino_triad	2	141	57	18	http://dev2.ndexbio.org/v2/network/3fb4efa8-6b53-11e8-9d1c-0660b7976219	3fb4efa8-6b53-11e8-9d1c-0660b7976219
-curry_hall_syndrome	2	4	1	1	http://dev2.ndexbio.org/v2/network/329281fa-6b53-11e8-9d1c-0660b7976219	329281fa-6b53-11e8-9d1c-0660b7976219
-cutaneous_leishmaniasis	7	463	170	88	http://dev2.ndexbio.org/v2/network/9b41d2fd-6b53-11e8-9d1c-0660b7976219	9b41d2fd-6b53-11e8-9d1c-0660b7976219
-cutis_laxa	2	138	48	17	http://dev2.ndexbio.org/v2/network/4ce20af1-6b53-11e8-9d1c-0660b7976219	4ce20af1-6b53-11e8-9d1c-0660b7976219
-cutis_laxa__autosomal_dominant	2	4	1	1	http://dev2.ndexbio.org/v2/network/33789cd4-6b53-11e8-9d1c-0660b7976219	33789cd4-6b53-11e8-9d1c-0660b7976219
-cutis_laxa__autosomal_recessive__type_1a	3	3	1	1	http://dev2.ndexbio.org/v2/network/2f4f650b-6b53-11e8-9d1c-0660b7976219	2f4f650b-6b53-11e8-9d1c-0660b7976219
-cytochrome_c_oxidase_deficiency	2	173	71	29	http://dev2.ndexbio.org/v2/network/422e2c65-6b53-11e8-9d1c-0660b7976219	422e2c65-6b53-11e8-9d1c-0660b7976219
-deafness__autosomal_dominant_3a	2	5	3	0	http://dev2.ndexbio.org/v2/network/3439c974-6b53-11e8-9d1c-0660b7976219	3439c974-6b53-11e8-9d1c-0660b7976219
-deafness__autosomal_recessive_1a	4	7	2	0	http://dev2.ndexbio.org/v2/network/46977a36-6b53-11e8-9d1c-0660b7976219	46977a36-6b53-11e8-9d1c-0660b7976219
-dedifferentiated_liposarcoma	3	298	129	47	http://dev2.ndexbio.org/v2/network/652a2b94-6b53-11e8-9d1c-0660b7976219	652a2b94-6b53-11e8-9d1c-0660b7976219
-deep_vein_thrombosis__dvt_	3	21	7	5	http://dev2.ndexbio.org/v2/network/485ef3f5-6b53-11e8-9d1c-0660b7976219	485ef3f5-6b53-11e8-9d1c-0660b7976219
-delta_beta_thalassemia	3	5	3	2	http://dev2.ndexbio.org/v2/network/3a6ab7c7-6b53-11e8-9d1c-0660b7976219	3a6ab7c7-6b53-11e8-9d1c-0660b7976219
-dementia__lewy_body	3	9	6	2	http://dev2.ndexbio.org/v2/network/3d334d31-6b53-11e8-9d1c-0660b7976219	3d334d31-6b53-11e8-9d1c-0660b7976219
-dend_syndrome	2	3	2	0	http://dev2.ndexbio.org/v2/network/45cdc231-6b53-11e8-9d1c-0660b7976219	45cdc231-6b53-11e8-9d1c-0660b7976219
-dermatitis_herpetiformis	2	3	2	0	http://dev2.ndexbio.org/v2/network/3a73916e-6b53-11e8-9d1c-0660b7976219	3a73916e-6b53-11e8-9d1c-0660b7976219
-dermatofibrosarcoma_protuberans	2	5	3	1	http://dev2.ndexbio.org/v2/network/3d062386-6b53-11e8-9d1c-0660b7976219	3d062386-6b53-11e8-9d1c-0660b7976219
-desmoid_type_fibromatosis	2	3	1	1	http://dev2.ndexbio.org/v2/network/3d16ec74-6b53-11e8-9d1c-0660b7976219	3d16ec74-6b53-11e8-9d1c-0660b7976219
-diabetes_insipidus__nephrogenic__x_linked	2	24	13	7	http://dev2.ndexbio.org/v2/network/40c4b196-6b53-11e8-9d1c-0660b7976219	40c4b196-6b53-11e8-9d1c-0660b7976219
-diamond_blackfan_anemia__dba_	8	101	19	7	http://dev2.ndexbio.org/v2/network/3e980e47-6b53-11e8-9d1c-0660b7976219	3e980e47-6b53-11e8-9d1c-0660b7976219
-diarrhea_2__with_microvillus_atrophy	2	9	7	1	http://dev2.ndexbio.org/v2/network/3d847aab-6b53-11e8-9d1c-0660b7976219	3d847aab-6b53-11e8-9d1c-0660b7976219
-disseminated_atypical_mycobacterial_infection	5	407	156	82	http://dev2.ndexbio.org/v2/network/bc7baee3-6b53-11e8-9d1c-0660b7976219	bc7baee3-6b53-11e8-9d1c-0660b7976219
-distal_arthrogryposis__da_	5	18	4	3	http://dev2.ndexbio.org/v2/network/3b08f32d-6b53-11e8-9d1c-0660b7976219	3b08f32d-6b53-11e8-9d1c-0660b7976219
-doyne_honeycomb_retinal_dystrophy	3	315	111	53	http://dev2.ndexbio.org/v2/network/6e724484-6b53-11e8-9d1c-0660b7976219	6e724484-6b53-11e8-9d1c-0660b7976219
-dyskeratosis_congenita_autosomal_recessive_1	3	65	37	11	http://dev2.ndexbio.org/v2/network/3fb8e74c-6b53-11e8-9d1c-0660b7976219	3fb8e74c-6b53-11e8-9d1c-0660b7976219
-dysmenorrhea	2	2	1	1	http://dev2.ndexbio.org/v2/network/3ca11fa6-6b53-11e8-9d1c-0660b7976219	3ca11fa6-6b53-11e8-9d1c-0660b7976219
-ectodermal_dysplasia_1__hypohidrotic__x_linked	2	2	1	1	http://dev2.ndexbio.org/v2/network/46619d04-6b53-11e8-9d1c-0660b7976219	46619d04-6b53-11e8-9d1c-0660b7976219
-ehlers_danlos_osteogenesis_imperfecta_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/3d0e12ca-6b53-11e8-9d1c-0660b7976219	3d0e12ca-6b53-11e8-9d1c-0660b7976219
-ehlers_danlos_syndrome__classic_type	3	20	8	6	http://dev2.ndexbio.org/v2/network/3dad116a-6b53-11e8-9d1c-0660b7976219	3dad116a-6b53-11e8-9d1c-0660b7976219
-ehlers_danlos_syndrome__musculocontractural_type	2	201	90	27	http://dev2.ndexbio.org/v2/network/58aa8d95-6b53-11e8-9d1c-0660b7976219	58aa8d95-6b53-11e8-9d1c-0660b7976219
-ehlers_danlos_syndrome__periodontitis_type	2	2	1	1	http://dev2.ndexbio.org/v2/network/4528a84e-6b53-11e8-9d1c-0660b7976219	4528a84e-6b53-11e8-9d1c-0660b7976219
-ehlers_danlos_syndrome_type_2	3	20	8	5	http://dev2.ndexbio.org/v2/network/45edf46d-6b53-11e8-9d1c-0660b7976219	45edf46d-6b53-11e8-9d1c-0660b7976219
-emery_dreifuss_muscular_dystrophy	5	167	70	30	http://dev2.ndexbio.org/v2/network/53d6be21-6b53-11e8-9d1c-0660b7976219	53d6be21-6b53-11e8-9d1c-0660b7976219
-endocrine_system_disease	2	301	133	42	http://dev2.ndexbio.org/v2/network/7958a48f-6b53-11e8-9d1c-0660b7976219	7958a48f-6b53-11e8-9d1c-0660b7976219
-enlarged_parietal_foramina_cranium_bifidum	2	300	133	44	http://dev2.ndexbio.org/v2/network/72476820-6b53-11e8-9d1c-0660b7976219	72476820-6b53-11e8-9d1c-0660b7976219
-entamoebiasis	6	30	12	5	http://dev2.ndexbio.org/v2/network/43297cd8-6b53-11e8-9d1c-0660b7976219	43297cd8-6b53-11e8-9d1c-0660b7976219
-eosinophilia_myalgia_syndrome	2	3	1	1	http://dev2.ndexbio.org/v2/network/47964c54-6b53-11e8-9d1c-0660b7976219	47964c54-6b53-11e8-9d1c-0660b7976219
-eosinophilic_granulomatosis_with_polyangiitis__churg_strauss_syndrome	2	277	114	64	http://dev2.ndexbio.org/v2/network/6ae3ee00-6b53-11e8-9d1c-0660b7976219	6ae3ee00-6b53-11e8-9d1c-0660b7976219
-epidermal_nevus_syndrome	3	3	1	1	http://dev2.ndexbio.org/v2/network/4385f4cf-6b53-11e8-9d1c-0660b7976219	4385f4cf-6b53-11e8-9d1c-0660b7976219
-epidermodysplasia_verruciformis	2	2	1	1	http://dev2.ndexbio.org/v2/network/451ebd35-6b53-11e8-9d1c-0660b7976219	451ebd35-6b53-11e8-9d1c-0660b7976219
-epidermolysis_bullosa__lethal_acantholytic	2	2	1	1	http://dev2.ndexbio.org/v2/network/48070fd5-6b53-11e8-9d1c-0660b7976219	48070fd5-6b53-11e8-9d1c-0660b7976219
-epidermolysis_bullosa_junctionalis_with_pyloric_atresia	3	7	3	0	http://dev2.ndexbio.org/v2/network/442a2463-6b53-11e8-9d1c-0660b7976219	442a2463-6b53-11e8-9d1c-0660b7976219
-epidermolysis_bullosa_simplex	2	2	1	1	http://dev2.ndexbio.org/v2/network/4dfe7757-6b53-11e8-9d1c-0660b7976219	4dfe7757-6b53-11e8-9d1c-0660b7976219
-epidermolysis_bullosa_simplex__autosomal_recessive	2	2	1	1	http://dev2.ndexbio.org/v2/network/4e0b2196-6b53-11e8-9d1c-0660b7976219	4e0b2196-6b53-11e8-9d1c-0660b7976219
-epidermolysis_bullosa_simplex__cockayne_touraine_type	3	69	27	17	http://dev2.ndexbio.org/v2/network/576e1603-6b53-11e8-9d1c-0660b7976219	576e1603-6b53-11e8-9d1c-0660b7976219
-epidermolysis_bullosa_simplex__dowling_meara_type	2	2	1	1	http://dev2.ndexbio.org/v2/network/5ed07f70-6b53-11e8-9d1c-0660b7976219	5ed07f70-6b53-11e8-9d1c-0660b7976219
-epidermolysis_bullosa_simplex_with_mottled_pigmentation	2	2	1	1	http://dev2.ndexbio.org/v2/network/4e081452-6b53-11e8-9d1c-0660b7976219	4e081452-6b53-11e8-9d1c-0660b7976219
-epidermolysis_bullosa_simplex_with_pyloric_atresia	2	5	3	1	http://dev2.ndexbio.org/v2/network/4d0d12b4-6b53-11e8-9d1c-0660b7976219	4d0d12b4-6b53-11e8-9d1c-0660b7976219
-epidermolytic_palmoplantar_keratoderma__eppk_	2	22	5	2	http://dev2.ndexbio.org/v2/network/4f20624d-6b53-11e8-9d1c-0660b7976219	4f20624d-6b53-11e8-9d1c-0660b7976219
-epileptic_encephalopathy__early_infantile__2	2	259	106	53	http://dev2.ndexbio.org/v2/network/68276618-6b53-11e8-9d1c-0660b7976219	68276618-6b53-11e8-9d1c-0660b7976219
-epileptic_encephalopathy__early_infantile__31	2	411	164	64	http://dev2.ndexbio.org/v2/network/96a7ff7b-6b53-11e8-9d1c-0660b7976219	96a7ff7b-6b53-11e8-9d1c-0660b7976219
-episodic_ataxias	4	267	96	50	http://dev2.ndexbio.org/v2/network/661b420b-6b53-11e8-9d1c-0660b7976219	661b420b-6b53-11e8-9d1c-0660b7976219
-erythroderma__congenital__with_palmoplantar_keratoderma__hypotrichosis__and_hyper_ige	2	28	16	5	http://dev2.ndexbio.org/v2/network/4eeb9676-6b53-11e8-9d1c-0660b7976219	4eeb9676-6b53-11e8-9d1c-0660b7976219
-erythrokeratodermia_variabilis	3	9	4	1	http://dev2.ndexbio.org/v2/network/50f39b5f-6b53-11e8-9d1c-0660b7976219	50f39b5f-6b53-11e8-9d1c-0660b7976219
-estrogen_resistance	2	60	18	4	http://dev2.ndexbio.org/v2/network/51a64a2b-6b53-11e8-9d1c-0660b7976219	51a64a2b-6b53-11e8-9d1c-0660b7976219
-exfoliative_ichthyosis	2	18	7	6	http://dev2.ndexbio.org/v2/network/4e9e136b-6b53-11e8-9d1c-0660b7976219	4e9e136b-6b53-11e8-9d1c-0660b7976219
-eye_infections__bacterial	2	96	38	22	http://dev2.ndexbio.org/v2/network/550b6e68-6b53-11e8-9d1c-0660b7976219	550b6e68-6b53-11e8-9d1c-0660b7976219
-factor_viii_deficiency	2	4	2	2	http://dev2.ndexbio.org/v2/network/51088302-6b53-11e8-9d1c-0660b7976219	51088302-6b53-11e8-9d1c-0660b7976219
-factor_xiii_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/500b857f-6b53-11e8-9d1c-0660b7976219	500b857f-6b53-11e8-9d1c-0660b7976219
-familial_advanced_sleep_phase_syndrome	3	7	3	0	http://dev2.ndexbio.org/v2/network/50d53dd7-6b53-11e8-9d1c-0660b7976219	50d53dd7-6b53-11e8-9d1c-0660b7976219
-familial_cerebral_cavernous_malformation	3	4	3	0	http://dev2.ndexbio.org/v2/network/4e34c9d9-6b53-11e8-9d1c-0660b7976219	4e34c9d9-6b53-11e8-9d1c-0660b7976219
-familial_cold_autoinflammatory_syndrome	2	5	2	1	http://dev2.ndexbio.org/v2/network/547373b7-6b53-11e8-9d1c-0660b7976219	547373b7-6b53-11e8-9d1c-0660b7976219
-familial_congenital_mirror_movements	2	345	134	55	http://dev2.ndexbio.org/v2/network/8d5586b7-6b53-11e8-9d1c-0660b7976219	8d5586b7-6b53-11e8-9d1c-0660b7976219
-familial_dysfibrinogenemia	3	3	1	1	http://dev2.ndexbio.org/v2/network/5d1fc215-6b53-11e8-9d1c-0660b7976219	5d1fc215-6b53-11e8-9d1c-0660b7976219
-familial_erythrocytosis_1	3	264	112	45	http://dev2.ndexbio.org/v2/network/7f1d8ad8-6b53-11e8-9d1c-0660b7976219	7f1d8ad8-6b53-11e8-9d1c-0660b7976219
-familial_focal_epilepsy_with_variable_foci	3	3	1	1	http://dev2.ndexbio.org/v2/network/59c60f7f-6b53-11e8-9d1c-0660b7976219	59c60f7f-6b53-11e8-9d1c-0660b7976219
-familial_glucocorticoid_deficiency__fgd_	2	8	4	2	http://dev2.ndexbio.org/v2/network/57ed7f93-6b53-11e8-9d1c-0660b7976219	57ed7f93-6b53-11e8-9d1c-0660b7976219
-familial_hemophagocytic_lymphohistiocytosis	4	222	89	42	http://dev2.ndexbio.org/v2/network/6ca4fed4-6b53-11e8-9d1c-0660b7976219	6ca4fed4-6b53-11e8-9d1c-0660b7976219
-familial_hyperphosphatemic_tumoral_calcinosis_hyperphosphatemic_hyperostosis_syndrome	3	73	42	21	http://dev2.ndexbio.org/v2/network/5d077f15-6b53-11e8-9d1c-0660b7976219	5d077f15-6b53-11e8-9d1c-0660b7976219
-familial_hypoalphalipoproteinemia	2	3	2	2	http://dev2.ndexbio.org/v2/network/5b89dfa1-6b53-11e8-9d1c-0660b7976219	5b89dfa1-6b53-11e8-9d1c-0660b7976219
-familial_hypobetalipoproteinemia__fhbl_	2	48	23	8	http://dev2.ndexbio.org/v2/network/5e2cecda-6b53-11e8-9d1c-0660b7976219	5e2cecda-6b53-11e8-9d1c-0660b7976219
-familial_hypodysfibrinogenemia	3	3	1	1	http://dev2.ndexbio.org/v2/network/5fc629c9-6b53-11e8-9d1c-0660b7976219	5fc629c9-6b53-11e8-9d1c-0660b7976219
-familial_hypofibrinogenemia	3	3	1	1	http://dev2.ndexbio.org/v2/network/5e588fe9-6b53-11e8-9d1c-0660b7976219	5e588fe9-6b53-11e8-9d1c-0660b7976219
-familial_porencephaly	2	2	1	1	http://dev2.ndexbio.org/v2/network/5e8852b3-6b53-11e8-9d1c-0660b7976219	5e8852b3-6b53-11e8-9d1c-0660b7976219
-familial_primary_localized_cutaneous_amyloidosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/5e65fd78-6b53-11e8-9d1c-0660b7976219	5e65fd78-6b53-11e8-9d1c-0660b7976219
-familial_renal_hypouricemia	2	2	1	1	http://dev2.ndexbio.org/v2/network/60d8d20a-6b53-11e8-9d1c-0660b7976219	60d8d20a-6b53-11e8-9d1c-0660b7976219
-familial_rhabdoid_tumor	2	2	1	1	http://dev2.ndexbio.org/v2/network/60a4f1bd-6b53-11e8-9d1c-0660b7976219	60a4f1bd-6b53-11e8-9d1c-0660b7976219
-fanconi_anemia__complementation_group_a	9	63	28	13	http://dev2.ndexbio.org/v2/network/62bc1152-6b53-11e8-9d1c-0660b7976219	62bc1152-6b53-11e8-9d1c-0660b7976219
-fanconi_syndrome	2	152	36	22	http://dev2.ndexbio.org/v2/network/77c3fb02-6b53-11e8-9d1c-0660b7976219	77c3fb02-6b53-11e8-9d1c-0660b7976219
-fatty_liver__alcoholic	3	158	62	26	http://dev2.ndexbio.org/v2/network/80ef3cf5-6b53-11e8-9d1c-0660b7976219	80ef3cf5-6b53-11e8-9d1c-0660b7976219
-fibrochondrogenesis	2	10	5	1	http://dev2.ndexbio.org/v2/network/606d8ddf-6b53-11e8-9d1c-0660b7976219	606d8ddf-6b53-11e8-9d1c-0660b7976219
-fibular_hypoplasia_and_complex_brachydactyly	2	3	2	1	http://dev2.ndexbio.org/v2/network/5fc677eb-6b53-11e8-9d1c-0660b7976219	5fc677eb-6b53-11e8-9d1c-0660b7976219
-foot_deformities__congenital	4	389	162	86	http://dev2.ndexbio.org/v2/network/940c6d9f-6b53-11e8-9d1c-0660b7976219	940c6d9f-6b53-11e8-9d1c-0660b7976219
-frontometaphyseal_dysplasia	2	110	51	21	http://dev2.ndexbio.org/v2/network/69c18d36-6b53-11e8-9d1c-0660b7976219	69c18d36-6b53-11e8-9d1c-0660b7976219
-galactosialidosis	3	3	1	1	http://dev2.ndexbio.org/v2/network/5eb46bde-6b53-11e8-9d1c-0660b7976219	5eb46bde-6b53-11e8-9d1c-0660b7976219
-gallbladder_disease__cholecystitis__cholelithiasis	2	27	8	5	http://dev2.ndexbio.org/v2/network/608c127b-6b53-11e8-9d1c-0660b7976219	608c127b-6b53-11e8-9d1c-0660b7976219
-gastrotintestinal_stromal_tumor	2	10	4	0	http://dev2.ndexbio.org/v2/network/601645da-6b53-11e8-9d1c-0660b7976219	601645da-6b53-11e8-9d1c-0660b7976219
-gaucher_disease	2	2	1	1	http://dev2.ndexbio.org/v2/network/6095af6f-6b53-11e8-9d1c-0660b7976219	6095af6f-6b53-11e8-9d1c-0660b7976219
-gaucher_disease__type_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/5fd740d6-6b53-11e8-9d1c-0660b7976219	5fd740d6-6b53-11e8-9d1c-0660b7976219
-generalized_epilepsy_with_febrile_seizures_plus__type_2	2	7	1	1	http://dev2.ndexbio.org/v2/network/5fe94246-6b53-11e8-9d1c-0660b7976219	5fe94246-6b53-11e8-9d1c-0660b7976219
-generalized_junctional_epidermolysis_bullosa__non_herlitz_type	3	15	5	2	http://dev2.ndexbio.org/v2/network/5ea3ca08-6b53-11e8-9d1c-0660b7976219	5ea3ca08-6b53-11e8-9d1c-0660b7976219
-giant_cell_arteritis__temporal_arteritis	2	6	2	0	http://dev2.ndexbio.org/v2/network/603e6766-6b53-11e8-9d1c-0660b7976219	603e6766-6b53-11e8-9d1c-0660b7976219
-gitelman_syndrome	2	26	9	4	http://dev2.ndexbio.org/v2/network/68084549-6b53-11e8-9d1c-0660b7976219	68084549-6b53-11e8-9d1c-0660b7976219
-glanzmann_s_thrombasthenia	2	4	1	1	http://dev2.ndexbio.org/v2/network/68de3250-6b53-11e8-9d1c-0660b7976219	68de3250-6b53-11e8-9d1c-0660b7976219
-glanzmann_thrombasthenia	2	4	1	1	http://dev2.ndexbio.org/v2/network/69b1fdc3-6b53-11e8-9d1c-0660b7976219	69b1fdc3-6b53-11e8-9d1c-0660b7976219
-glaucoma__congenital	2	115	33	21	http://dev2.ndexbio.org/v2/network/6d1e74a8-6b53-11e8-9d1c-0660b7976219	6d1e74a8-6b53-11e8-9d1c-0660b7976219
-glc3b	2	115	33	20	http://dev2.ndexbio.org/v2/network/6e102716-6b53-11e8-9d1c-0660b7976219	6e102716-6b53-11e8-9d1c-0660b7976219
-glucocorticoid_remediable_aldosteronism__gra_	2	2	1	1	http://dev2.ndexbio.org/v2/network/6a06859f-6b53-11e8-9d1c-0660b7976219	6a06859f-6b53-11e8-9d1c-0660b7976219
-gluconobacter_infection	3	5	3	0	http://dev2.ndexbio.org/v2/network/68c88766-6b53-11e8-9d1c-0660b7976219	68c88766-6b53-11e8-9d1c-0660b7976219
-glycine_encephalopathy	3	3	2	2	http://dev2.ndexbio.org/v2/network/68ffc424-6b53-11e8-9d1c-0660b7976219	68ffc424-6b53-11e8-9d1c-0660b7976219
-glycogen_storage_disease_ixc	2	2	1	1	http://dev2.ndexbio.org/v2/network/672beeb8-6b53-11e8-9d1c-0660b7976219	672beeb8-6b53-11e8-9d1c-0660b7976219
-griscelli_syndrome__type_3	2	2	1	1	http://dev2.ndexbio.org/v2/network/6d226c4a-6b53-11e8-9d1c-0660b7976219	6d226c4a-6b53-11e8-9d1c-0660b7976219
-haddad_syndrome	3	34	17	6	http://dev2.ndexbio.org/v2/network/6b76dea7-6b53-11e8-9d1c-0660b7976219	6b76dea7-6b53-11e8-9d1c-0660b7976219
-helicobacter_infections	3	316	134	55	http://dev2.ndexbio.org/v2/network/a1d79e3a-6b53-11e8-9d1c-0660b7976219	a1d79e3a-6b53-11e8-9d1c-0660b7976219
-helicobacter_pylori_infection__susceptibility_to	2	368	162	81	http://dev2.ndexbio.org/v2/network/bed07495-6b53-11e8-9d1c-0660b7976219	bed07495-6b53-11e8-9d1c-0660b7976219
-hemimegalencephaly	2	203	90	42	http://dev2.ndexbio.org/v2/network/8ac34248-6b53-11e8-9d1c-0660b7976219	8ac34248-6b53-11e8-9d1c-0660b7976219
-hemoglobin_lepore_beta_thalassemia_syndrome	2	5	3	2	http://dev2.ndexbio.org/v2/network/701a9cf6-6b53-11e8-9d1c-0660b7976219	701a9cf6-6b53-11e8-9d1c-0660b7976219
-hemorrhage__intracerebral__susceptibility_to	3	252	108	43	http://dev2.ndexbio.org/v2/network/930165b7-6b53-11e8-9d1c-0660b7976219	930165b7-6b53-11e8-9d1c-0660b7976219
-hennekam_syndrome	2	14	15	3	http://dev2.ndexbio.org/v2/network/779a2bd4-6b53-11e8-9d1c-0660b7976219	779a2bd4-6b53-11e8-9d1c-0660b7976219
-hepatitis_b_virus__susceptibility_to	3	7	3	0	http://dev2.ndexbio.org/v2/network/718f3c2f-6b53-11e8-9d1c-0660b7976219	718f3c2f-6b53-11e8-9d1c-0660b7976219
-hepatocellular_fibrolamellar_carcinoma	2	62	32	16	http://dev2.ndexbio.org/v2/network/755f08ff-6b53-11e8-9d1c-0660b7976219	755f08ff-6b53-11e8-9d1c-0660b7976219
-hepatorenal_syndrome	2	89	31	10	http://dev2.ndexbio.org/v2/network/75db3d10-6b53-11e8-9d1c-0660b7976219	75db3d10-6b53-11e8-9d1c-0660b7976219
-hereditary_angioedema	3	190	69	42	http://dev2.ndexbio.org/v2/network/7e5642b4-6b53-11e8-9d1c-0660b7976219	7e5642b4-6b53-11e8-9d1c-0660b7976219
-hereditary_breast_and_ovarian_cancer_syndrome	4	35	17	8	http://dev2.ndexbio.org/v2/network/79a60168-6b53-11e8-9d1c-0660b7976219	79a60168-6b53-11e8-9d1c-0660b7976219
-hereditary_breast_ovarian_cancer	2	4	2	0	http://dev2.ndexbio.org/v2/network/704863d4-6b53-11e8-9d1c-0660b7976219	704863d4-6b53-11e8-9d1c-0660b7976219
-hereditary_combined_deficiency_of_vitamin_k_dependent_clotting_factors	2	70	29	10	http://dev2.ndexbio.org/v2/network/7634cede-6b53-11e8-9d1c-0660b7976219	7634cede-6b53-11e8-9d1c-0660b7976219
-hereditary_elliptocytosis	4	35	16	4	http://dev2.ndexbio.org/v2/network/7296c0cc-6b53-11e8-9d1c-0660b7976219	7296c0cc-6b53-11e8-9d1c-0660b7976219
-hereditary_elliptocytosis__he_	3	29	10	4	http://dev2.ndexbio.org/v2/network/715196d4-6b53-11e8-9d1c-0660b7976219	715196d4-6b53-11e8-9d1c-0660b7976219
-hereditary_mucosal_leukokeratosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/7225fd58-6b53-11e8-9d1c-0660b7976219	7225fd58-6b53-11e8-9d1c-0660b7976219
-hereditary_pancreatitis__hereditary_chronic_pancreatitis	5	246	101	42	http://dev2.ndexbio.org/v2/network/9fb58093-6b53-11e8-9d1c-0660b7976219	9fb58093-6b53-11e8-9d1c-0660b7976219
-hereditary_persistence_of_fetal_hemoglobin_beta_thalassemia_syndrome	4	64	27	8	http://dev2.ndexbio.org/v2/network/74a136e9-6b53-11e8-9d1c-0660b7976219	74a136e9-6b53-11e8-9d1c-0660b7976219
-hereditary_persistence_of_fetal_hemoglobin_sickle_cell_disease_syndrome	4	64	27	8	http://dev2.ndexbio.org/v2/network/7e37e521-6b53-11e8-9d1c-0660b7976219	7e37e521-6b53-11e8-9d1c-0660b7976219
-hereditary_pulmonary_alveolar_proteinosis	2	4	2	2	http://dev2.ndexbio.org/v2/network/7a178746-6b53-11e8-9d1c-0660b7976219	7a178746-6b53-11e8-9d1c-0660b7976219
-hereditary_site_specific_ovarian_cancer_syndrome	2	4	2	0	http://dev2.ndexbio.org/v2/network/7abf3980-6b53-11e8-9d1c-0660b7976219	7abf3980-6b53-11e8-9d1c-0660b7976219
-hereditary_spherocytosis__sph_	4	15	8	1	http://dev2.ndexbio.org/v2/network/79d91f7d-6b53-11e8-9d1c-0660b7976219	79d91f7d-6b53-11e8-9d1c-0660b7976219
-hermansky_pudlak_syndrome_with_pulmonary_fibrosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/7a36cf2d-6b53-11e8-9d1c-0660b7976219	7a36cf2d-6b53-11e8-9d1c-0660b7976219
-hermansky_pudlak_syndrome_without_pulmonary_fibrosis	3	215	89	4	http://dev2.ndexbio.org/v2/network/8754cf8d-6b53-11e8-9d1c-0660b7976219	8754cf8d-6b53-11e8-9d1c-0660b7976219
-high_bone_mass_osteogenesis_imperfecta	2	2	1	1	http://dev2.ndexbio.org/v2/network/7b570c32-6b53-11e8-9d1c-0660b7976219	7b570c32-6b53-11e8-9d1c-0660b7976219
-hiv_associated_lipodystrophy_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/7a635d8b-6b53-11e8-9d1c-0660b7976219	7a635d8b-6b53-11e8-9d1c-0660b7976219
-hiv_wasting_syndrome	4	59	27	9	http://dev2.ndexbio.org/v2/network/7d6b46ce-6b53-11e8-9d1c-0660b7976219	7d6b46ce-6b53-11e8-9d1c-0660b7976219
-hodgkin_lymphoma	6	386	141	83	http://dev2.ndexbio.org/v2/network/b33199d9-6b53-11e8-9d1c-0660b7976219	b33199d9-6b53-11e8-9d1c-0660b7976219
-homozygous_familial_hypercholesterolemia	3	100	49	10	http://dev2.ndexbio.org/v2/network/7fb8dfe8-6b53-11e8-9d1c-0660b7976219	7fb8dfe8-6b53-11e8-9d1c-0660b7976219
-hydronephrosis	3	411	157	97	http://dev2.ndexbio.org/v2/network/c46b3d4a-6b53-11e8-9d1c-0660b7976219	c46b3d4a-6b53-11e8-9d1c-0660b7976219
-hyper_ige_recurrent_infection_syndrome__autosomal_recessive	2	3	2	1	http://dev2.ndexbio.org/v2/network/79d96d9e-6b53-11e8-9d1c-0660b7976219	79d96d9e-6b53-11e8-9d1c-0660b7976219
-hyperaldosteronism__familial__type_i	2	2	1	1	http://dev2.ndexbio.org/v2/network/7af60128-6b53-11e8-9d1c-0660b7976219	7af60128-6b53-11e8-9d1c-0660b7976219
-hyperalphalipoproteinemia	2	7	6	2	http://dev2.ndexbio.org/v2/network/7b3a5c5c-6b53-11e8-9d1c-0660b7976219	7b3a5c5c-6b53-11e8-9d1c-0660b7976219
-hyperalphalipoproteinemia_1	2	7	6	2	http://dev2.ndexbio.org/v2/network/7af1e276-6b53-11e8-9d1c-0660b7976219	7af1e276-6b53-11e8-9d1c-0660b7976219
-hyperandrogenism_due_to_cortisone_reductase_deficiency	2	36	16	4	http://dev2.ndexbio.org/v2/network/887f6d90-6b53-11e8-9d1c-0660b7976219	887f6d90-6b53-11e8-9d1c-0660b7976219
-hypereosinophilic_syndrome	2	139	75	28	http://dev2.ndexbio.org/v2/network/87175219-6b53-11e8-9d1c-0660b7976219	87175219-6b53-11e8-9d1c-0660b7976219
-hyperlipoproteinemia_type_iii	2	4	1	1	http://dev2.ndexbio.org/v2/network/7ca9cafe-6b53-11e8-9d1c-0660b7976219	7ca9cafe-6b53-11e8-9d1c-0660b7976219
-hyperlipoproteinemias	5	434	185	108	http://dev2.ndexbio.org/v2/network/d2608ab5-6b53-11e8-9d1c-0660b7976219	d2608ab5-6b53-11e8-9d1c-0660b7976219
-hypoalphalipoproteinemia	2	3	2	2	http://dev2.ndexbio.org/v2/network/847be5d7-6b53-11e8-9d1c-0660b7976219	847be5d7-6b53-11e8-9d1c-0660b7976219
-hypocalcemia	3	158	56	24	http://dev2.ndexbio.org/v2/network/8dfdfb2d-6b53-11e8-9d1c-0660b7976219	8dfdfb2d-6b53-11e8-9d1c-0660b7976219
-hypocalcemia__autosomal_dominant_1	2	96	17	12	http://dev2.ndexbio.org/v2/network/885661ae-6b53-11e8-9d1c-0660b7976219	885661ae-6b53-11e8-9d1c-0660b7976219
-hypocalcemic_vitamin_d_dependent_rickets	2	32	8	5	http://dev2.ndexbio.org/v2/network/82d64ce2-6b53-11e8-9d1c-0660b7976219	82d64ce2-6b53-11e8-9d1c-0660b7976219
-hypogonadotropic_hypogonadism_23_with_or_without_anosmia	2	127	56	28	http://dev2.ndexbio.org/v2/network/9280c4b7-6b53-11e8-9d1c-0660b7976219	9280c4b7-6b53-11e8-9d1c-0660b7976219
-hypohidrotic_ectodermal_dysplasia	2	21	7	2	http://dev2.ndexbio.org/v2/network/82ee1ab2-6b53-11e8-9d1c-0660b7976219	82ee1ab2-6b53-11e8-9d1c-0660b7976219
-hypohidrotic_ectodermal_dysplasia_with_immunodeficiency	2	6	3	3	http://dev2.ndexbio.org/v2/network/a0fc5925-6b53-11e8-9d1c-0660b7976219	a0fc5925-6b53-11e8-9d1c-0660b7976219
-hypokalemic_periodic_paralysis	2	2	1	1	http://dev2.ndexbio.org/v2/network/94906a0c-6b53-11e8-9d1c-0660b7976219	94906a0c-6b53-11e8-9d1c-0660b7976219
-hypokalemic_periodic_paralysis__hypopp_	2	2	1	1	http://dev2.ndexbio.org/v2/network/84305e9c-6b53-11e8-9d1c-0660b7976219	84305e9c-6b53-11e8-9d1c-0660b7976219
-hypomyelination_hypogonadotropic_hypogonadism_hypodontia_syndrome	3	7	2	0	http://dev2.ndexbio.org/v2/network/84d37c0c-6b53-11e8-9d1c-0660b7976219	84d37c0c-6b53-11e8-9d1c-0660b7976219
-hypospadias_1__x_linked	2	181	69	29	http://dev2.ndexbio.org/v2/network/9472a8cc-6b53-11e8-9d1c-0660b7976219	9472a8cc-6b53-11e8-9d1c-0660b7976219
-hypothyroidism_due_to_deficient_transcription_factors_involved_in_pituitary_development_or_function	5	167	68	17	http://dev2.ndexbio.org/v2/network/8cd42161-6b53-11e8-9d1c-0660b7976219	8cd42161-6b53-11e8-9d1c-0660b7976219
-hypotonia_speech_impairment_severe_cognitive_delay_syndrome	2	3	2	2	http://dev2.ndexbio.org/v2/network/833dc085-6b53-11e8-9d1c-0660b7976219	833dc085-6b53-11e8-9d1c-0660b7976219
-hypoxanthine_guanine_phosphoribosyltransferase_partial_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/82265d3c-6b53-11e8-9d1c-0660b7976219	82265d3c-6b53-11e8-9d1c-0660b7976219
-hypoxia__brain	2	3	2	0	http://dev2.ndexbio.org/v2/network/830e25e8-6b53-11e8-9d1c-0660b7976219	830e25e8-6b53-11e8-9d1c-0660b7976219
-ichthyosis__congenital__autosomal_recessive_2	3	3	1	1	http://dev2.ndexbio.org/v2/network/8240750a-6b53-11e8-9d1c-0660b7976219	8240750a-6b53-11e8-9d1c-0660b7976219
-ichthyosis__cyclic__with_epidermolytic_hyperkeratosis	2	6	2	1	http://dev2.ndexbio.org/v2/network/839333d8-6b53-11e8-9d1c-0660b7976219	839333d8-6b53-11e8-9d1c-0660b7976219
-idiopathic_bronchiectasis	4	353	135	60	http://dev2.ndexbio.org/v2/network/bab93f23-6b53-11e8-9d1c-0660b7976219	bab93f23-6b53-11e8-9d1c-0660b7976219
-immunodeficiency_due_to_a_late_component_of_complement_deficiency	7	7	3	0	http://dev2.ndexbio.org/v2/network/838f6341-6b53-11e8-9d1c-0660b7976219	838f6341-6b53-11e8-9d1c-0660b7976219
-infantile_bartter_syndrome_with_sensorineural_deafness	3	3	1	1	http://dev2.ndexbio.org/v2/network/83bbf19c-6b53-11e8-9d1c-0660b7976219	83bbf19c-6b53-11e8-9d1c-0660b7976219
-infantile_cerebellar_retinal_degeneration	2	193	74	20	http://dev2.ndexbio.org/v2/network/980bd5a5-6b53-11e8-9d1c-0660b7976219	980bd5a5-6b53-11e8-9d1c-0660b7976219
-infantile_glycine_encephalopathy	3	3	2	2	http://dev2.ndexbio.org/v2/network/8bcf5bc2-6b53-11e8-9d1c-0660b7976219	8bcf5bc2-6b53-11e8-9d1c-0660b7976219
-infantile_myofibromatosis	2	19	10	2	http://dev2.ndexbio.org/v2/network/8d22ddd9-6b53-11e8-9d1c-0660b7976219	8d22ddd9-6b53-11e8-9d1c-0660b7976219
-intellectual_disability_expressive_aphasia_facial_dysmorphism_syndrome	2	33	16	2	http://dev2.ndexbio.org/v2/network/8d5f71d1-6b53-11e8-9d1c-0660b7976219	8d5f71d1-6b53-11e8-9d1c-0660b7976219
-intermediate_maple_syrup_urine_disease	4	4	1	1	http://dev2.ndexbio.org/v2/network/8ace17c0-6b53-11e8-9d1c-0660b7976219	8ace17c0-6b53-11e8-9d1c-0660b7976219
-intermediate_nemaline_myopathy	4	112	46	22	http://dev2.ndexbio.org/v2/network/96d0e457-6b53-11e8-9d1c-0660b7976219	96d0e457-6b53-11e8-9d1c-0660b7976219
-intermediate_spinal_muscular_atrophy	2	498	202	74	http://dev2.ndexbio.org/v2/network/ecf09f65-6b53-11e8-9d1c-0660b7976219	ecf09f65-6b53-11e8-9d1c-0660b7976219
-intermittent_maple_syrup_urine_disease	3	4	1	1	http://dev2.ndexbio.org/v2/network/8c2e6b0b-6b53-11e8-9d1c-0660b7976219	8c2e6b0b-6b53-11e8-9d1c-0660b7976219
-interstitial_cystitis	3	3	1	1	http://dev2.ndexbio.org/v2/network/8aca201e-6b53-11e8-9d1c-0660b7976219	8aca201e-6b53-11e8-9d1c-0660b7976219
-intracranial_vasospasm	4	7	3	0	http://dev2.ndexbio.org/v2/network/9d8c8702-6b53-11e8-9d1c-0660b7976219	9d8c8702-6b53-11e8-9d1c-0660b7976219
-invasive_pneumococcal_disease__recurrent_isolated__1	2	2	1	1	http://dev2.ndexbio.org/v2/network/8ac1bba6-6b53-11e8-9d1c-0660b7976219	8ac1bba6-6b53-11e8-9d1c-0660b7976219
-isodicentric_chromosome_15_syndrome	3	13	2	1	http://dev2.ndexbio.org/v2/network/8d762d33-6b53-11e8-9d1c-0660b7976219	8d762d33-6b53-11e8-9d1c-0660b7976219
-isolated_focal_cortical_dysplasia_type_iib	2	240	93	37	http://dev2.ndexbio.org/v2/network/a62f8646-6b53-11e8-9d1c-0660b7976219	a62f8646-6b53-11e8-9d1c-0660b7976219
-isolated_growth_hormone_deficiency__type_2	2	147	70	17	http://dev2.ndexbio.org/v2/network/98481b75-6b53-11e8-9d1c-0660b7976219	98481b75-6b53-11e8-9d1c-0660b7976219
-jackson_weiss_syndrome	2	9	2	0	http://dev2.ndexbio.org/v2/network/8ccf184f-6b53-11e8-9d1c-0660b7976219	8ccf184f-6b53-11e8-9d1c-0660b7976219
-jakob_creutzfeldt_disease	2	447	191	97	http://dev2.ndexbio.org/v2/network/f1aa574a-6b53-11e8-9d1c-0660b7976219	f1aa574a-6b53-11e8-9d1c-0660b7976219
-joubert_syndrome_21	2	414	201	73	http://dev2.ndexbio.org/v2/network/d974867e-6b53-11e8-9d1c-0660b7976219	d974867e-6b53-11e8-9d1c-0660b7976219
-junctional_epidermolysis_bullosa_herlitz_type	2	3	1	1	http://dev2.ndexbio.org/v2/network/9435eebd-6b53-11e8-9d1c-0660b7976219	9435eebd-6b53-11e8-9d1c-0660b7976219
-juvenile_glaucoma	2	35	14	3	http://dev2.ndexbio.org/v2/network/962821e2-6b53-11e8-9d1c-0660b7976219	962821e2-6b53-11e8-9d1c-0660b7976219
-juvenile_or_adult_cach_syndrome	5	5	1	1	http://dev2.ndexbio.org/v2/network/94f34acf-6b53-11e8-9d1c-0660b7976219	94f34acf-6b53-11e8-9d1c-0660b7976219
-juvenile_polyposis_syndrome	3	231	99	57	http://dev2.ndexbio.org/v2/network/d0526b0b-6b53-11e8-9d1c-0660b7976219	d0526b0b-6b53-11e8-9d1c-0660b7976219
-juvenile_retinoschisis	2	259	106	54	http://dev2.ndexbio.org/v2/network/bdfe7f05-6b53-11e8-9d1c-0660b7976219	bdfe7f05-6b53-11e8-9d1c-0660b7976219
-kabuki_syndrome_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/943419fb-6b53-11e8-9d1c-0660b7976219	943419fb-6b53-11e8-9d1c-0660b7976219
-keratosis__seborrheic	2	35	13	10	http://dev2.ndexbio.org/v2/network/9688b7a1-6b53-11e8-9d1c-0660b7976219	9688b7a1-6b53-11e8-9d1c-0660b7976219
-keratosis_palmoplantaris_striata	3	11	8	1	http://dev2.ndexbio.org/v2/network/bf294325-6b53-11e8-9d1c-0660b7976219	bf294325-6b53-11e8-9d1c-0660b7976219
-kid_syndrome	2	5	3	0	http://dev2.ndexbio.org/v2/network/969f25d5-6b53-11e8-9d1c-0660b7976219	969f25d5-6b53-11e8-9d1c-0660b7976219
-klippel_feil_syndrome_kfs_	2	25	7	5	http://dev2.ndexbio.org/v2/network/a2ebf3d7-6b53-11e8-9d1c-0660b7976219	a2ebf3d7-6b53-11e8-9d1c-0660b7976219
-laryngeal_benign_neoplasm	2	6	3	0	http://dev2.ndexbio.org/v2/network/96ff2051-6b53-11e8-9d1c-0660b7976219	96ff2051-6b53-11e8-9d1c-0660b7976219
-late_infantile_cach_syndrome	5	5	1	1	http://dev2.ndexbio.org/v2/network/9d4d0ce4-6b53-11e8-9d1c-0660b7976219	9d4d0ce4-6b53-11e8-9d1c-0660b7976219
-leber_hereditary_optic_neuropathy_and_dystonia__ldyt_	2	11	5	0	http://dev2.ndexbio.org/v2/network/94adb61b-6b53-11e8-9d1c-0660b7976219	94adb61b-6b53-11e8-9d1c-0660b7976219
-leber_optic_atrophy_and_dystonia	2	11	5	0	http://dev2.ndexbio.org/v2/network/95f2b9f6-6b53-11e8-9d1c-0660b7976219	95f2b9f6-6b53-11e8-9d1c-0660b7976219
-leber_plus_disease	2	11	5	0	http://dev2.ndexbio.org/v2/network/9ed6e101-6b53-11e8-9d1c-0660b7976219	9ed6e101-6b53-11e8-9d1c-0660b7976219
-leigh_syndrome_with_nephrotic_syndrome	2	274	132	20	http://dev2.ndexbio.org/v2/network/bd766311-6b53-11e8-9d1c-0660b7976219	bd766311-6b53-11e8-9d1c-0660b7976219
-leiomyoma__epithelioid	2	2	1	1	http://dev2.ndexbio.org/v2/network/9f27992d-6b53-11e8-9d1c-0660b7976219	9f27992d-6b53-11e8-9d1c-0660b7976219
-lethal_multiple_pterygium_syndrome	4	141	62	30	http://dev2.ndexbio.org/v2/network/aa9ccb02-6b53-11e8-9d1c-0660b7976219	aa9ccb02-6b53-11e8-9d1c-0660b7976219
-leukemia__chronic_myeloid	2	8	2	0	http://dev2.ndexbio.org/v2/network/9d3ba7c0-6b53-11e8-9d1c-0660b7976219	9d3ba7c0-6b53-11e8-9d1c-0660b7976219
-leukemia__erythroblastic__acute	3	308	124	72	http://dev2.ndexbio.org/v2/network/c1478f7c-6b53-11e8-9d1c-0660b7976219	c1478f7c-6b53-11e8-9d1c-0660b7976219
-leukocytosis	2	48	14	6	http://dev2.ndexbio.org/v2/network/bff2d428-6b53-11e8-9d1c-0660b7976219	bff2d428-6b53-11e8-9d1c-0660b7976219
-leukodystrophy__hypomyelinating__7__with_or_without_oligodontia_and_or_hypogonadotropic_hypogonadism	2	4	1	1	http://dev2.ndexbio.org/v2/network/9ff9b59f-6b53-11e8-9d1c-0660b7976219	9ff9b59f-6b53-11e8-9d1c-0660b7976219
-leukoencephalopathy_with_vanishing_white_matter	5	5	1	1	http://dev2.ndexbio.org/v2/network/9ef899dd-6b53-11e8-9d1c-0660b7976219	9ef899dd-6b53-11e8-9d1c-0660b7976219
-leukoencephalopathy_with_vanishing_white_matter__vanishing_white_matter_disease__childhood_ataxia_with_diffuse_central_nervous_system_hypomyelination__cach___cree_leukoencephalopathy__cle_	5	5	1	1	http://dev2.ndexbio.org/v2/network/c35a9051-6b53-11e8-9d1c-0660b7976219	c35a9051-6b53-11e8-9d1c-0660b7976219
-leydig_cell_tumor	2	46	12	6	http://dev2.ndexbio.org/v2/network/a0dc7508-6b53-11e8-9d1c-0660b7976219	a0dc7508-6b53-11e8-9d1c-0660b7976219
-li_fraumeni_syndrome	3	7	4	1	http://dev2.ndexbio.org/v2/network/9e3fa9b3-6b53-11e8-9d1c-0660b7976219	9e3fa9b3-6b53-11e8-9d1c-0660b7976219
-li_fraumeni_syndrome_1	2	25	11	2	http://dev2.ndexbio.org/v2/network/9ece5579-6b53-11e8-9d1c-0660b7976219	9ece5579-6b53-11e8-9d1c-0660b7976219
-li_fraumeni_syndrome_2	2	25	10	3	http://dev2.ndexbio.org/v2/network/bea7419d-6b53-11e8-9d1c-0660b7976219	bea7419d-6b53-11e8-9d1c-0660b7976219
-lichenoid_eruptions	2	34	15	7	http://dev2.ndexbio.org/v2/network/a027ca9f-6b53-11e8-9d1c-0660b7976219	a027ca9f-6b53-11e8-9d1c-0660b7976219
-liddle_syndrome	4	74	25	12	http://dev2.ndexbio.org/v2/network/a2956f51-6b53-11e8-9d1c-0660b7976219	a2956f51-6b53-11e8-9d1c-0660b7976219
-listeriosis	2	294	111	52	http://dev2.ndexbio.org/v2/network/dc490361-6b53-11e8-9d1c-0660b7976219	dc490361-6b53-11e8-9d1c-0660b7976219
-loeys_dietz_syndrome	4	6	5	1	http://dev2.ndexbio.org/v2/network/9f165b17-6b53-11e8-9d1c-0660b7976219	9f165b17-6b53-11e8-9d1c-0660b7976219
-loeys_dietz_syndrome__lds_	4	6	5	1	http://dev2.ndexbio.org/v2/network/b048d1b0-6b53-11e8-9d1c-0660b7976219	b048d1b0-6b53-11e8-9d1c-0660b7976219
-lymphangioleiomyomatosis__lam_	2	2	1	1	http://dev2.ndexbio.org/v2/network/9e173a0c-6b53-11e8-9d1c-0660b7976219	9e173a0c-6b53-11e8-9d1c-0660b7976219
-maffucci_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/b0b5ebdf-6b53-11e8-9d1c-0660b7976219	b0b5ebdf-6b53-11e8-9d1c-0660b7976219
-malignant_hyperthermia	2	134	73	30	http://dev2.ndexbio.org/v2/network/b8ad906b-6b53-11e8-9d1c-0660b7976219	b8ad906b-6b53-11e8-9d1c-0660b7976219
-malpuech_facial_clefting_syndrome	2	6	2	1	http://dev2.ndexbio.org/v2/network/a75652b3-6b53-11e8-9d1c-0660b7976219	a75652b3-6b53-11e8-9d1c-0660b7976219
-mandibuloacral_dysplasia	2	2	1	1	http://dev2.ndexbio.org/v2/network/a85db13a-6b53-11e8-9d1c-0660b7976219	a85db13a-6b53-11e8-9d1c-0660b7976219
-maple_syrup_urine_disease	5	68	26	12	http://dev2.ndexbio.org/v2/network/aa8a7b77-6b53-11e8-9d1c-0660b7976219	aa8a7b77-6b53-11e8-9d1c-0660b7976219
-maple_syrup_urine_disease__msud_	4	7	2	2	http://dev2.ndexbio.org/v2/network/a724e250-6b53-11e8-9d1c-0660b7976219	a724e250-6b53-11e8-9d1c-0660b7976219
-martsolf_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/aab7f430-6b53-11e8-9d1c-0660b7976219	aab7f430-6b53-11e8-9d1c-0660b7976219
-medullary_thyroid_cancer	3	20	9	5	http://dev2.ndexbio.org/v2/network/a82c67eb-6b53-11e8-9d1c-0660b7976219	a82c67eb-6b53-11e8-9d1c-0660b7976219
-megaepiphyseal_dwarfism	2	3	1	1	http://dev2.ndexbio.org/v2/network/a6dfc3cf-6b53-11e8-9d1c-0660b7976219	a6dfc3cf-6b53-11e8-9d1c-0660b7976219
-megaesophagus	2	3	2	0	http://dev2.ndexbio.org/v2/network/a65054c1-6b53-11e8-9d1c-0660b7976219	a65054c1-6b53-11e8-9d1c-0660b7976219
-megalencephaly_polymicrogyria_polydactyly_hydrocephalus_syndrome_1	4	239	112	46	http://dev2.ndexbio.org/v2/network/c7f0ba74-6b53-11e8-9d1c-0660b7976219	c7f0ba74-6b53-11e8-9d1c-0660b7976219
-megaloblastic_anemia_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/a5eb513c-6b53-11e8-9d1c-0660b7976219	a5eb513c-6b53-11e8-9d1c-0660b7976219
-meier_gorlin_syndrome	7	33	14	6	http://dev2.ndexbio.org/v2/network/aa605e22-6b53-11e8-9d1c-0660b7976219	aa605e22-6b53-11e8-9d1c-0660b7976219
-melanoma__cutaneous_malignant__susceptibility_to__8	2	39	16	5	http://dev2.ndexbio.org/v2/network/aaf54b68-6b53-11e8-9d1c-0660b7976219	aaf54b68-6b53-11e8-9d1c-0660b7976219
-melas_syndrome__mitochondrial_myopathy__encephalopathy__lactic_acidosis__stroke_like_episodes	2	2	1	0	http://dev2.ndexbio.org/v2/network/a26ed46a-6b53-11e8-9d1c-0660b7976219	a26ed46a-6b53-11e8-9d1c-0660b7976219
-melnick_fraser_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/a8305f90-6b53-11e8-9d1c-0660b7976219	a8305f90-6b53-11e8-9d1c-0660b7976219
-meningitis	3	96	30	22	http://dev2.ndexbio.org/v2/network/b332843b-6b53-11e8-9d1c-0660b7976219	b332843b-6b53-11e8-9d1c-0660b7976219
-mental_retardation__autosomal_dominant_35	2	27	11	2	http://dev2.ndexbio.org/v2/network/b11dd4e6-6b53-11e8-9d1c-0660b7976219	b11dd4e6-6b53-11e8-9d1c-0660b7976219
-mental_retardation__autosomal_recessive_39	2	8	5	1	http://dev2.ndexbio.org/v2/network/b05ecad0-6b53-11e8-9d1c-0660b7976219	b05ecad0-6b53-11e8-9d1c-0660b7976219
-mental_retardation__x_linked__syndromic_10	2	12	9	5	http://dev2.ndexbio.org/v2/network/afe70310-6b53-11e8-9d1c-0660b7976219	afe70310-6b53-11e8-9d1c-0660b7976219
-mesenteric_ischemia	2	4	2	2	http://dev2.ndexbio.org/v2/network/b00e1348-6b53-11e8-9d1c-0660b7976219	b00e1348-6b53-11e8-9d1c-0660b7976219
-metachromatic_leukodystrophy__adult_form	2	73	20	12	http://dev2.ndexbio.org/v2/network/b1f0401c-6b53-11e8-9d1c-0660b7976219	b1f0401c-6b53-11e8-9d1c-0660b7976219
-metachromatic_leukodystrophy__juvenile_form	2	73	20	12	http://dev2.ndexbio.org/v2/network/b346a88f-6b53-11e8-9d1c-0660b7976219	b346a88f-6b53-11e8-9d1c-0660b7976219
-metachromatic_leukodystrophy__late_infantile_form	2	73	20	12	http://dev2.ndexbio.org/v2/network/b1dd2e34-6b53-11e8-9d1c-0660b7976219	b1dd2e34-6b53-11e8-9d1c-0660b7976219
-metachromatic_leukodystrophy__mld_	2	73	20	12	http://dev2.ndexbio.org/v2/network/cda8813d-6b53-11e8-9d1c-0660b7976219	cda8813d-6b53-11e8-9d1c-0660b7976219
-metaphyseal_anadysplasia	2	311	140	63	http://dev2.ndexbio.org/v2/network/d48cb9cf-6b53-11e8-9d1c-0660b7976219	d48cb9cf-6b53-11e8-9d1c-0660b7976219
-microcephaly_with_chorioretinopathy__autosomal_recessive	2	3	1	1	http://dev2.ndexbio.org/v2/network/bf773c49-6b53-11e8-9d1c-0660b7976219	bf773c49-6b53-11e8-9d1c-0660b7976219
-microphthalmia__isolated__with_coloboma_6	2	25	7	6	http://dev2.ndexbio.org/v2/network/b207e6e2-6b53-11e8-9d1c-0660b7976219	b207e6e2-6b53-11e8-9d1c-0660b7976219
-microphthalmia_with_linear_skin_defects_syndrome	3	175	65	31	http://dev2.ndexbio.org/v2/network/bbb2e124-6b53-11e8-9d1c-0660b7976219	bbb2e124-6b53-11e8-9d1c-0660b7976219
-miller_dieker_lissencephaly_syndrome	2	113	41	16	http://dev2.ndexbio.org/v2/network/b637d50f-6b53-11e8-9d1c-0660b7976219	b637d50f-6b53-11e8-9d1c-0660b7976219
-mitral_valve_prolapse	2	466	222	63	http://dev2.ndexbio.org/v2/network/0af5b5bd-6b54-11e8-9d1c-0660b7976219	0af5b5bd-6b54-11e8-9d1c-0660b7976219
-mosaic_variegated_aneuploidy_syndrome_1	4	464	167	80	http://dev2.ndexbio.org/v2/network/0cc4a963-6b54-11e8-9d1c-0660b7976219	0cc4a963-6b54-11e8-9d1c-0660b7976219
-muir_torre_syndrome	3	9	5	2	http://dev2.ndexbio.org/v2/network/b963245e-6b53-11e8-9d1c-0660b7976219	b963245e-6b53-11e8-9d1c-0660b7976219
-multiple_acyl_coa_dehydrogenation_deficiency__mild_type	3	3	2	1	http://dev2.ndexbio.org/v2/network/b90c5288-6b53-11e8-9d1c-0660b7976219	b90c5288-6b53-11e8-9d1c-0660b7976219
-multiple_acyl_coa_dehydrogenation_deficiency__severe_neonatal_type	3	3	2	1	http://dev2.ndexbio.org/v2/network/b90a2fa7-6b53-11e8-9d1c-0660b7976219	b90a2fa7-6b53-11e8-9d1c-0660b7976219
-multiple_benign_circumferential_skin_creases_on_limbs	2	322	120	55	http://dev2.ndexbio.org/v2/network/ed581413-6b53-11e8-9d1c-0660b7976219	ed581413-6b53-11e8-9d1c-0660b7976219
-multiple_congenital_exostosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/bc4f2087-6b53-11e8-9d1c-0660b7976219	bc4f2087-6b53-11e8-9d1c-0660b7976219
-multiple_epiphyseal_dysplasia_due_to_collagen_9_anomaly	3	3	1	1	http://dev2.ndexbio.org/v2/network/b9cac00a-6b53-11e8-9d1c-0660b7976219	b9cac00a-6b53-11e8-9d1c-0660b7976219
-multiple_exostoses	2	2	1	1	http://dev2.ndexbio.org/v2/network/b96cc15a-6b53-11e8-9d1c-0660b7976219	b96cc15a-6b53-11e8-9d1c-0660b7976219
-multiple_joint_dislocations__short_stature__craniofacial_dysmorphism__and_congenital_heart_defects	3	218	73	34	http://dev2.ndexbio.org/v2/network/ccec83b7-6b53-11e8-9d1c-0660b7976219	ccec83b7-6b53-11e8-9d1c-0660b7976219
-muscular_dystrophy__congenital_merosin_deficient__1a	2	11	6	3	http://dev2.ndexbio.org/v2/network/b9e35126-6b53-11e8-9d1c-0660b7976219	b9e35126-6b53-11e8-9d1c-0660b7976219
-muscular_dystrophy__limb_girdle__type_1e	2	306	133	59	http://dev2.ndexbio.org/v2/network/d994b8c1-6b53-11e8-9d1c-0660b7976219	d994b8c1-6b53-11e8-9d1c-0660b7976219
-myasthenic_syndrome__congenital__1a__slow_channel	4	11	3	0	http://dev2.ndexbio.org/v2/network/b841d600-6b53-11e8-9d1c-0660b7976219	b841d600-6b53-11e8-9d1c-0660b7976219
-myasthenic_syndrome__congenital__21__presynaptic	2	11	6	1	http://dev2.ndexbio.org/v2/network/bd85f379-6b53-11e8-9d1c-0660b7976219	bd85f379-6b53-11e8-9d1c-0660b7976219
-myeloproliferative_disorder__chronic__with_eosinophilia	2	6	4	0	http://dev2.ndexbio.org/v2/network/ba295af0-6b53-11e8-9d1c-0660b7976219	ba295af0-6b53-11e8-9d1c-0660b7976219
-myoclonic_epilepsy_of_lafora	2	3	1	1	http://dev2.ndexbio.org/v2/network/b8a21eb1-6b53-11e8-9d1c-0660b7976219	b8a21eb1-6b53-11e8-9d1c-0660b7976219
-myopathy__centronuclear__2	2	81	37	22	http://dev2.ndexbio.org/v2/network/c577cb40-6b53-11e8-9d1c-0660b7976219	c577cb40-6b53-11e8-9d1c-0660b7976219
-myopathy__lactic_acidosis__and_sideroblastic_anemia	2	13	9	5	http://dev2.ndexbio.org/v2/network/c29a4da9-6b53-11e8-9d1c-0660b7976219	c29a4da9-6b53-11e8-9d1c-0660b7976219
-myotonia_congenita	2	30	11	3	http://dev2.ndexbio.org/v2/network/c425cf8b-6b53-11e8-9d1c-0660b7976219	c425cf8b-6b53-11e8-9d1c-0660b7976219
-naxos_disease_and_carvajal_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/c1df6240-6b53-11e8-9d1c-0660b7976219	c1df6240-6b53-11e8-9d1c-0660b7976219
-neonatal_glycine_encephalopathy	3	3	2	2	http://dev2.ndexbio.org/v2/network/c30c49db-6b53-11e8-9d1c-0660b7976219	c30c49db-6b53-11e8-9d1c-0660b7976219
-neoplasms__hormone_dependent	3	3	2	0	http://dev2.ndexbio.org/v2/network/c28e8dcd-6b53-11e8-9d1c-0660b7976219	c28e8dcd-6b53-11e8-9d1c-0660b7976219
-nephrotic_syndrome__idiopathic__steroid_resistant	3	11	5	1	http://dev2.ndexbio.org/v2/network/cd561b3f-6b53-11e8-9d1c-0660b7976219	cd561b3f-6b53-11e8-9d1c-0660b7976219
-netherton_syndrome	2	148	55	26	http://dev2.ndexbio.org/v2/network/ca0765e9-6b53-11e8-9d1c-0660b7976219	ca0765e9-6b53-11e8-9d1c-0660b7976219
-neu_laxova_syndrome_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/c23ee7d4-6b53-11e8-9d1c-0660b7976219	c23ee7d4-6b53-11e8-9d1c-0660b7976219
-neurofibroma	2	46	31	7	http://dev2.ndexbio.org/v2/network/c51d75fd-6b53-11e8-9d1c-0660b7976219	c51d75fd-6b53-11e8-9d1c-0660b7976219
-neurologic_waardenburg_shah_syndrome	2	21	8	5	http://dev2.ndexbio.org/v2/network/c2b48c7a-6b53-11e8-9d1c-0660b7976219	c2b48c7a-6b53-11e8-9d1c-0660b7976219
-neuromyelitis_optica	3	41	11	6	http://dev2.ndexbio.org/v2/network/c434c3bf-6b53-11e8-9d1c-0660b7976219	c434c3bf-6b53-11e8-9d1c-0660b7976219
-nevus__epidermal	5	18	10	4	http://dev2.ndexbio.org/v2/network/d10b8260-6b53-11e8-9d1c-0660b7976219	d10b8260-6b53-11e8-9d1c-0660b7976219
-nevus__pigmented	2	46	31	6	http://dev2.ndexbio.org/v2/network/cdc8b386-6b53-11e8-9d1c-0660b7976219	cdc8b386-6b53-11e8-9d1c-0660b7976219
-nicolaides_baraitser_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/c1342e79-6b53-11e8-9d1c-0660b7976219	c1342e79-6b53-11e8-9d1c-0660b7976219
-niemann_pick_disease__type_b	2	3	2	2	http://dev2.ndexbio.org/v2/network/c44a6eba-6b53-11e8-9d1c-0660b7976219	c44a6eba-6b53-11e8-9d1c-0660b7976219
-nodulosis_arthropathy_osteolysis_syndrome	2	3	1	1	http://dev2.ndexbio.org/v2/network/c1cb16e0-6b53-11e8-9d1c-0660b7976219	c1cb16e0-6b53-11e8-9d1c-0660b7976219
-nonketotic_hyperglycinemia__glycine_encephalopathy__gce_	3	3	2	2	http://dev2.ndexbio.org/v2/network/c1f33877-6b53-11e8-9d1c-0660b7976219	c1f33877-6b53-11e8-9d1c-0660b7976219
-null_pituitary_adenoma	2	19	10	0	http://dev2.ndexbio.org/v2/network/c7879820-6b53-11e8-9d1c-0660b7976219	c7879820-6b53-11e8-9d1c-0660b7976219
-ocular_albinism__ocular_albinism__type_i__oa1___waardenburg_syndrome__type_ii__ws2_oa_	2	29	11	5	http://dev2.ndexbio.org/v2/network/cbd399eb-6b53-11e8-9d1c-0660b7976219	cbd399eb-6b53-11e8-9d1c-0660b7976219
-oculocutaneous_albinism	2	39	16	5	http://dev2.ndexbio.org/v2/network/d7c9e326-6b53-11e8-9d1c-0660b7976219	d7c9e326-6b53-11e8-9d1c-0660b7976219
-opll	2	318	121	52	http://dev2.ndexbio.org/v2/network/f156dfb9-6b53-11e8-9d1c-0660b7976219	f156dfb9-6b53-11e8-9d1c-0660b7976219
-optic_atrophies__hereditary	2	11	5	0	http://dev2.ndexbio.org/v2/network/cb3f49a6-6b53-11e8-9d1c-0660b7976219	cb3f49a6-6b53-11e8-9d1c-0660b7976219
-optic_atrophy_9	2	193	74	19	http://dev2.ndexbio.org/v2/network/d40205af-6b53-11e8-9d1c-0660b7976219	d40205af-6b53-11e8-9d1c-0660b7976219
-oropharyngeal_cancer	2	329	120	34	http://dev2.ndexbio.org/v2/network/0a426bd2-6b54-11e8-9d1c-0660b7976219	0a426bd2-6b54-11e8-9d1c-0660b7976219
-oropharynx_cancer	4	391	132	71	http://dev2.ndexbio.org/v2/network/04efcfa4-6b54-11e8-9d1c-0660b7976219	04efcfa4-6b54-11e8-9d1c-0660b7976219
-osteogenesis_imperfecta_type_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/e1bfa237-6b53-11e8-9d1c-0660b7976219	e1bfa237-6b53-11e8-9d1c-0660b7976219
-osteogenesis_imperfecta_type_2	5	10	4	3	http://dev2.ndexbio.org/v2/network/ca43f9ec-6b53-11e8-9d1c-0660b7976219	ca43f9ec-6b53-11e8-9d1c-0660b7976219
-osteoporosis__juvenile	4	38	20	4	http://dev2.ndexbio.org/v2/network/cea8d9e2-6b53-11e8-9d1c-0660b7976219	cea8d9e2-6b53-11e8-9d1c-0660b7976219
-otospondylomegaepiphyseal_dysplasia	2	3	1	1	http://dev2.ndexbio.org/v2/network/cc45960a-6b53-11e8-9d1c-0660b7976219	cc45960a-6b53-11e8-9d1c-0660b7976219
-pachydermoperiostosis	2	103	28	13	http://dev2.ndexbio.org/v2/network/d8607e22-6b53-11e8-9d1c-0660b7976219	d8607e22-6b53-11e8-9d1c-0660b7976219
-pachyonychia_congenita	4	22	4	2	http://dev2.ndexbio.org/v2/network/d449bd3d-6b53-11e8-9d1c-0660b7976219	d449bd3d-6b53-11e8-9d1c-0660b7976219
-pachyonychia_congenita_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/d38200d3-6b53-11e8-9d1c-0660b7976219	d38200d3-6b53-11e8-9d1c-0660b7976219
-pachyonychia_congenita_type_2	2	31	6	5	http://dev2.ndexbio.org/v2/network/d43ff93b-6b53-11e8-9d1c-0660b7976219	d43ff93b-6b53-11e8-9d1c-0660b7976219
-palmoplantar_keratoderma__epidermolytic	3	11	2	0	http://dev2.ndexbio.org/v2/network/d401425d-6b53-11e8-9d1c-0660b7976219	d401425d-6b53-11e8-9d1c-0660b7976219
-palmoplantar_keratoderma__nonepidermolytic	2	2	1	1	http://dev2.ndexbio.org/v2/network/d240f4b7-6b53-11e8-9d1c-0660b7976219	d240f4b7-6b53-11e8-9d1c-0660b7976219
-palmoplantar_keratoderma__nonepidermolytic__focal	2	2	1	1	http://dev2.ndexbio.org/v2/network/d3f1b1eb-6b53-11e8-9d1c-0660b7976219	d3f1b1eb-6b53-11e8-9d1c-0660b7976219
-palmoplantar_keratoderma_i__striate__focal__or_diffuse	2	13	4	2	http://dev2.ndexbio.org/v2/network/d4758843-6b53-11e8-9d1c-0660b7976219	d4758843-6b53-11e8-9d1c-0660b7976219
-pancreatitis__hereditary	6	249	88	45	http://dev2.ndexbio.org/v2/network/ee4a8a02-6b53-11e8-9d1c-0660b7976219	ee4a8a02-6b53-11e8-9d1c-0660b7976219
-papillary_renal_cell_carcinoma	2	127	49	24	http://dev2.ndexbio.org/v2/network/dc527943-6b53-11e8-9d1c-0660b7976219	dc527943-6b53-11e8-9d1c-0660b7976219
-paraganglioma_and_gastric_stromal_sarcoma	3	4	3	0	http://dev2.ndexbio.org/v2/network/d45ad447-6b53-11e8-9d1c-0660b7976219	d45ad447-6b53-11e8-9d1c-0660b7976219
-parapsoriasis	2	8	5	0	http://dev2.ndexbio.org/v2/network/d34d5c22-6b53-11e8-9d1c-0660b7976219	d34d5c22-6b53-11e8-9d1c-0660b7976219
-parietal_foramina	2	300	133	42	http://dev2.ndexbio.org/v2/network/00232bdf-6b54-11e8-9d1c-0660b7976219	00232bdf-6b54-11e8-9d1c-0660b7976219
-parkinson_disease_6__autosomal_recessive_early_onset	2	2	1	0	http://dev2.ndexbio.org/v2/network/cdfededf-6b53-11e8-9d1c-0660b7976219	cdfededf-6b53-11e8-9d1c-0660b7976219
-partial_chromosome_y_deletion	2	400	157	74	http://dev2.ndexbio.org/v2/network/1644c324-6b54-11e8-9d1c-0660b7976219	1644c324-6b54-11e8-9d1c-0660b7976219
-pasteurellaceae_infections	3	26	8	2	http://dev2.ndexbio.org/v2/network/d54b9d7e-6b53-11e8-9d1c-0660b7976219	d54b9d7e-6b53-11e8-9d1c-0660b7976219
-peeling_skin_syndrome	2	3	1	1	http://dev2.ndexbio.org/v2/network/dccab5af-6b53-11e8-9d1c-0660b7976219	dccab5af-6b53-11e8-9d1c-0660b7976219
-penile_neoplasm	4	28	18	7	http://dev2.ndexbio.org/v2/network/dee0c4b1-6b53-11e8-9d1c-0660b7976219	dee0c4b1-6b53-11e8-9d1c-0660b7976219
-peptic_ulcer_disease	2	355	150	69	http://dev2.ndexbio.org/v2/network/311f2671-6b54-11e8-9d1c-0660b7976219	311f2671-6b54-11e8-9d1c-0660b7976219
-peptic_ulcer_hemorrhage	2	206	70	47	http://dev2.ndexbio.org/v2/network/f2309df0-6b53-11e8-9d1c-0660b7976219	f2309df0-6b53-11e8-9d1c-0660b7976219
-perianal_crohn_s_disease	2	359	172	21	http://dev2.ndexbio.org/v2/network/1a04b0bc-6b54-11e8-9d1c-0660b7976219	1a04b0bc-6b54-11e8-9d1c-0660b7976219
-pericardial_effusion	2	84	36	15	http://dev2.ndexbio.org/v2/network/e282a37e-6b53-11e8-9d1c-0660b7976219	e282a37e-6b53-11e8-9d1c-0660b7976219
-peripheral_artery_disease	2	10	4	1	http://dev2.ndexbio.org/v2/network/dde5c35f-6b53-11e8-9d1c-0660b7976219	dde5c35f-6b53-11e8-9d1c-0660b7976219
-peripheral_primitive_neuroectodermal_tumor	2	11	4	1	http://dev2.ndexbio.org/v2/network/dd48e6c0-6b53-11e8-9d1c-0660b7976219	dd48e6c0-6b53-11e8-9d1c-0660b7976219
-peripheral_resistance_to_thyroid_hormones	2	6	2	1	http://dev2.ndexbio.org/v2/network/dd81aa27-6b53-11e8-9d1c-0660b7976219	dd81aa27-6b53-11e8-9d1c-0660b7976219
-peroxisome_biogenesis_disorder_1b	2	4	2	0	http://dev2.ndexbio.org/v2/network/dd9ea817-6b53-11e8-9d1c-0660b7976219	dd9ea817-6b53-11e8-9d1c-0660b7976219
-persistent_fetal_circulation_syndrome	2	43	14	7	http://dev2.ndexbio.org/v2/network/e90e5bd1-6b53-11e8-9d1c-0660b7976219	e90e5bd1-6b53-11e8-9d1c-0660b7976219
-pfeiffer_syndrome	2	9	2	1	http://dev2.ndexbio.org/v2/network/f262aaad-6b53-11e8-9d1c-0660b7976219	f262aaad-6b53-11e8-9d1c-0660b7976219
-pfeiffer_syndrome_type_1	2	9	2	0	http://dev2.ndexbio.org/v2/network/dc1289f8-6b53-11e8-9d1c-0660b7976219	dc1289f8-6b53-11e8-9d1c-0660b7976219
-phakomatosis_cesioflammea	2	5	2	0	http://dev2.ndexbio.org/v2/network/dbae70c6-6b53-11e8-9d1c-0660b7976219	dbae70c6-6b53-11e8-9d1c-0660b7976219
-pharynx_cancer	2	6	3	0	http://dev2.ndexbio.org/v2/network/dd2272eb-6b53-11e8-9d1c-0660b7976219	dd2272eb-6b53-11e8-9d1c-0660b7976219
-phenylketonuria	2	2	1	1	http://dev2.ndexbio.org/v2/network/dd619ef4-6b53-11e8-9d1c-0660b7976219	dd619ef4-6b53-11e8-9d1c-0660b7976219
-phosphoenolpyruvate_carboxykinase_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/dcb13a2f-6b53-11e8-9d1c-0660b7976219	dcb13a2f-6b53-11e8-9d1c-0660b7976219
-phytanic_acid_storage_disease	2	2	1	1	http://dev2.ndexbio.org/v2/network/dd4abb85-6b53-11e8-9d1c-0660b7976219	dd4abb85-6b53-11e8-9d1c-0660b7976219
-pick_s_disease	2	20	12	1	http://dev2.ndexbio.org/v2/network/de1fe650-6b53-11e8-9d1c-0660b7976219	de1fe650-6b53-11e8-9d1c-0660b7976219
-piebald_trait	2	341	114	51	http://dev2.ndexbio.org/v2/network/3238fb79-6b54-11e8-9d1c-0660b7976219	3238fb79-6b54-11e8-9d1c-0660b7976219
-piebaldism	2	341	114	51	http://dev2.ndexbio.org/v2/network/100f412e-6b54-11e8-9d1c-0660b7976219	100f412e-6b54-11e8-9d1c-0660b7976219
-pitt_hopkins_like_syndrome	2	6	1	1	http://dev2.ndexbio.org/v2/network/ddf7ebd5-6b53-11e8-9d1c-0660b7976219	ddf7ebd5-6b53-11e8-9d1c-0660b7976219
-pituitary_hormone_deficiency__combined_2	3	332	144	59	http://dev2.ndexbio.org/v2/network/18ff4f2e-6b54-11e8-9d1c-0660b7976219	18ff4f2e-6b54-11e8-9d1c-0660b7976219
-platelet_type_bleeding_disorder_16	2	4	1	1	http://dev2.ndexbio.org/v2/network/e5dfb1d2-6b53-11e8-9d1c-0660b7976219	e5dfb1d2-6b53-11e8-9d1c-0660b7976219
-platelet_type_bleeding_disorder_8	3	194	101	15	http://dev2.ndexbio.org/v2/network/f58f323c-6b53-11e8-9d1c-0660b7976219	f58f323c-6b53-11e8-9d1c-0660b7976219
-pleurisy	6	186	82	43	http://dev2.ndexbio.org/v2/network/f423bb44-6b53-11e8-9d1c-0660b7976219	f423bb44-6b53-11e8-9d1c-0660b7976219
-polycystic_lipomembranous_osteodysplasia_with_sclerosing_leukoencephalopathy	2	17	9	4	http://dev2.ndexbio.org/v2/network/e551f07a-6b53-11e8-9d1c-0660b7976219	e551f07a-6b53-11e8-9d1c-0660b7976219
-polycystic_lipomembranous_osteodysplasia_with_sclerosing_leukoencephalopathy__plosl___nasu_hakola_disease	2	17	9	4	http://dev2.ndexbio.org/v2/network/f534dd14-6b53-11e8-9d1c-0660b7976219	f534dd14-6b53-11e8-9d1c-0660b7976219
-polycystic_liver_disease	2	116	50	28	http://dev2.ndexbio.org/v2/network/ec3d7bb0-6b53-11e8-9d1c-0660b7976219	ec3d7bb0-6b53-11e8-9d1c-0660b7976219
-polymerase_proofreading_related_adenomatous_polyposis	2	5	3	0	http://dev2.ndexbio.org/v2/network/e6a3eba3-6b53-11e8-9d1c-0660b7976219	e6a3eba3-6b53-11e8-9d1c-0660b7976219
-polymyositis	5	282	113	68	http://dev2.ndexbio.org/v2/network/04fbdd9c-6b54-11e8-9d1c-0660b7976219	04fbdd9c-6b54-11e8-9d1c-0660b7976219
-polyploidy	4	215	91	53	http://dev2.ndexbio.org/v2/network/fda310a6-6b53-11e8-9d1c-0660b7976219	fda310a6-6b53-11e8-9d1c-0660b7976219
-poor_drug_metabolism__pm_	2	12	3	1	http://dev2.ndexbio.org/v2/network/f04659cc-6b53-11e8-9d1c-0660b7976219	f04659cc-6b53-11e8-9d1c-0660b7976219
-porokeratosis_of_mibelli	2	22	7	3	http://dev2.ndexbio.org/v2/network/e740ef6c-6b53-11e8-9d1c-0660b7976219	e740ef6c-6b53-11e8-9d1c-0660b7976219
-prader_willi_syndrome__pws_	2	74	43	12	http://dev2.ndexbio.org/v2/network/ebe4fb36-6b53-11e8-9d1c-0660b7976219	ebe4fb36-6b53-11e8-9d1c-0660b7976219
-precocious_puberty__male_limited	3	18	9	2	http://dev2.ndexbio.org/v2/network/e55f36f2-6b53-11e8-9d1c-0660b7976219	e55f36f2-6b53-11e8-9d1c-0660b7976219
-primary_ciliary_dyskinesia_28	2	19	8	1	http://dev2.ndexbio.org/v2/network/e5d0487c-6b53-11e8-9d1c-0660b7976219	e5d0487c-6b53-11e8-9d1c-0660b7976219
-primary_congenital_glaucoma__pcg_	2	115	33	19	http://dev2.ndexbio.org/v2/network/eaa54f80-6b53-11e8-9d1c-0660b7976219	eaa54f80-6b53-11e8-9d1c-0660b7976219
-primary_hyperoxaluria__hp_	2	117	41	27	http://dev2.ndexbio.org/v2/network/f4cddd8d-6b53-11e8-9d1c-0660b7976219	f4cddd8d-6b53-11e8-9d1c-0660b7976219
-primary_localized_cutaneous_amyloidosis__plca_	2	2	1	1	http://dev2.ndexbio.org/v2/network/ef381e21-6b53-11e8-9d1c-0660b7976219	ef381e21-6b53-11e8-9d1c-0660b7976219
-primary_microcephaly_mild_intellectual_disability_young_onset_diabetes_syndrome	2	413	197	33	http://dev2.ndexbio.org/v2/network/1f29380d-6b54-11e8-9d1c-0660b7976219	1f29380d-6b54-11e8-9d1c-0660b7976219
-progressive_cardiac_conduction_defect__pccd___progressive_familial_heart_block__pfhb___lenegre_lev_disease	2	2	1	1	http://dev2.ndexbio.org/v2/network/eeb903a3-6b53-11e8-9d1c-0660b7976219	eeb903a3-6b53-11e8-9d1c-0660b7976219
-propionic_acidemia	2	4	4	1	http://dev2.ndexbio.org/v2/network/ef3f983a-6b53-11e8-9d1c-0660b7976219	ef3f983a-6b53-11e8-9d1c-0660b7976219
-protein_deficiency	2	143	62	36	http://dev2.ndexbio.org/v2/network/f77026bb-6b53-11e8-9d1c-0660b7976219	f77026bb-6b53-11e8-9d1c-0660b7976219
-proteus_syndrome	2	15	9	3	http://dev2.ndexbio.org/v2/network/eee12439-6b53-11e8-9d1c-0660b7976219	eee12439-6b53-11e8-9d1c-0660b7976219
-proximal_symphalangism	2	3	2	0	http://dev2.ndexbio.org/v2/network/eef54883-6b53-11e8-9d1c-0660b7976219	eef54883-6b53-11e8-9d1c-0660b7976219
-pseudohypoaldosteronism__type_2	4	5	1	1	http://dev2.ndexbio.org/v2/network/ee9faf27-6b53-11e8-9d1c-0660b7976219	ee9faf27-6b53-11e8-9d1c-0660b7976219
-pulmonary_surfactant_metabolism_dysfunction__smdp_	3	10	3	1	http://dev2.ndexbio.org/v2/network/ef8f6624-6b53-11e8-9d1c-0660b7976219	ef8f6624-6b53-11e8-9d1c-0660b7976219
-pyridoxine_refractory_autosomal_recessive_sideroblastic_anemia	2	44	23	6	http://dev2.ndexbio.org/v2/network/f455a0de-6b53-11e8-9d1c-0660b7976219	f455a0de-6b53-11e8-9d1c-0660b7976219
-radio_ulnar_synostosis_amegakaryocytic_thrombocytopenia_syndrome	2	6	6	0	http://dev2.ndexbio.org/v2/network/ef49aa64-6b53-11e8-9d1c-0660b7976219	ef49aa64-6b53-11e8-9d1c-0660b7976219
-rare_familial_disorder_with_hypertrophic_cardiomyopathy	7	59	27	15	http://dev2.ndexbio.org/v2/network/f2c8e5fb-6b53-11e8-9d1c-0660b7976219	f2c8e5fb-6b53-11e8-9d1c-0660b7976219
-ras_associated_autoimmune_leukoproliferative_disorder	2	2	1	1	http://dev2.ndexbio.org/v2/network/ee91a554-6b53-11e8-9d1c-0660b7976219	ee91a554-6b53-11e8-9d1c-0660b7976219
-refsum_disease__heredopathia_atactica_polyneuritiformis	2	2	1	1	http://dev2.ndexbio.org/v2/network/fa6858a4-6b53-11e8-9d1c-0660b7976219	fa6858a4-6b53-11e8-9d1c-0660b7976219
-renal_angiomyolipoma	2	2	1	1	http://dev2.ndexbio.org/v2/network/ef4febf8-6b53-11e8-9d1c-0660b7976219	ef4febf8-6b53-11e8-9d1c-0660b7976219
-renal_cysts_and_diabetes_syndrome	2	7	5	1	http://dev2.ndexbio.org/v2/network/ef0fae6d-6b53-11e8-9d1c-0660b7976219	ef0fae6d-6b53-11e8-9d1c-0660b7976219
-renal_dysplasia	4	8	7	2	http://dev2.ndexbio.org/v2/network/f2d2f828-6b53-11e8-9d1c-0660b7976219	f2d2f828-6b53-11e8-9d1c-0660b7976219
-renal_hypomagnesemia_2	2	20	8	3	http://dev2.ndexbio.org/v2/network/f1036824-6b53-11e8-9d1c-0660b7976219	f1036824-6b53-11e8-9d1c-0660b7976219
-renal_hypomagnesemia_3	2	104	63	17	http://dev2.ndexbio.org/v2/network/f75091a4-6b53-11e8-9d1c-0660b7976219	f75091a4-6b53-11e8-9d1c-0660b7976219
-renal_hypouricemia__rhuc_	2	2	1	1	http://dev2.ndexbio.org/v2/network/f6ac61fe-6b53-11e8-9d1c-0660b7976219	f6ac61fe-6b53-11e8-9d1c-0660b7976219
-renal_tubular_dysgenesis	4	8	7	1	http://dev2.ndexbio.org/v2/network/f8ed2a52-6b53-11e8-9d1c-0660b7976219	f8ed2a52-6b53-11e8-9d1c-0660b7976219
-restrictive_cardiomyopathy__rcm_	4	31	18	11	http://dev2.ndexbio.org/v2/network/f92f6390-6b53-11e8-9d1c-0660b7976219	f92f6390-6b53-11e8-9d1c-0660b7976219
-restrictive_dermopathy	2	2	1	1	http://dev2.ndexbio.org/v2/network/f9dc1db8-6b53-11e8-9d1c-0660b7976219	f9dc1db8-6b53-11e8-9d1c-0660b7976219
-restrictive_dermopathy__lethal	2	2	1	1	http://dev2.ndexbio.org/v2/network/f790a72d-6b53-11e8-9d1c-0660b7976219	f790a72d-6b53-11e8-9d1c-0660b7976219
-retinitis_pigmentosa_7	2	3	1	1	http://dev2.ndexbio.org/v2/network/f74f3211-6b53-11e8-9d1c-0660b7976219	f74f3211-6b53-11e8-9d1c-0660b7976219
-retinitis_pigmentosa_deafness_syndrome	2	208	81	2	http://dev2.ndexbio.org/v2/network/07a1f6ee-6b54-11e8-9d1c-0660b7976219	07a1f6ee-6b54-11e8-9d1c-0660b7976219
-retinitis_punctata_albescens	2	284	118	59	http://dev2.ndexbio.org/v2/network/1d48b8d1-6b54-11e8-9d1c-0660b7976219	1d48b8d1-6b54-11e8-9d1c-0660b7976219
-rh_deficiency_syndrome	2	5	1	1	http://dev2.ndexbio.org/v2/network/f81938b0-6b53-11e8-9d1c-0660b7976219	f81938b0-6b53-11e8-9d1c-0660b7976219
-rhabdoid_predisposition_syndrome__rps_	2	2	1	1	http://dev2.ndexbio.org/v2/network/f67c030c-6b53-11e8-9d1c-0660b7976219	f67c030c-6b53-11e8-9d1c-0660b7976219
-rickets	4	481	209	111	http://dev2.ndexbio.org/v2/network/5d7036bd-6b54-11e8-9d1c-0660b7976219	5d7036bd-6b54-11e8-9d1c-0660b7976219
-rieger_anomaly	2	2	1	1	http://dev2.ndexbio.org/v2/network/f6992816-6b53-11e8-9d1c-0660b7976219	f6992816-6b53-11e8-9d1c-0660b7976219
-rotor_syndrome	2	4	2	2	http://dev2.ndexbio.org/v2/network/f85b4a09-6b53-11e8-9d1c-0660b7976219	f85b4a09-6b53-11e8-9d1c-0660b7976219
-roussy_lc_vy_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/f75d3ae3-6b53-11e8-9d1c-0660b7976219	f75d3ae3-6b53-11e8-9d1c-0660b7976219
-sagittal_sinus_thrombosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/fbca329d-6b53-11e8-9d1c-0660b7976219	fbca329d-6b53-11e8-9d1c-0660b7976219
-saldino_mainzer_syndrome	2	18	4	2	http://dev2.ndexbio.org/v2/network/00b07838-6b54-11e8-9d1c-0660b7976219	00b07838-6b54-11e8-9d1c-0660b7976219
-scapuloperoneal_myopathy__spm_	3	351	145	81	http://dev2.ndexbio.org/v2/network/365169f3-6b54-11e8-9d1c-0660b7976219	365169f3-6b54-11e8-9d1c-0660b7976219
-sciatic_neuropathy	3	28	8	4	http://dev2.ndexbio.org/v2/network/0179e27a-6b54-11e8-9d1c-0660b7976219	0179e27a-6b54-11e8-9d1c-0660b7976219
-sclerosteosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/fff6ec9e-6b53-11e8-9d1c-0660b7976219	fff6ec9e-6b53-11e8-9d1c-0660b7976219
-seizures__benign_familial_neonatal__2	2	2	1	1	http://dev2.ndexbio.org/v2/network/00b9ee23-6b54-11e8-9d1c-0660b7976219	00b9ee23-6b54-11e8-9d1c-0660b7976219
-self_healing_collodion_baby	3	3	1	1	http://dev2.ndexbio.org/v2/network/0097e711-6b54-11e8-9d1c-0660b7976219	0097e711-6b54-11e8-9d1c-0660b7976219
-seminoma	3	417	156	73	http://dev2.ndexbio.org/v2/network/4c1fd718-6b54-11e8-9d1c-0660b7976219	4c1fd718-6b54-11e8-9d1c-0660b7976219
-sensenbrenner_syndrome	5	18	3	1	http://dev2.ndexbio.org/v2/network/06c0e630-6b54-11e8-9d1c-0660b7976219	06c0e630-6b54-11e8-9d1c-0660b7976219
-septic_arthritis	2	2	1	1	http://dev2.ndexbio.org/v2/network/ff533211-6b53-11e8-9d1c-0660b7976219	ff533211-6b53-11e8-9d1c-0660b7976219
-severe_combined_immunodeficiency__autosomal_recessive__t_cell_negative__b_cell_negative__nk_cell_positive	2	2	1	1	http://dev2.ndexbio.org/v2/network/014cdee2-6b54-11e8-9d1c-0660b7976219	014cdee2-6b54-11e8-9d1c-0660b7976219
-severe_combined_immunodeficiency__autosomal_recessive__t_cell_negative__b_cell_positive__nk_cell_negative	3	59	22	6	http://dev2.ndexbio.org/v2/network/034728ac-6b54-11e8-9d1c-0660b7976219	034728ac-6b54-11e8-9d1c-0660b7976219
-severe_combined_immunodeficiency__autosomal_recessive__t_cell_negative__b_cell_positive__nk_cell_positive	4	35	18	9	http://dev2.ndexbio.org/v2/network/078d3658-6b54-11e8-9d1c-0660b7976219	078d3658-6b54-11e8-9d1c-0660b7976219
-severe_cutaneous_adverse_reaction__susceptibility_to	2	4	2	0	http://dev2.ndexbio.org/v2/network/ffa8a55f-6b53-11e8-9d1c-0660b7976219	ffa8a55f-6b53-11e8-9d1c-0660b7976219
-severe_intellectual_disability_and_progressive_spastic_paraplegia	4	4	1	1	http://dev2.ndexbio.org/v2/network/fd1fb058-6b53-11e8-9d1c-0660b7976219	fd1fb058-6b53-11e8-9d1c-0660b7976219
-severe_neonatal_lactic_acidosis_due_to_nfs1_isd11_complex_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/ff5ecadc-6b53-11e8-9d1c-0660b7976219	ff5ecadc-6b53-11e8-9d1c-0660b7976219
-short_rib_polydactyly_syndrome	2	173	91	18	http://dev2.ndexbio.org/v2/network/1a5bd18d-6b54-11e8-9d1c-0660b7976219	1a5bd18d-6b54-11e8-9d1c-0660b7976219
-short_rib_polydactyly_syndrome__majewski_type	2	173	91	12	http://dev2.ndexbio.org/v2/network/180425ec-6b54-11e8-9d1c-0660b7976219	180425ec-6b54-11e8-9d1c-0660b7976219
-short_rib_thoracic_dysplasia_6_with_or_without_polydactyly	2	173	91	12	http://dev2.ndexbio.org/v2/network/17041bab-6b54-11e8-9d1c-0660b7976219	17041bab-6b54-11e8-9d1c-0660b7976219
-sick_sinus_syndrome__sss___sinus_node_dysfunction	2	9	4	1	http://dev2.ndexbio.org/v2/network/0a2bfd95-6b54-11e8-9d1c-0660b7976219	0a2bfd95-6b54-11e8-9d1c-0660b7976219
-silent_pituitary_adenoma	2	19	10	0	http://dev2.ndexbio.org/v2/network/0a78e547-6b54-11e8-9d1c-0660b7976219	0a78e547-6b54-11e8-9d1c-0660b7976219
-silver_russell_syndrome_due_to_a_point_mutation	2	7	5	1	http://dev2.ndexbio.org/v2/network/0a0e6360-6b54-11e8-9d1c-0660b7976219	0a0e6360-6b54-11e8-9d1c-0660b7976219
-singleton_merten_dysplasia	2	2	1	1	http://dev2.ndexbio.org/v2/network/084ba4ba-6b54-11e8-9d1c-0660b7976219	084ba4ba-6b54-11e8-9d1c-0660b7976219
-singleton_merten_syndrome__sms_	2	2	1	1	http://dev2.ndexbio.org/v2/network/0993188a-6b54-11e8-9d1c-0660b7976219	0993188a-6b54-11e8-9d1c-0660b7976219
-sitosterolemia	2	2	1	1	http://dev2.ndexbio.org/v2/network/097e09dd-6b54-11e8-9d1c-0660b7976219	097e09dd-6b54-11e8-9d1c-0660b7976219
-sodium_channelopathy_related_small_fiber_neuropathy	3	3	1	1	http://dev2.ndexbio.org/v2/network/0963f21c-6b54-11e8-9d1c-0660b7976219	0963f21c-6b54-11e8-9d1c-0660b7976219
-solitary_fibrous_tumor	2	50	25	4	http://dev2.ndexbio.org/v2/network/0d0c12c8-6b54-11e8-9d1c-0660b7976219	0d0c12c8-6b54-11e8-9d1c-0660b7976219
-solitary_fibrous_tumors	2	50	25	4	http://dev2.ndexbio.org/v2/network/0c186477-6b54-11e8-9d1c-0660b7976219	0c186477-6b54-11e8-9d1c-0660b7976219
-sost_related_sclerosing_bone_dysplasia	2	5	2	0	http://dev2.ndexbio.org/v2/network/0a125b04-6b54-11e8-9d1c-0660b7976219	0a125b04-6b54-11e8-9d1c-0660b7976219
-spasm	2	102	25	14	http://dev2.ndexbio.org/v2/network/34d4660c-6b54-11e8-9d1c-0660b7976219	34d4660c-6b54-11e8-9d1c-0660b7976219
-spermatogenesis_arrest	2	89	42	6	http://dev2.ndexbio.org/v2/network/175485bf-6b54-11e8-9d1c-0660b7976219	175485bf-6b54-11e8-9d1c-0660b7976219
-spinal_muscular_atrophy__type_3	2	498	202	72	http://dev2.ndexbio.org/v2/network/7c744754-6b54-11e8-9d1c-0660b7976219	7c744754-6b54-11e8-9d1c-0660b7976219
-split_hand_foot_malformation__shfm_	2	211	87	34	http://dev2.ndexbio.org/v2/network/29cb3cca-6b54-11e8-9d1c-0660b7976219	29cb3cca-6b54-11e8-9d1c-0660b7976219
-spondyloarthropathy__susceptibility_to__1	2	4	2	0	http://dev2.ndexbio.org/v2/network/115b48e3-6b54-11e8-9d1c-0660b7976219	115b48e3-6b54-11e8-9d1c-0660b7976219
-stevens_johnson_syndrome_and_toxic_epidermal_necrolysis__lyell_s_syndrome	2	4	2	0	http://dev2.ndexbio.org/v2/network/12f34e06-6b54-11e8-9d1c-0660b7976219	12f34e06-6b54-11e8-9d1c-0660b7976219
-striate_palmoplantar_keratoderma	3	11	8	3	http://dev2.ndexbio.org/v2/network/0faa3da8-6b54-11e8-9d1c-0660b7976219	0faa3da8-6b54-11e8-9d1c-0660b7976219
-subcortical_band_heterotopia	3	321	139	67	http://dev2.ndexbio.org/v2/network/4bc6e188-6b54-11e8-9d1c-0660b7976219	4bc6e188-6b54-11e8-9d1c-0660b7976219
-subependymal_giant_cell_astrocytoma__sega_	2	2	1	1	http://dev2.ndexbio.org/v2/network/1154b92d-6b54-11e8-9d1c-0660b7976219	1154b92d-6b54-11e8-9d1c-0660b7976219
-surfactant_metabolism_dysfunction__pulmonary__1	3	7	3	2	http://dev2.ndexbio.org/v2/network/12c0a52d-6b54-11e8-9d1c-0660b7976219	12c0a52d-6b54-11e8-9d1c-0660b7976219
-synaptic_congenital_myasthenic_syndromes	2	462	176	68	http://dev2.ndexbio.org/v2/network/67ab628e-6b54-11e8-9d1c-0660b7976219	67ab628e-6b54-11e8-9d1c-0660b7976219
-t_b__severe_combined_immunodeficiency_due_to_cd3delta_cd3epsilon_cd3zeta	3	3	1	1	http://dev2.ndexbio.org/v2/network/136ebfb8-6b54-11e8-9d1c-0660b7976219	136ebfb8-6b54-11e8-9d1c-0660b7976219
-tay_sachs_disease	2	2	1	1	http://dev2.ndexbio.org/v2/network/117dec25-6b54-11e8-9d1c-0660b7976219	117dec25-6b54-11e8-9d1c-0660b7976219
-thiamine_responsive_maple_syrup_urine_disease	3	4	1	1	http://dev2.ndexbio.org/v2/network/14356b6e-6b54-11e8-9d1c-0660b7976219	14356b6e-6b54-11e8-9d1c-0660b7976219
-thrombotic_thrombocytopenic_purpura	3	87	30	21	http://dev2.ndexbio.org/v2/network/20056803-6b54-11e8-9d1c-0660b7976219	20056803-6b54-11e8-9d1c-0660b7976219
-thyroid_ectopia	2	8	10	1	http://dev2.ndexbio.org/v2/network/1259f3ed-6b54-11e8-9d1c-0660b7976219	1259f3ed-6b54-11e8-9d1c-0660b7976219
-thyroid_hypoplasia	3	7	4	1	http://dev2.ndexbio.org/v2/network/116ab23b-6b54-11e8-9d1c-0660b7976219	116ab23b-6b54-11e8-9d1c-0660b7976219
-thyrotoxicosis	2	124	52	23	http://dev2.ndexbio.org/v2/network/1c00cfb9-6b54-11e8-9d1c-0660b7976219	1c00cfb9-6b54-11e8-9d1c-0660b7976219
-tic_disorder	2	284	92	53	http://dev2.ndexbio.org/v2/network/37879fde-6b54-11e8-9d1c-0660b7976219	37879fde-6b54-11e8-9d1c-0660b7976219
-tonsillar_cancer	3	7	5	1	http://dev2.ndexbio.org/v2/network/12736f6d-6b54-11e8-9d1c-0660b7976219	12736f6d-6b54-11e8-9d1c-0660b7976219
-torg_winchester_syndrome	2	3	1	1	http://dev2.ndexbio.org/v2/network/11769921-6b54-11e8-9d1c-0660b7976219	11769921-6b54-11e8-9d1c-0660b7976219
-treacher_collins_syndrome	3	361	129	61	http://dev2.ndexbio.org/v2/network/4c4a1b7d-6b54-11e8-9d1c-0660b7976219	4c4a1b7d-6b54-11e8-9d1c-0660b7976219
-treacher_collins_syndrome_1	3	361	129	62	http://dev2.ndexbio.org/v2/network/3dca8f05-6b54-11e8-9d1c-0660b7976219	3dca8f05-6b54-11e8-9d1c-0660b7976219
-trichohepatoenteric_syndrome_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/120c49d9-6b54-11e8-9d1c-0660b7976219	120c49d9-6b54-11e8-9d1c-0660b7976219
-trichuriasis	2	199	74	45	http://dev2.ndexbio.org/v2/network/33a36076-6b54-11e8-9d1c-0660b7976219	33a36076-6b54-11e8-9d1c-0660b7976219
-tuberous_sclerosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/11f25923-6b54-11e8-9d1c-0660b7976219	11f25923-6b54-11e8-9d1c-0660b7976219
-tuberous_sclerosis_complex__tsc___bourneville_pringle_disease	2	2	1	1	http://dev2.ndexbio.org/v2/network/18d88d37-6b54-11e8-9d1c-0660b7976219	18d88d37-6b54-11e8-9d1c-0660b7976219
-tyrosinemia__tyrosinemia__type_i__tyrosinemia__type_ii__tyrosinemia__type_iii__hawkinsinuria	3	212	73	45	http://dev2.ndexbio.org/v2/network/28015239-6b54-11e8-9d1c-0660b7976219	28015239-6b54-11e8-9d1c-0660b7976219
-ullrich_congenital_muscular_dystrophy	4	7	2	1	http://dev2.ndexbio.org/v2/network/1bc91dc3-6b54-11e8-9d1c-0660b7976219	1bc91dc3-6b54-11e8-9d1c-0660b7976219
-ullrich_congenital_muscular_dystrophy_1	3	3	1	1	http://dev2.ndexbio.org/v2/network/1b64b671-6b54-11e8-9d1c-0660b7976219	1b64b671-6b54-11e8-9d1c-0660b7976219
-ureteral_calculi	4	340	143	72	http://dev2.ndexbio.org/v2/network/43838e9e-6b54-11e8-9d1c-0660b7976219	43838e9e-6b54-11e8-9d1c-0660b7976219
-usher_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/214f9b21-6b54-11e8-9d1c-0660b7976219	214f9b21-6b54-11e8-9d1c-0660b7976219
-usher_syndrome__type_1	7	342	174	54	http://dev2.ndexbio.org/v2/network/425c7344-6b54-11e8-9d1c-0660b7976219	425c7344-6b54-11e8-9d1c-0660b7976219
-usher_syndrome_type_1d	2	2	1	1	http://dev2.ndexbio.org/v2/network/1c2baf5a-6b54-11e8-9d1c-0660b7976219	1c2baf5a-6b54-11e8-9d1c-0660b7976219
-uv_sensitive_syndrome	3	13	3	1	http://dev2.ndexbio.org/v2/network/24a2bd18-6b54-11e8-9d1c-0660b7976219	24a2bd18-6b54-11e8-9d1c-0660b7976219
-van_maldergem_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/2010b1b0-6b54-11e8-9d1c-0660b7976219	2010b1b0-6b54-11e8-9d1c-0660b7976219
-viral_infectious_disease	2	262	82	47	http://dev2.ndexbio.org/v2/network/45c05f4e-6b54-11e8-9d1c-0660b7976219	45c05f4e-6b54-11e8-9d1c-0660b7976219
-visceral_myopathy	2	2	1	1	http://dev2.ndexbio.org/v2/network/19e4f3b7-6b54-11e8-9d1c-0660b7976219	19e4f3b7-6b54-11e8-9d1c-0660b7976219
-vitamin_e__familial_isolated_deficiency_of	3	171	59	39	http://dev2.ndexbio.org/v2/network/271432cd-6b54-11e8-9d1c-0660b7976219	271432cd-6b54-11e8-9d1c-0660b7976219
-vulvar_lichen_sclerosus	2	25	11	1	http://dev2.ndexbio.org/v2/network/207f2b3e-6b54-11e8-9d1c-0660b7976219	207f2b3e-6b54-11e8-9d1c-0660b7976219
-waardenburg_shah_syndrome	3	53	17	9	http://dev2.ndexbio.org/v2/network/1ee66377-6b54-11e8-9d1c-0660b7976219	1ee66377-6b54-11e8-9d1c-0660b7976219
-waardenburg_syndrome__type_2e	2	21	8	4	http://dev2.ndexbio.org/v2/network/1c91eb7c-6b54-11e8-9d1c-0660b7976219	1c91eb7c-6b54-11e8-9d1c-0660b7976219
-waardenburg_syndrome__type_4a	3	53	17	9	http://dev2.ndexbio.org/v2/network/1c8da5b5-6b54-11e8-9d1c-0660b7976219	1c8da5b5-6b54-11e8-9d1c-0660b7976219
-waardenburg_syndrome__type_4c	2	21	8	4	http://dev2.ndexbio.org/v2/network/1922dcd5-6b54-11e8-9d1c-0660b7976219	1922dcd5-6b54-11e8-9d1c-0660b7976219
-water_intoxication	2	64	12	8	http://dev2.ndexbio.org/v2/network/1f2f2b86-6b54-11e8-9d1c-0660b7976219	1f2f2b86-6b54-11e8-9d1c-0660b7976219
-weaver_syndrome	2	310	169	52	http://dev2.ndexbio.org/v2/network/67cfb375-6b54-11e8-9d1c-0660b7976219	67cfb375-6b54-11e8-9d1c-0660b7976219
-well_differentiated_liposarcoma	3	298	129	48	http://dev2.ndexbio.org/v2/network/49a56176-6b54-11e8-9d1c-0660b7976219	49a56176-6b54-11e8-9d1c-0660b7976219
-werner_syndrome	2	266	132	59	http://dev2.ndexbio.org/v2/network/536edf02-6b54-11e8-9d1c-0660b7976219	536edf02-6b54-11e8-9d1c-0660b7976219
-white_sponge_nevus	2	2	1	1	http://dev2.ndexbio.org/v2/network/2669254f-6b54-11e8-9d1c-0660b7976219	2669254f-6b54-11e8-9d1c-0660b7976219
-white_sponge_nevus_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/23c778b4-6b54-11e8-9d1c-0660b7976219	23c778b4-6b54-11e8-9d1c-0660b7976219
-wiedemann_steiner_syndrome	2	220	101	39	http://dev2.ndexbio.org/v2/network/4a70c712-6b54-11e8-9d1c-0660b7976219	4a70c712-6b54-11e8-9d1c-0660b7976219
-wilson_turner_x_linked_mental_retardation_syndrome	2	17	12	1	http://dev2.ndexbio.org/v2/network/2518d7c9-6b54-11e8-9d1c-0660b7976219	2518d7c9-6b54-11e8-9d1c-0660b7976219
-x_linked_diffuse_leiomyomatosis_alport_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/26e819a6-6b54-11e8-9d1c-0660b7976219	26e819a6-6b54-11e8-9d1c-0660b7976219
-xeroderma_pigmentosum__complementation_group_a	2	10	5	0	http://dev2.ndexbio.org/v2/network/26412ad4-6b54-11e8-9d1c-0660b7976219	26412ad4-6b54-11e8-9d1c-0660b7976219
-xeroderma_pigmentosum_cockayne_syndrome_complex	4	20	6	3	http://dev2.ndexbio.org/v2/network/267b74dd-6b54-11e8-9d1c-0660b7976219	267b74dd-6b54-11e8-9d1c-0660b7976219
+disease	seed_genes	total_genes	subsystems	subystems_aligned_to_GO	NDEx_URL
+3_m_syndrome	3	3	1	1	http://dev2.ndexbio.org/v2/network/e915f290-6b52-11e8-9d1c-0660b7976219
+3_methylcrotonyl_coa_carboxylase_1_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/bd054729-6b52-11e8-9d1c-0660b7976219
+3_methylcrotonylglycinuria__3_methylcrotonyl_coa_carboxylase_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/c1377f89-6b52-11e8-9d1c-0660b7976219
+3_methylglutaconic_aciduria_type_2	2	278	108	53	http://dev2.ndexbio.org/v2/network/da331112-6b52-11e8-9d1c-0660b7976219
+3m_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/e13d9583-6b52-11e8-9d1c-0660b7976219
+3mc_syndrome	2	6	2	1	http://dev2.ndexbio.org/v2/network/d4f3fc92-6b52-11e8-9d1c-0660b7976219
+46_xx_ovotesticular_disorder_of_sex_development	2	2	1	1	http://dev2.ndexbio.org/v2/network/d600d8bb-6b52-11e8-9d1c-0660b7976219
+46_xx_sex_reversal_1	3	9	4	0	http://dev2.ndexbio.org/v2/network/e6610b69-6b52-11e8-9d1c-0660b7976219
+46_xy_disorder_of_sex_development	2	223	111	47	http://dev2.ndexbio.org/v2/network/ff7e561e-6b52-11e8-9d1c-0660b7976219
+46_xy_disorder_of_sex_development_due_to_testicular_17_20_desmolase_deficiency	2	4	2	1	http://dev2.ndexbio.org/v2/network/e3c0e548-6b52-11e8-9d1c-0660b7976219
+aceruloplasminemia	2	4	4	0	http://dev2.ndexbio.org/v2/network/e45e36de-6b52-11e8-9d1c-0660b7976219
+acne_inversa__hidradenitis_suppurativa	3	6	1	1	http://dev2.ndexbio.org/v2/network/d84e7250-6b52-11e8-9d1c-0660b7976219
+acth_deficiency__isolated	2	424	196	82	http://dev2.ndexbio.org/v2/network/338dd291-6b53-11e8-9d1c-0660b7976219
+activated_pi3k_delta_syndrome	2	3	2	2	http://dev2.ndexbio.org/v2/network/c4dd2e26-6b52-11e8-9d1c-0660b7976219
+activated_protein_c_resistance	2	31	11	4	http://dev2.ndexbio.org/v2/network/dc2d818b-6b52-11e8-9d1c-0660b7976219
+acute_basophilic_leukemia	2	10	8	1	http://dev2.ndexbio.org/v2/network/e4b92830-6b52-11e8-9d1c-0660b7976219
+acute_myeloid_leukemia_with_t_8_16__p11_p13__translocation	2	5	3	0	http://dev2.ndexbio.org/v2/network/f5808206-6b52-11e8-9d1c-0660b7976219
+acute_myeloid_leukemia_with_t_9_11__p22_q23_	2	8	2	1	http://dev2.ndexbio.org/v2/network/e4dba45a-6b52-11e8-9d1c-0660b7976219
+addison_s_disease	2	30	12	1	http://dev2.ndexbio.org/v2/network/e61f485c-6b52-11e8-9d1c-0660b7976219
+adenosine_monophosphate_deaminase_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/db1bea76-6b52-11e8-9d1c-0660b7976219
+adrenal_insufficiency	2	3	1	1	http://dev2.ndexbio.org/v2/network/fab339b1-6b52-11e8-9d1c-0660b7976219
+adult_junctional_epidermolysis_bullosa	3	15	5	2	http://dev2.ndexbio.org/v2/network/e76caf90-6b52-11e8-9d1c-0660b7976219
+afibrinogenemia__congenital	3	3	1	1	http://dev2.ndexbio.org/v2/network/df9f9de8-6b52-11e8-9d1c-0660b7976219
+afibrinogenemia__dysfibrinogenemia	3	3	1	1	http://dev2.ndexbio.org/v2/network/f8bd3648-6b52-11e8-9d1c-0660b7976219
+age_related_macular_degeneration_14	2	5	3	0	http://dev2.ndexbio.org/v2/network/e8966204-6b52-11e8-9d1c-0660b7976219
+alagille_syndrome	2	3	2	0	http://dev2.ndexbio.org/v2/network/f8caf1f1-6b52-11e8-9d1c-0660b7976219
+albinism__ocular__with_sensorineural_deafness	2	39	16	5	http://dev2.ndexbio.org/v2/network/0e563bc5-6b53-11e8-9d1c-0660b7976219
+albinism__oculocutaneous__type_2	2	10	5	2	http://dev2.ndexbio.org/v2/network/e80c994f-6b52-11e8-9d1c-0660b7976219
+alcoholic_hepatitis	2	3	2	0	http://dev2.ndexbio.org/v2/network/ea22cf2b-6b52-11e8-9d1c-0660b7976219
+alport_syndrome__autosomal_dominant	2	2	1	1	http://dev2.ndexbio.org/v2/network/e6a6c715-6b52-11e8-9d1c-0660b7976219
+alternating_hemiplegia_of_childhood	2	8	2	0	http://dev2.ndexbio.org/v2/network/e864074e-6b52-11e8-9d1c-0660b7976219
+alzheimer_disease_4	3	11	10	0	http://dev2.ndexbio.org/v2/network/f5d9015e-6b52-11e8-9d1c-0660b7976219
+alzheimer_s_disease__ad_	4	6	3	1	http://dev2.ndexbio.org/v2/network/fc011608-6b52-11e8-9d1c-0660b7976219
+andersen_tawil_syndrome	2	6	1	1	http://dev2.ndexbio.org/v2/network/f8648edc-6b52-11e8-9d1c-0660b7976219
+anon1	2	194	71	30	http://dev2.ndexbio.org/v2/network/077537db-6b53-11e8-9d1c-0660b7976219
+anthracosis	4	10	7	1	http://dev2.ndexbio.org/v2/network/0c97c2dc-6b53-11e8-9d1c-0660b7976219
+antley_bixler_syndrome_without_genital_anomalies_or_disordered_steroidogenesis	2	9	2	0	http://dev2.ndexbio.org/v2/network/f58cde1b-6b52-11e8-9d1c-0660b7976219
+aortic_valve_disease_2	2	14	10	3	http://dev2.ndexbio.org/v2/network/fc80cd91-6b52-11e8-9d1c-0660b7976219
+aplastic_anemia__aa_	2	474	209	102	http://dev2.ndexbio.org/v2/network/4bb041d8-6b53-11e8-9d1c-0660b7976219
+appendicitis	2	18	9	2	http://dev2.ndexbio.org/v2/network/fa366857-6b52-11e8-9d1c-0660b7976219
+arachnodactyly	2	342	160	62	http://dev2.ndexbio.org/v2/network/43393450-6b53-11e8-9d1c-0660b7976219
+arc_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/e85b2da7-6b52-11e8-9d1c-0660b7976219
+arteritis	3	205	79	50	http://dev2.ndexbio.org/v2/network/f2dadce0-6b52-11e8-9d1c-0660b7976219
+arthrogryposis__renal_dysfunction__and_cholestasis__arc_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/d600d8bc-6b52-11e8-9d1c-0660b7976219
+asphyxiating_thoracic_dystrophy__jeune_syndrome	4	7	3	0	http://dev2.ndexbio.org/v2/network/d4f4bfe4-6b52-11e8-9d1c-0660b7976219
+atrial_fibrillation__familial__3	2	3	1	1	http://dev2.ndexbio.org/v2/network/e13e31c5-6b52-11e8-9d1c-0660b7976219
+atrial_septal_defect	5	22	13	6	http://dev2.ndexbio.org/v2/network/cbf4ac3b-6b52-11e8-9d1c-0660b7976219
+atrial_standstill	2	42	25	12	http://dev2.ndexbio.org/v2/network/c149a7fc-6b52-11e8-9d1c-0660b7976219
+atrophia_bulborum_hereditaria	2	2	1	1	http://dev2.ndexbio.org/v2/network/bd232f6f-6b52-11e8-9d1c-0660b7976219
+atypical_glycine_encephalopathy	3	3	2	2	http://dev2.ndexbio.org/v2/network/e917c752-6b52-11e8-9d1c-0660b7976219
+atypical_hemolytic_uremic_syndrome_with_anti_factor_h_antibodies	4	5	2	0	http://dev2.ndexbio.org/v2/network/e4b83dce-6b52-11e8-9d1c-0660b7976219
+atypical_juvenile_parkinsonism	2	32	9	0	http://dev2.ndexbio.org/v2/network/dc2d818c-6b52-11e8-9d1c-0660b7976219
+auriculocondylar_syndrome_1	2	17	5	4	http://dev2.ndexbio.org/v2/network/c4de1888-6b52-11e8-9d1c-0660b7976219
+autoimmune_hepatits_type_1	2	301	112	54	http://dev2.ndexbio.org/v2/network/21204340-6b53-11e8-9d1c-0660b7976219
+autoinflammatory_syndrome_with_pyogenic_bacterial_infection_and_amylopectinosis	2	4	1	1	http://dev2.ndexbio.org/v2/network/d848a5ed-6b52-11e8-9d1c-0660b7976219
+autosomal_dominant_hypohidrotic_ectodermal_dysplasia	3	80	38	15	http://dev2.ndexbio.org/v2/network/e817e3f5-6b52-11e8-9d1c-0660b7976219
+autosomal_dominant_nocturnal_frontal_lobe_epilepsy__adnfle___nocturnal_frontal_lobe_epilepsy__nfle_	3	3	1	1	http://dev2.ndexbio.org/v2/network/e3bb8e15-6b52-11e8-9d1c-0660b7976219
+autosomal_dominant_polycystic_kidney_disease	2	116	50	28	http://dev2.ndexbio.org/v2/network/fd23eb91-6b52-11e8-9d1c-0660b7976219
+autosomal_dominant_secondary_polycythemia	2	2	1	1	http://dev2.ndexbio.org/v2/network/e614c105-6b52-11e8-9d1c-0660b7976219
+autosomal_dominant_severe_congenital_neutropenia	3	244	83	43	http://dev2.ndexbio.org/v2/network/f47fda95-6b52-11e8-9d1c-0660b7976219
+autosomal_dominant_striatal_degeneration__adsd_	2	4	2	0	http://dev2.ndexbio.org/v2/network/fb0180e6-6b52-11e8-9d1c-0660b7976219
+autosomal_recessive_alport_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/db1bea75-6b52-11e8-9d1c-0660b7976219
+autosomal_recessive_centronuclear_myopathy	2	81	37	21	http://dev2.ndexbio.org/v2/network/ea11b81c-6b52-11e8-9d1c-0660b7976219
+autosomal_recessive_cutis_laxa_type_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/df9f76d7-6b52-11e8-9d1c-0660b7976219
+autosomal_recessive_distal_renal_tubular_acidosis	2	7	1	1	http://dev2.ndexbio.org/v2/network/f8c7e4ae-6b52-11e8-9d1c-0660b7976219
+autosomal_recessive_early_onset_parkinson_disease_15	2	43	20	10	http://dev2.ndexbio.org/v2/network/fc797a8f-6b52-11e8-9d1c-0660b7976219
+autosomal_recessive_infantile_hypercalcemia	2	187	66	32	http://dev2.ndexbio.org/v2/network/f3008d58-6b52-11e8-9d1c-0660b7976219
+autosomal_recessive_limb_girdle_muscular_dystrophy_type_2h	2	312	135	48	http://dev2.ndexbio.org/v2/network/36d5837d-6b53-11e8-9d1c-0660b7976219
+autosomal_recessive_lymphoproliferative_disease	2	29	22	5	http://dev2.ndexbio.org/v2/network/eb588f96-6b52-11e8-9d1c-0660b7976219
+autosomal_recessive_nonsyndromic_deafness_1b	2	5	3	0	http://dev2.ndexbio.org/v2/network/e80b87dd-6b52-11e8-9d1c-0660b7976219
+autosomal_recessive_pseudohypoaldosteronism_type_1	3	4	1	1	http://dev2.ndexbio.org/v2/network/e6a6c714-6b52-11e8-9d1c-0660b7976219
+autosomal_recessive_stickler_syndrome	4	31	16	8	http://dev2.ndexbio.org/v2/network/e898abf9-6b52-11e8-9d1c-0660b7976219
+axenfeld_anomaly	2	2	1	1	http://dev2.ndexbio.org/v2/network/f593e2ff-6b52-11e8-9d1c-0660b7976219
+axenfeld_rieger_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/fae7b749-6b52-11e8-9d1c-0660b7976219
+axenfeld_rieger_syndrome__ars_	2	2	1	1	http://dev2.ndexbio.org/v2/network/f8a80091-6b52-11e8-9d1c-0660b7976219
+azotemia	2	22	13	4	http://dev2.ndexbio.org/v2/network/fa9ca465-6b52-11e8-9d1c-0660b7976219
+b__and_t_cell_mixed_leukemia	2	246	116	48	http://dev2.ndexbio.org/v2/network/33dc66f7-6b53-11e8-9d1c-0660b7976219
+baraitser_winter_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/f56f43f0-6b52-11e8-9d1c-0660b7976219
+bardet_biedl_syndrome_11	2	312	135	48	http://dev2.ndexbio.org/v2/network/1a307194-6b53-11e8-9d1c-0660b7976219
+bardet_biedl_syndrome_14	2	12	4	1	http://dev2.ndexbio.org/v2/network/f945794d-6b52-11e8-9d1c-0660b7976219
+bare_lymphocyte_syndrome__bls__type1	3	3	1	1	http://dev2.ndexbio.org/v2/network/f71fb276-6b52-11e8-9d1c-0660b7976219
+bare_lymphocyte_syndrome__bls__type2	4	57	21	7	http://dev2.ndexbio.org/v2/network/ee437a53-6b52-11e8-9d1c-0660b7976219
+bare_lymphocyte_syndrome__type_2	4	57	21	7	http://dev2.ndexbio.org/v2/network/ef363f26-6b52-11e8-9d1c-0660b7976219
+bare_lymphocyte_syndrome_type_1	4	15	8	3	http://dev2.ndexbio.org/v2/network/f83c464f-6b52-11e8-9d1c-0660b7976219
+bartter_disease	4	37	14	9	http://dev2.ndexbio.org/v2/network/edea368f-6b52-11e8-9d1c-0660b7976219
+bartter_disease_type_4a	3	3	1	1	http://dev2.ndexbio.org/v2/network/eba74bf6-6b52-11e8-9d1c-0660b7976219
+bartter_syndrome	6	197	83	47	http://dev2.ndexbio.org/v2/network/04b2474b-6b53-11e8-9d1c-0660b7976219
+bartter_syndrome__type_4b	2	2	1	1	http://dev2.ndexbio.org/v2/network/fe36e286-6b52-11e8-9d1c-0660b7976219
+basal_cell_nevus_syndrome__nevoid_basal_cell_carcinoma_syndrome__gorlin_syndrome	3	484	245	32	http://dev2.ndexbio.org/v2/network/55902e1d-6b53-11e8-9d1c-0660b7976219
+behr_syndrome	2	78	39	4	http://dev2.ndexbio.org/v2/network/034d11c1-6b53-11e8-9d1c-0660b7976219
+benign_ependymoma	2	222	111	26	http://dev2.ndexbio.org/v2/network/1c33bb66-6b53-11e8-9d1c-0660b7976219
+benign_epilepsy_with_centrotemporal_spikes	3	169	54	32	http://dev2.ndexbio.org/v2/network/08972276-6b53-11e8-9d1c-0660b7976219
+benign_familial_hematuria	2	2	1	1	http://dev2.ndexbio.org/v2/network/fec0d231-6b52-11e8-9d1c-0660b7976219
+benign_familial_hematuria__thin_basement_membrane_nephropathy	2	2	1	1	http://dev2.ndexbio.org/v2/network/006a8b51-6b53-11e8-9d1c-0660b7976219
+benign_familial_neonatal_epilepsy	2	2	1	1	http://dev2.ndexbio.org/v2/network/00a08f92-6b53-11e8-9d1c-0660b7976219
+benign_familial_neonatal_infantile_seizures	2	223	79	35	http://dev2.ndexbio.org/v2/network/11e025eb-6b53-11e8-9d1c-0660b7976219
+bernard_soulier_syndrome	3	3	1	1	http://dev2.ndexbio.org/v2/network/00ce7c73-6b53-11e8-9d1c-0660b7976219
+bernard_soulier_syndrome__giant_platelet_syndrome	3	3	1	1	http://dev2.ndexbio.org/v2/network/0022d3c0-6b53-11e8-9d1c-0660b7976219
+bethlem_myopathy	4	7	2	1	http://dev2.ndexbio.org/v2/network/0078951a-6b53-11e8-9d1c-0660b7976219
+bethlem_myopathy_1	3	3	1	1	http://dev2.ndexbio.org/v2/network/00579f83-6b53-11e8-9d1c-0660b7976219
+bifunctional_peroxisomal_enzyme_deficiency	3	24	8	6	http://dev2.ndexbio.org/v2/network/0116d031-6b53-11e8-9d1c-0660b7976219
+bloom_syndrome	2	278	105	54	http://dev2.ndexbio.org/v2/network/1e4efa18-6b53-11e8-9d1c-0660b7976219
+blue_cone_monochromacy	2	7	3	2	http://dev2.ndexbio.org/v2/network/2cb09e52-6b53-11e8-9d1c-0660b7976219
+brachydactyly__type_a2	3	10	6	0	http://dev2.ndexbio.org/v2/network/0739b55f-6b53-11e8-9d1c-0660b7976219
+brain_diseases__metabolic	2	82	45	14	http://dev2.ndexbio.org/v2/network/0b956e73-6b53-11e8-9d1c-0660b7976219
+branchiootic_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/06c48525-6b53-11e8-9d1c-0660b7976219
+branchiootorenal_syndrome	3	5	4	0	http://dev2.ndexbio.org/v2/network/07044d64-6b53-11e8-9d1c-0660b7976219
+breast_fibroadenoma	2	169	69	21	http://dev2.ndexbio.org/v2/network/187e54ac-6b53-11e8-9d1c-0660b7976219
+bronchial_disease	3	361	127	77	http://dev2.ndexbio.org/v2/network/3fcce48c-6b53-11e8-9d1c-0660b7976219
+bronchiectasis	3	40	10	5	http://dev2.ndexbio.org/v2/network/071600aa-6b53-11e8-9d1c-0660b7976219
+bronchiectasis_with_or_without_elevated_sweat_chloride	3	4	1	1	http://dev2.ndexbio.org/v2/network/082a5697-6b53-11e8-9d1c-0660b7976219
+bronchitis__chronic	2	487	207	108	http://dev2.ndexbio.org/v2/network/7d57e5d1-6b53-11e8-9d1c-0660b7976219
+brown_vialetto_van_laere_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/07c811fa-6b53-11e8-9d1c-0660b7976219
+bullous_congenital_ichthyosiform_erythroderma__bcie___epidermolytic_hyperkeratosis__ehk_	2	6	2	1	http://dev2.ndexbio.org/v2/network/2146b624-6b53-11e8-9d1c-0660b7976219
+c1q_deficiency	3	3	2	1	http://dev2.ndexbio.org/v2/network/08272243-6b53-11e8-9d1c-0660b7976219
+cadds	2	284	112	59	http://dev2.ndexbio.org/v2/network/2dc28353-6b53-11e8-9d1c-0660b7976219
+cafe_au_lait_spots__multiple	2	10	5	2	http://dev2.ndexbio.org/v2/network/085ab587-6b53-11e8-9d1c-0660b7976219
+caffey_disease	2	384	174	16	http://dev2.ndexbio.org/v2/network/366b28b9-6b53-11e8-9d1c-0660b7976219
+cap_myopathy	3	29	10	8	http://dev2.ndexbio.org/v2/network/09088114-6b53-11e8-9d1c-0660b7976219
+carcinosarcoma	2	2	1	1	http://dev2.ndexbio.org/v2/network/0804a607-6b53-11e8-9d1c-0660b7976219
+cardiac_arrest	2	2	1	1	http://dev2.ndexbio.org/v2/network/21a1807d-6b53-11e8-9d1c-0660b7976219
+cardiofaciocutaneous_syndrome_1	4	12	8	3	http://dev2.ndexbio.org/v2/network/08f7e03d-6b53-11e8-9d1c-0660b7976219
+cardiovirus_infections	2	418	203	51	http://dev2.ndexbio.org/v2/network/57058ff0-6b53-11e8-9d1c-0660b7976219
+carnevale_syndrome	2	6	2	1	http://dev2.ndexbio.org/v2/network/08318294-6b53-11e8-9d1c-0660b7976219
+carney_triad	3	4	3	0	http://dev2.ndexbio.org/v2/network/082d63da-6b53-11e8-9d1c-0660b7976219
+cd8_deficiency__familial	2	38	20	5	http://dev2.ndexbio.org/v2/network/0e19f5f4-6b53-11e8-9d1c-0660b7976219
+celiac_disease__susceptibility_to__1	2	3	2	0	http://dev2.ndexbio.org/v2/network/0e2f04a0-6b53-11e8-9d1c-0660b7976219
+centronuclear_myopathy	3	406	169	76	http://dev2.ndexbio.org/v2/network/4dd98a0f-6b53-11e8-9d1c-0660b7976219
+cerebral_amyloid_angiopathy__caa___hereditary_cerebral_hemorrhage_with_amyloidosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/17b5119f-6b53-11e8-9d1c-0660b7976219
+cerebral_cavernous_malformation	3	4	3	0	http://dev2.ndexbio.org/v2/network/0e439e19-6b53-11e8-9d1c-0660b7976219
+cerebral_sinovenous_thrombosis	2	4	2	2	http://dev2.ndexbio.org/v2/network/0fcfbc3d-6b53-11e8-9d1c-0660b7976219
+cerebro_facio_articular_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/0e2148f7-6b53-11e8-9d1c-0660b7976219
+cerebro_oculo_facio_skeletal_syndrome	3	3	1	1	http://dev2.ndexbio.org/v2/network/1813aba5-6b53-11e8-9d1c-0660b7976219
+cfhr5_deficiency	2	5	1	1	http://dev2.ndexbio.org/v2/network/172f669a-6b53-11e8-9d1c-0660b7976219
+charcot_marie_tooth_disease__axonal__type_2e	2	119	40	17	http://dev2.ndexbio.org/v2/network/1db52bd6-6b53-11e8-9d1c-0660b7976219
+chlamydia_infections	2	2	1	1	http://dev2.ndexbio.org/v2/network/1859676c-6b53-11e8-9d1c-0660b7976219
+cholesterol_embolism	2	3	1	1	http://dev2.ndexbio.org/v2/network/16f19a2a-6b53-11e8-9d1c-0660b7976219
+cholesterol_monooxygenase__side_chain_cleaving__deficiency	2	7	4	2	http://dev2.ndexbio.org/v2/network/1862b644-6b53-11e8-9d1c-0660b7976219
+chondrodysplasia__grebe_type	2	3	2	1	http://dev2.ndexbio.org/v2/network/18861ce4-6b53-11e8-9d1c-0660b7976219
+chondroma	2	2	1	1	http://dev2.ndexbio.org/v2/network/1803f41e-6b53-11e8-9d1c-0660b7976219
+chromosome_17_deletion	2	8	5	1	http://dev2.ndexbio.org/v2/network/19fb099b-6b53-11e8-9d1c-0660b7976219
+chromosome_17p13_3__centromeric__duplication_syndrome	2	113	41	16	http://dev2.ndexbio.org/v2/network/1abc0ffa-6b53-11e8-9d1c-0660b7976219
+chromosome_17q23_1_q23_2_deletion_syndrome	2	9	3	2	http://dev2.ndexbio.org/v2/network/1bc80117-6b53-11e8-9d1c-0660b7976219
+chromosome_22q11_2_deletion_syndrome__distal	3	36	21	7	http://dev2.ndexbio.org/v2/network/1a5d9c29-6b53-11e8-9d1c-0660b7976219
+chromosome_breakage	4	426	142	71	http://dev2.ndexbio.org/v2/network/644c7530-6b53-11e8-9d1c-0660b7976219
+chronic_myelomonocytic_leukemia	2	6	4	0	http://dev2.ndexbio.org/v2/network/187d1c29-6b53-11e8-9d1c-0660b7976219
+cirrhosis__familial	2	2	1	1	http://dev2.ndexbio.org/v2/network/1809c086-6b53-11e8-9d1c-0660b7976219
+citrullinemia__ctln_	2	301	115	63	http://dev2.ndexbio.org/v2/network/42961632-6b53-11e8-9d1c-0660b7976219
+classic_maple_syrup_urine_disease	3	4	1	1	http://dev2.ndexbio.org/v2/network/1c4b892c-6b53-11e8-9d1c-0660b7976219
+clear_cell_adenocarcinoma	2	8	2	0	http://dev2.ndexbio.org/v2/network/18a4c890-6b53-11e8-9d1c-0660b7976219
+cockayne_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/189c6417-6b53-11e8-9d1c-0660b7976219
+cockayne_syndrome__type_3	2	2	1	1	http://dev2.ndexbio.org/v2/network/179888d6-6b53-11e8-9d1c-0660b7976219
+cockayne_syndrome_type_1	3	8	4	1	http://dev2.ndexbio.org/v2/network/1d9c4c99-6b53-11e8-9d1c-0660b7976219
+cockayne_syndrome_type_2	3	24	9	5	http://dev2.ndexbio.org/v2/network/1a6452ec-6b53-11e8-9d1c-0660b7976219
+cofs_syndrome	4	29	9	7	http://dev2.ndexbio.org/v2/network/19dcfa34-6b53-11e8-9d1c-0660b7976219
+cold_induced_sweating_syndrome__ciss__and_crisponi_syndrome__crisps_	2	2	1	1	http://dev2.ndexbio.org/v2/network/2042b3e4-6b53-11e8-9d1c-0660b7976219
+cole_carpenter_syndrome	2	360	141	86	http://dev2.ndexbio.org/v2/network/5c5f58b6-6b53-11e8-9d1c-0660b7976219
+combined_deficiency_of_factor_v_and_factor_viii	2	47	20	10	http://dev2.ndexbio.org/v2/network/22063603-6b53-11e8-9d1c-0660b7976219
+combined_deficiency_of_factor_v_and_factor_viii__1	2	47	20	11	http://dev2.ndexbio.org/v2/network/237619e6-6b53-11e8-9d1c-0660b7976219
+combined_deficiency_of_factors_v_and_viii__f5f8d_	2	47	20	10	http://dev2.ndexbio.org/v2/network/261c81bb-6b53-11e8-9d1c-0660b7976219
+combined_deficiency_of_vitamin_k_dependent_clotting_factors__vkcfd_	2	70	29	10	http://dev2.ndexbio.org/v2/network/217d087b-6b53-11e8-9d1c-0660b7976219
+combined_immunodeficiency_with_skin_granulomas	2	2	1	1	http://dev2.ndexbio.org/v2/network/2213a38b-6b53-11e8-9d1c-0660b7976219
+complete_atrioventricular_canal_fallot_tetralogy_syndrome	2	20	10	2	http://dev2.ndexbio.org/v2/network/20b39e61-6b53-11e8-9d1c-0660b7976219
+complete_atrioventricular_canal_left_heart_obstruction_syndrome	2	20	10	2	http://dev2.ndexbio.org/v2/network/23b8c858-6b53-11e8-9d1c-0660b7976219
+congenital_adrenal_hyperplasia__cah_	6	9	6	3	http://dev2.ndexbio.org/v2/network/22e32842-6b53-11e8-9d1c-0660b7976219
+congenital_amegakaryocytic_thrombocytopenia__camt_	2	2	1	1	http://dev2.ndexbio.org/v2/network/2255409f-6b53-11e8-9d1c-0660b7976219
+congenital_disorder_of_glycosylation	2	3	2	2	http://dev2.ndexbio.org/v2/network/2978a54b-6b53-11e8-9d1c-0660b7976219
+congenital_dyserythropoietic_anemia_type_i	2	68	30	0	http://dev2.ndexbio.org/v2/network/2c979802-6b53-11e8-9d1c-0660b7976219
+congenital_erythropoietic_porphyria	2	99	33	19	http://dev2.ndexbio.org/v2/network/2f075f55-6b53-11e8-9d1c-0660b7976219
+congenital_factor_xiii_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/2a1b4d7e-6b53-11e8-9d1c-0660b7976219
+congenital_fiber_type_disproportion	4	23	15	3	http://dev2.ndexbio.org/v2/network/2b61afe5-6b53-11e8-9d1c-0660b7976219
+congenital_hypoplastic_anemia	2	417	145	77	http://dev2.ndexbio.org/v2/network/65e2a5ab-6b53-11e8-9d1c-0660b7976219
+congenital_mesoblastic_nephroma	2	93	34	15	http://dev2.ndexbio.org/v2/network/2e4177c1-6b53-11e8-9d1c-0660b7976219
+congenital_mirror_movements__cmm_	2	345	134	55	http://dev2.ndexbio.org/v2/network/59db453b-6b53-11e8-9d1c-0660b7976219
+congenital_myasthenic_syndrome_1b	3	3	2	2	http://dev2.ndexbio.org/v2/network/2dec529c-6b53-11e8-9d1c-0660b7976219
+congenital_myasthenic_syndromes_with_glycosylation_defect	5	412	157	71	http://dev2.ndexbio.org/v2/network/6a8f8c41-6b53-11e8-9d1c-0660b7976219
+congenital_myopathy	2	3	1	1	http://dev2.ndexbio.org/v2/network/2d9f6ad1-6b53-11e8-9d1c-0660b7976219
+congenital_nephrogenic_diabetes_insipidus__ndi_	2	24	13	5	http://dev2.ndexbio.org/v2/network/2b66e007-6b53-11e8-9d1c-0660b7976219
+congenital_or_early_infantile_cach_syndrome	5	5	1	1	http://dev2.ndexbio.org/v2/network/2a7506b6-6b53-11e8-9d1c-0660b7976219
+congenital_reticular_ichthyosiform_erythroderma	2	6	2	1	http://dev2.ndexbio.org/v2/network/28a3ef79-6b53-11e8-9d1c-0660b7976219
+congenital_short_bowel_syndrome	2	358	163	51	http://dev2.ndexbio.org/v2/network/64e8dcac-6b53-11e8-9d1c-0660b7976219
+congenital_symmetric_circumferential_skin_creases__kunze_riehm_syndrome__michelin_tire_baby_syndrome	2	322	120	56	http://dev2.ndexbio.org/v2/network/5c6bb4cd-6b53-11e8-9d1c-0660b7976219
+corneal_neovascularization	2	262	92	59	http://dev2.ndexbio.org/v2/network/46d594cd-6b53-11e8-9d1c-0660b7976219
+cornelia_de_lange_syndrome__cdls_	3	13	9	4	http://dev2.ndexbio.org/v2/network/2afef706-6b53-11e8-9d1c-0660b7976219
+cortisone_reductase_deficiency_1	2	36	16	5	http://dev2.ndexbio.org/v2/network/2b3326ad-6b53-11e8-9d1c-0660b7976219
+cortisone_reductase_deficiency__crd_	2	36	16	4	http://dev2.ndexbio.org/v2/network/2c187d92-6b53-11e8-9d1c-0660b7976219
+cowden_like_syndrome	2	4	3	0	http://dev2.ndexbio.org/v2/network/2a38c0be-6b53-11e8-9d1c-0660b7976219
+cowden_syndrome_2	2	4	3	0	http://dev2.ndexbio.org/v2/network/3cb03aeb-6b53-11e8-9d1c-0660b7976219
+cranioectodermal_dysplasia	2	3	2	0	http://dev2.ndexbio.org/v2/network/2ab9d751-6b53-11e8-9d1c-0660b7976219
+cree_leukoencephalopathy	5	5	1	1	http://dev2.ndexbio.org/v2/network/325e044d-6b53-11e8-9d1c-0660b7976219
+crisponi_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/32e005fb-6b53-11e8-9d1c-0660b7976219
+cryptorchidism__unilateral_or_bilateral	2	51	10	4	http://dev2.ndexbio.org/v2/network/339e7468-6b53-11e8-9d1c-0660b7976219
+currarino_triad	2	141	57	18	http://dev2.ndexbio.org/v2/network/3fb4efa8-6b53-11e8-9d1c-0660b7976219
+curry_hall_syndrome	2	4	1	1	http://dev2.ndexbio.org/v2/network/329281fa-6b53-11e8-9d1c-0660b7976219
+cutaneous_leishmaniasis	7	463	170	88	http://dev2.ndexbio.org/v2/network/9b41d2fd-6b53-11e8-9d1c-0660b7976219
+cutis_laxa	2	138	48	17	http://dev2.ndexbio.org/v2/network/4ce20af1-6b53-11e8-9d1c-0660b7976219
+cutis_laxa__autosomal_dominant	2	4	1	1	http://dev2.ndexbio.org/v2/network/33789cd4-6b53-11e8-9d1c-0660b7976219
+cutis_laxa__autosomal_recessive__type_1a	3	3	1	1	http://dev2.ndexbio.org/v2/network/2f4f650b-6b53-11e8-9d1c-0660b7976219
+cytochrome_c_oxidase_deficiency	2	173	71	29	http://dev2.ndexbio.org/v2/network/422e2c65-6b53-11e8-9d1c-0660b7976219
+deafness__autosomal_dominant_3a	2	5	3	0	http://dev2.ndexbio.org/v2/network/3439c974-6b53-11e8-9d1c-0660b7976219
+deafness__autosomal_recessive_1a	4	7	2	0	http://dev2.ndexbio.org/v2/network/46977a36-6b53-11e8-9d1c-0660b7976219
+dedifferentiated_liposarcoma	3	298	129	47	http://dev2.ndexbio.org/v2/network/652a2b94-6b53-11e8-9d1c-0660b7976219
+deep_vein_thrombosis__dvt_	3	21	7	5	http://dev2.ndexbio.org/v2/network/485ef3f5-6b53-11e8-9d1c-0660b7976219
+delta_beta_thalassemia	3	5	3	2	http://dev2.ndexbio.org/v2/network/3a6ab7c7-6b53-11e8-9d1c-0660b7976219
+dementia__lewy_body	3	9	6	2	http://dev2.ndexbio.org/v2/network/3d334d31-6b53-11e8-9d1c-0660b7976219
+dend_syndrome	2	3	2	0	http://dev2.ndexbio.org/v2/network/45cdc231-6b53-11e8-9d1c-0660b7976219
+dermatitis_herpetiformis	2	3	2	0	http://dev2.ndexbio.org/v2/network/3a73916e-6b53-11e8-9d1c-0660b7976219
+dermatofibrosarcoma_protuberans	2	5	3	1	http://dev2.ndexbio.org/v2/network/3d062386-6b53-11e8-9d1c-0660b7976219
+desmoid_type_fibromatosis	2	3	1	1	http://dev2.ndexbio.org/v2/network/3d16ec74-6b53-11e8-9d1c-0660b7976219
+diabetes_insipidus__nephrogenic__x_linked	2	24	13	7	http://dev2.ndexbio.org/v2/network/40c4b196-6b53-11e8-9d1c-0660b7976219
+diamond_blackfan_anemia__dba_	8	101	19	7	http://dev2.ndexbio.org/v2/network/3e980e47-6b53-11e8-9d1c-0660b7976219
+diarrhea_2__with_microvillus_atrophy	2	9	7	1	http://dev2.ndexbio.org/v2/network/3d847aab-6b53-11e8-9d1c-0660b7976219
+disseminated_atypical_mycobacterial_infection	5	407	156	82	http://dev2.ndexbio.org/v2/network/bc7baee3-6b53-11e8-9d1c-0660b7976219
+distal_arthrogryposis__da_	5	18	4	3	http://dev2.ndexbio.org/v2/network/3b08f32d-6b53-11e8-9d1c-0660b7976219
+doyne_honeycomb_retinal_dystrophy	3	315	111	53	http://dev2.ndexbio.org/v2/network/6e724484-6b53-11e8-9d1c-0660b7976219
+dyskeratosis_congenita_autosomal_recessive_1	3	65	37	11	http://dev2.ndexbio.org/v2/network/3fb8e74c-6b53-11e8-9d1c-0660b7976219
+dysmenorrhea	2	2	1	1	http://dev2.ndexbio.org/v2/network/3ca11fa6-6b53-11e8-9d1c-0660b7976219
+ectodermal_dysplasia_1__hypohidrotic__x_linked	2	2	1	1	http://dev2.ndexbio.org/v2/network/46619d04-6b53-11e8-9d1c-0660b7976219
+ehlers_danlos_osteogenesis_imperfecta_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/3d0e12ca-6b53-11e8-9d1c-0660b7976219
+ehlers_danlos_syndrome__classic_type	3	20	8	6	http://dev2.ndexbio.org/v2/network/3dad116a-6b53-11e8-9d1c-0660b7976219
+ehlers_danlos_syndrome__musculocontractural_type	2	201	90	27	http://dev2.ndexbio.org/v2/network/58aa8d95-6b53-11e8-9d1c-0660b7976219
+ehlers_danlos_syndrome__periodontitis_type	2	2	1	1	http://dev2.ndexbio.org/v2/network/4528a84e-6b53-11e8-9d1c-0660b7976219
+ehlers_danlos_syndrome_type_2	3	20	8	5	http://dev2.ndexbio.org/v2/network/45edf46d-6b53-11e8-9d1c-0660b7976219
+emery_dreifuss_muscular_dystrophy	5	167	70	30	http://dev2.ndexbio.org/v2/network/53d6be21-6b53-11e8-9d1c-0660b7976219
+endocrine_system_disease	2	301	133	42	http://dev2.ndexbio.org/v2/network/7958a48f-6b53-11e8-9d1c-0660b7976219
+enlarged_parietal_foramina_cranium_bifidum	2	300	133	44	http://dev2.ndexbio.org/v2/network/72476820-6b53-11e8-9d1c-0660b7976219
+entamoebiasis	6	30	12	5	http://dev2.ndexbio.org/v2/network/43297cd8-6b53-11e8-9d1c-0660b7976219
+eosinophilia_myalgia_syndrome	2	3	1	1	http://dev2.ndexbio.org/v2/network/47964c54-6b53-11e8-9d1c-0660b7976219
+eosinophilic_granulomatosis_with_polyangiitis__churg_strauss_syndrome	2	277	114	64	http://dev2.ndexbio.org/v2/network/6ae3ee00-6b53-11e8-9d1c-0660b7976219
+epidermal_nevus_syndrome	3	3	1	1	http://dev2.ndexbio.org/v2/network/4385f4cf-6b53-11e8-9d1c-0660b7976219
+epidermodysplasia_verruciformis	2	2	1	1	http://dev2.ndexbio.org/v2/network/451ebd35-6b53-11e8-9d1c-0660b7976219
+epidermolysis_bullosa__lethal_acantholytic	2	2	1	1	http://dev2.ndexbio.org/v2/network/48070fd5-6b53-11e8-9d1c-0660b7976219
+epidermolysis_bullosa_junctionalis_with_pyloric_atresia	3	7	3	0	http://dev2.ndexbio.org/v2/network/442a2463-6b53-11e8-9d1c-0660b7976219
+epidermolysis_bullosa_simplex	2	2	1	1	http://dev2.ndexbio.org/v2/network/4dfe7757-6b53-11e8-9d1c-0660b7976219
+epidermolysis_bullosa_simplex__autosomal_recessive	2	2	1	1	http://dev2.ndexbio.org/v2/network/4e0b2196-6b53-11e8-9d1c-0660b7976219
+epidermolysis_bullosa_simplex__cockayne_touraine_type	3	69	27	17	http://dev2.ndexbio.org/v2/network/576e1603-6b53-11e8-9d1c-0660b7976219
+epidermolysis_bullosa_simplex__dowling_meara_type	2	2	1	1	http://dev2.ndexbio.org/v2/network/5ed07f70-6b53-11e8-9d1c-0660b7976219
+epidermolysis_bullosa_simplex_with_mottled_pigmentation	2	2	1	1	http://dev2.ndexbio.org/v2/network/4e081452-6b53-11e8-9d1c-0660b7976219
+epidermolysis_bullosa_simplex_with_pyloric_atresia	2	5	3	1	http://dev2.ndexbio.org/v2/network/4d0d12b4-6b53-11e8-9d1c-0660b7976219
+epidermolytic_palmoplantar_keratoderma__eppk_	2	22	5	2	http://dev2.ndexbio.org/v2/network/4f20624d-6b53-11e8-9d1c-0660b7976219
+epileptic_encephalopathy__early_infantile__2	2	259	106	53	http://dev2.ndexbio.org/v2/network/68276618-6b53-11e8-9d1c-0660b7976219
+epileptic_encephalopathy__early_infantile__31	2	411	164	64	http://dev2.ndexbio.org/v2/network/96a7ff7b-6b53-11e8-9d1c-0660b7976219
+episodic_ataxias	4	267	96	50	http://dev2.ndexbio.org/v2/network/661b420b-6b53-11e8-9d1c-0660b7976219
+erythroderma__congenital__with_palmoplantar_keratoderma__hypotrichosis__and_hyper_ige	2	28	16	5	http://dev2.ndexbio.org/v2/network/4eeb9676-6b53-11e8-9d1c-0660b7976219
+erythrokeratodermia_variabilis	3	9	4	1	http://dev2.ndexbio.org/v2/network/50f39b5f-6b53-11e8-9d1c-0660b7976219
+estrogen_resistance	2	60	18	4	http://dev2.ndexbio.org/v2/network/51a64a2b-6b53-11e8-9d1c-0660b7976219
+exfoliative_ichthyosis	2	18	7	6	http://dev2.ndexbio.org/v2/network/4e9e136b-6b53-11e8-9d1c-0660b7976219
+eye_infections__bacterial	2	96	38	22	http://dev2.ndexbio.org/v2/network/550b6e68-6b53-11e8-9d1c-0660b7976219
+factor_viii_deficiency	2	4	2	2	http://dev2.ndexbio.org/v2/network/51088302-6b53-11e8-9d1c-0660b7976219
+factor_xiii_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/500b857f-6b53-11e8-9d1c-0660b7976219
+familial_advanced_sleep_phase_syndrome	3	7	3	0	http://dev2.ndexbio.org/v2/network/50d53dd7-6b53-11e8-9d1c-0660b7976219
+familial_cerebral_cavernous_malformation	3	4	3	0	http://dev2.ndexbio.org/v2/network/4e34c9d9-6b53-11e8-9d1c-0660b7976219
+familial_cold_autoinflammatory_syndrome	2	5	2	1	http://dev2.ndexbio.org/v2/network/547373b7-6b53-11e8-9d1c-0660b7976219
+familial_congenital_mirror_movements	2	345	134	55	http://dev2.ndexbio.org/v2/network/8d5586b7-6b53-11e8-9d1c-0660b7976219
+familial_dysfibrinogenemia	3	3	1	1	http://dev2.ndexbio.org/v2/network/5d1fc215-6b53-11e8-9d1c-0660b7976219
+familial_erythrocytosis_1	3	264	112	45	http://dev2.ndexbio.org/v2/network/7f1d8ad8-6b53-11e8-9d1c-0660b7976219
+familial_focal_epilepsy_with_variable_foci	3	3	1	1	http://dev2.ndexbio.org/v2/network/59c60f7f-6b53-11e8-9d1c-0660b7976219
+familial_glucocorticoid_deficiency__fgd_	2	8	4	2	http://dev2.ndexbio.org/v2/network/57ed7f93-6b53-11e8-9d1c-0660b7976219
+familial_hemophagocytic_lymphohistiocytosis	4	222	89	42	http://dev2.ndexbio.org/v2/network/6ca4fed4-6b53-11e8-9d1c-0660b7976219
+familial_hyperphosphatemic_tumoral_calcinosis_hyperphosphatemic_hyperostosis_syndrome	3	73	42	21	http://dev2.ndexbio.org/v2/network/5d077f15-6b53-11e8-9d1c-0660b7976219
+familial_hypoalphalipoproteinemia	2	3	2	2	http://dev2.ndexbio.org/v2/network/5b89dfa1-6b53-11e8-9d1c-0660b7976219
+familial_hypobetalipoproteinemia__fhbl_	2	48	23	8	http://dev2.ndexbio.org/v2/network/5e2cecda-6b53-11e8-9d1c-0660b7976219
+familial_hypodysfibrinogenemia	3	3	1	1	http://dev2.ndexbio.org/v2/network/5fc629c9-6b53-11e8-9d1c-0660b7976219
+familial_hypofibrinogenemia	3	3	1	1	http://dev2.ndexbio.org/v2/network/5e588fe9-6b53-11e8-9d1c-0660b7976219
+familial_porencephaly	2	2	1	1	http://dev2.ndexbio.org/v2/network/5e8852b3-6b53-11e8-9d1c-0660b7976219
+familial_primary_localized_cutaneous_amyloidosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/5e65fd78-6b53-11e8-9d1c-0660b7976219
+familial_renal_hypouricemia	2	2	1	1	http://dev2.ndexbio.org/v2/network/60d8d20a-6b53-11e8-9d1c-0660b7976219
+familial_rhabdoid_tumor	2	2	1	1	http://dev2.ndexbio.org/v2/network/60a4f1bd-6b53-11e8-9d1c-0660b7976219
+fanconi_anemia__complementation_group_a	9	63	28	13	http://dev2.ndexbio.org/v2/network/62bc1152-6b53-11e8-9d1c-0660b7976219
+fanconi_syndrome	2	152	36	22	http://dev2.ndexbio.org/v2/network/77c3fb02-6b53-11e8-9d1c-0660b7976219
+fatty_liver__alcoholic	3	158	62	26	http://dev2.ndexbio.org/v2/network/80ef3cf5-6b53-11e8-9d1c-0660b7976219
+fibrochondrogenesis	2	10	5	1	http://dev2.ndexbio.org/v2/network/606d8ddf-6b53-11e8-9d1c-0660b7976219
+fibular_hypoplasia_and_complex_brachydactyly	2	3	2	1	http://dev2.ndexbio.org/v2/network/5fc677eb-6b53-11e8-9d1c-0660b7976219
+foot_deformities__congenital	4	389	162	86	http://dev2.ndexbio.org/v2/network/940c6d9f-6b53-11e8-9d1c-0660b7976219
+frontometaphyseal_dysplasia	2	110	51	21	http://dev2.ndexbio.org/v2/network/69c18d36-6b53-11e8-9d1c-0660b7976219
+galactosialidosis	3	3	1	1	http://dev2.ndexbio.org/v2/network/5eb46bde-6b53-11e8-9d1c-0660b7976219
+gallbladder_disease__cholecystitis__cholelithiasis	2	27	8	5	http://dev2.ndexbio.org/v2/network/608c127b-6b53-11e8-9d1c-0660b7976219
+gastrotintestinal_stromal_tumor	2	10	4	0	http://dev2.ndexbio.org/v2/network/601645da-6b53-11e8-9d1c-0660b7976219
+gaucher_disease	2	2	1	1	http://dev2.ndexbio.org/v2/network/6095af6f-6b53-11e8-9d1c-0660b7976219
+gaucher_disease__type_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/5fd740d6-6b53-11e8-9d1c-0660b7976219
+generalized_epilepsy_with_febrile_seizures_plus__type_2	2	7	1	1	http://dev2.ndexbio.org/v2/network/5fe94246-6b53-11e8-9d1c-0660b7976219
+generalized_junctional_epidermolysis_bullosa__non_herlitz_type	3	15	5	2	http://dev2.ndexbio.org/v2/network/5ea3ca08-6b53-11e8-9d1c-0660b7976219
+giant_cell_arteritis__temporal_arteritis	2	6	2	0	http://dev2.ndexbio.org/v2/network/603e6766-6b53-11e8-9d1c-0660b7976219
+gitelman_syndrome	2	26	9	4	http://dev2.ndexbio.org/v2/network/68084549-6b53-11e8-9d1c-0660b7976219
+glanzmann_s_thrombasthenia	2	4	1	1	http://dev2.ndexbio.org/v2/network/68de3250-6b53-11e8-9d1c-0660b7976219
+glanzmann_thrombasthenia	2	4	1	1	http://dev2.ndexbio.org/v2/network/69b1fdc3-6b53-11e8-9d1c-0660b7976219
+glaucoma__congenital	2	115	33	21	http://dev2.ndexbio.org/v2/network/6d1e74a8-6b53-11e8-9d1c-0660b7976219
+glc3b	2	115	33	20	http://dev2.ndexbio.org/v2/network/6e102716-6b53-11e8-9d1c-0660b7976219
+glucocorticoid_remediable_aldosteronism__gra_	2	2	1	1	http://dev2.ndexbio.org/v2/network/6a06859f-6b53-11e8-9d1c-0660b7976219
+gluconobacter_infection	3	5	3	0	http://dev2.ndexbio.org/v2/network/68c88766-6b53-11e8-9d1c-0660b7976219
+glycine_encephalopathy	3	3	2	2	http://dev2.ndexbio.org/v2/network/68ffc424-6b53-11e8-9d1c-0660b7976219
+glycogen_storage_disease_ixc	2	2	1	1	http://dev2.ndexbio.org/v2/network/672beeb8-6b53-11e8-9d1c-0660b7976219
+griscelli_syndrome__type_3	2	2	1	1	http://dev2.ndexbio.org/v2/network/6d226c4a-6b53-11e8-9d1c-0660b7976219
+haddad_syndrome	3	34	17	6	http://dev2.ndexbio.org/v2/network/6b76dea7-6b53-11e8-9d1c-0660b7976219
+helicobacter_infections	3	316	134	55	http://dev2.ndexbio.org/v2/network/a1d79e3a-6b53-11e8-9d1c-0660b7976219
+helicobacter_pylori_infection__susceptibility_to	2	368	162	81	http://dev2.ndexbio.org/v2/network/bed07495-6b53-11e8-9d1c-0660b7976219
+hemimegalencephaly	2	203	90	42	http://dev2.ndexbio.org/v2/network/8ac34248-6b53-11e8-9d1c-0660b7976219
+hemoglobin_lepore_beta_thalassemia_syndrome	2	5	3	2	http://dev2.ndexbio.org/v2/network/701a9cf6-6b53-11e8-9d1c-0660b7976219
+hemorrhage__intracerebral__susceptibility_to	3	252	108	43	http://dev2.ndexbio.org/v2/network/930165b7-6b53-11e8-9d1c-0660b7976219
+hennekam_syndrome	2	14	15	3	http://dev2.ndexbio.org/v2/network/779a2bd4-6b53-11e8-9d1c-0660b7976219
+hepatitis_b_virus__susceptibility_to	3	7	3	0	http://dev2.ndexbio.org/v2/network/718f3c2f-6b53-11e8-9d1c-0660b7976219
+hepatocellular_fibrolamellar_carcinoma	2	62	32	16	http://dev2.ndexbio.org/v2/network/755f08ff-6b53-11e8-9d1c-0660b7976219
+hepatorenal_syndrome	2	89	31	10	http://dev2.ndexbio.org/v2/network/75db3d10-6b53-11e8-9d1c-0660b7976219
+hereditary_angioedema	3	190	69	42	http://dev2.ndexbio.org/v2/network/7e5642b4-6b53-11e8-9d1c-0660b7976219
+hereditary_breast_and_ovarian_cancer_syndrome	4	35	17	8	http://dev2.ndexbio.org/v2/network/79a60168-6b53-11e8-9d1c-0660b7976219
+hereditary_breast_ovarian_cancer	2	4	2	0	http://dev2.ndexbio.org/v2/network/704863d4-6b53-11e8-9d1c-0660b7976219
+hereditary_combined_deficiency_of_vitamin_k_dependent_clotting_factors	2	70	29	10	http://dev2.ndexbio.org/v2/network/7634cede-6b53-11e8-9d1c-0660b7976219
+hereditary_elliptocytosis	4	35	16	4	http://dev2.ndexbio.org/v2/network/7296c0cc-6b53-11e8-9d1c-0660b7976219
+hereditary_elliptocytosis__he_	3	29	10	4	http://dev2.ndexbio.org/v2/network/715196d4-6b53-11e8-9d1c-0660b7976219
+hereditary_mucosal_leukokeratosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/7225fd58-6b53-11e8-9d1c-0660b7976219
+hereditary_pancreatitis__hereditary_chronic_pancreatitis	5	246	101	42	http://dev2.ndexbio.org/v2/network/9fb58093-6b53-11e8-9d1c-0660b7976219
+hereditary_persistence_of_fetal_hemoglobin_beta_thalassemia_syndrome	4	64	27	8	http://dev2.ndexbio.org/v2/network/74a136e9-6b53-11e8-9d1c-0660b7976219
+hereditary_persistence_of_fetal_hemoglobin_sickle_cell_disease_syndrome	4	64	27	8	http://dev2.ndexbio.org/v2/network/7e37e521-6b53-11e8-9d1c-0660b7976219
+hereditary_pulmonary_alveolar_proteinosis	2	4	2	2	http://dev2.ndexbio.org/v2/network/7a178746-6b53-11e8-9d1c-0660b7976219
+hereditary_site_specific_ovarian_cancer_syndrome	2	4	2	0	http://dev2.ndexbio.org/v2/network/7abf3980-6b53-11e8-9d1c-0660b7976219
+hereditary_spherocytosis__sph_	4	15	8	1	http://dev2.ndexbio.org/v2/network/79d91f7d-6b53-11e8-9d1c-0660b7976219
+hermansky_pudlak_syndrome_with_pulmonary_fibrosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/7a36cf2d-6b53-11e8-9d1c-0660b7976219
+hermansky_pudlak_syndrome_without_pulmonary_fibrosis	3	215	89	4	http://dev2.ndexbio.org/v2/network/8754cf8d-6b53-11e8-9d1c-0660b7976219
+high_bone_mass_osteogenesis_imperfecta	2	2	1	1	http://dev2.ndexbio.org/v2/network/7b570c32-6b53-11e8-9d1c-0660b7976219
+hiv_associated_lipodystrophy_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/7a635d8b-6b53-11e8-9d1c-0660b7976219
+hiv_wasting_syndrome	4	59	27	9	http://dev2.ndexbio.org/v2/network/7d6b46ce-6b53-11e8-9d1c-0660b7976219
+hodgkin_lymphoma	6	386	141	83	http://dev2.ndexbio.org/v2/network/b33199d9-6b53-11e8-9d1c-0660b7976219
+homozygous_familial_hypercholesterolemia	3	100	49	10	http://dev2.ndexbio.org/v2/network/7fb8dfe8-6b53-11e8-9d1c-0660b7976219
+hydronephrosis	3	411	157	97	http://dev2.ndexbio.org/v2/network/c46b3d4a-6b53-11e8-9d1c-0660b7976219
+hyper_ige_recurrent_infection_syndrome__autosomal_recessive	2	3	2	1	http://dev2.ndexbio.org/v2/network/79d96d9e-6b53-11e8-9d1c-0660b7976219
+hyperaldosteronism__familial__type_i	2	2	1	1	http://dev2.ndexbio.org/v2/network/7af60128-6b53-11e8-9d1c-0660b7976219
+hyperalphalipoproteinemia	2	7	6	2	http://dev2.ndexbio.org/v2/network/7b3a5c5c-6b53-11e8-9d1c-0660b7976219
+hyperalphalipoproteinemia_1	2	7	6	2	http://dev2.ndexbio.org/v2/network/7af1e276-6b53-11e8-9d1c-0660b7976219
+hyperandrogenism_due_to_cortisone_reductase_deficiency	2	36	16	4	http://dev2.ndexbio.org/v2/network/887f6d90-6b53-11e8-9d1c-0660b7976219
+hypereosinophilic_syndrome	2	139	75	28	http://dev2.ndexbio.org/v2/network/87175219-6b53-11e8-9d1c-0660b7976219
+hyperlipoproteinemia_type_iii	2	4	1	1	http://dev2.ndexbio.org/v2/network/7ca9cafe-6b53-11e8-9d1c-0660b7976219
+hyperlipoproteinemias	5	434	185	108	http://dev2.ndexbio.org/v2/network/d2608ab5-6b53-11e8-9d1c-0660b7976219
+hypoalphalipoproteinemia	2	3	2	2	http://dev2.ndexbio.org/v2/network/847be5d7-6b53-11e8-9d1c-0660b7976219
+hypocalcemia	3	158	56	24	http://dev2.ndexbio.org/v2/network/8dfdfb2d-6b53-11e8-9d1c-0660b7976219
+hypocalcemia__autosomal_dominant_1	2	96	17	12	http://dev2.ndexbio.org/v2/network/885661ae-6b53-11e8-9d1c-0660b7976219
+hypocalcemic_vitamin_d_dependent_rickets	2	32	8	5	http://dev2.ndexbio.org/v2/network/82d64ce2-6b53-11e8-9d1c-0660b7976219
+hypogonadotropic_hypogonadism_23_with_or_without_anosmia	2	127	56	28	http://dev2.ndexbio.org/v2/network/9280c4b7-6b53-11e8-9d1c-0660b7976219
+hypohidrotic_ectodermal_dysplasia	2	21	7	2	http://dev2.ndexbio.org/v2/network/82ee1ab2-6b53-11e8-9d1c-0660b7976219
+hypohidrotic_ectodermal_dysplasia_with_immunodeficiency	2	6	3	3	http://dev2.ndexbio.org/v2/network/a0fc5925-6b53-11e8-9d1c-0660b7976219
+hypokalemic_periodic_paralysis	2	2	1	1	http://dev2.ndexbio.org/v2/network/94906a0c-6b53-11e8-9d1c-0660b7976219
+hypokalemic_periodic_paralysis__hypopp_	2	2	1	1	http://dev2.ndexbio.org/v2/network/84305e9c-6b53-11e8-9d1c-0660b7976219
+hypomyelination_hypogonadotropic_hypogonadism_hypodontia_syndrome	3	7	2	0	http://dev2.ndexbio.org/v2/network/84d37c0c-6b53-11e8-9d1c-0660b7976219
+hypospadias_1__x_linked	2	181	69	29	http://dev2.ndexbio.org/v2/network/9472a8cc-6b53-11e8-9d1c-0660b7976219
+hypothyroidism_due_to_deficient_transcription_factors_involved_in_pituitary_development_or_function	5	167	68	17	http://dev2.ndexbio.org/v2/network/8cd42161-6b53-11e8-9d1c-0660b7976219
+hypotonia_speech_impairment_severe_cognitive_delay_syndrome	2	3	2	2	http://dev2.ndexbio.org/v2/network/833dc085-6b53-11e8-9d1c-0660b7976219
+hypoxanthine_guanine_phosphoribosyltransferase_partial_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/82265d3c-6b53-11e8-9d1c-0660b7976219
+hypoxia__brain	2	3	2	0	http://dev2.ndexbio.org/v2/network/830e25e8-6b53-11e8-9d1c-0660b7976219
+ichthyosis__congenital__autosomal_recessive_2	3	3	1	1	http://dev2.ndexbio.org/v2/network/8240750a-6b53-11e8-9d1c-0660b7976219
+ichthyosis__cyclic__with_epidermolytic_hyperkeratosis	2	6	2	1	http://dev2.ndexbio.org/v2/network/839333d8-6b53-11e8-9d1c-0660b7976219
+idiopathic_bronchiectasis	4	353	135	60	http://dev2.ndexbio.org/v2/network/bab93f23-6b53-11e8-9d1c-0660b7976219
+immunodeficiency_due_to_a_late_component_of_complement_deficiency	7	7	3	0	http://dev2.ndexbio.org/v2/network/838f6341-6b53-11e8-9d1c-0660b7976219
+infantile_bartter_syndrome_with_sensorineural_deafness	3	3	1	1	http://dev2.ndexbio.org/v2/network/83bbf19c-6b53-11e8-9d1c-0660b7976219
+infantile_cerebellar_retinal_degeneration	2	193	74	20	http://dev2.ndexbio.org/v2/network/980bd5a5-6b53-11e8-9d1c-0660b7976219
+infantile_glycine_encephalopathy	3	3	2	2	http://dev2.ndexbio.org/v2/network/8bcf5bc2-6b53-11e8-9d1c-0660b7976219
+infantile_myofibromatosis	2	19	10	2	http://dev2.ndexbio.org/v2/network/8d22ddd9-6b53-11e8-9d1c-0660b7976219
+intellectual_disability_expressive_aphasia_facial_dysmorphism_syndrome	2	33	16	2	http://dev2.ndexbio.org/v2/network/8d5f71d1-6b53-11e8-9d1c-0660b7976219
+intermediate_maple_syrup_urine_disease	4	4	1	1	http://dev2.ndexbio.org/v2/network/8ace17c0-6b53-11e8-9d1c-0660b7976219
+intermediate_nemaline_myopathy	4	112	46	22	http://dev2.ndexbio.org/v2/network/96d0e457-6b53-11e8-9d1c-0660b7976219
+intermediate_spinal_muscular_atrophy	2	498	202	74	http://dev2.ndexbio.org/v2/network/ecf09f65-6b53-11e8-9d1c-0660b7976219
+intermittent_maple_syrup_urine_disease	3	4	1	1	http://dev2.ndexbio.org/v2/network/8c2e6b0b-6b53-11e8-9d1c-0660b7976219
+interstitial_cystitis	3	3	1	1	http://dev2.ndexbio.org/v2/network/8aca201e-6b53-11e8-9d1c-0660b7976219
+intracranial_vasospasm	4	7	3	0	http://dev2.ndexbio.org/v2/network/9d8c8702-6b53-11e8-9d1c-0660b7976219
+invasive_pneumococcal_disease__recurrent_isolated__1	2	2	1	1	http://dev2.ndexbio.org/v2/network/8ac1bba6-6b53-11e8-9d1c-0660b7976219
+isodicentric_chromosome_15_syndrome	3	13	2	1	http://dev2.ndexbio.org/v2/network/8d762d33-6b53-11e8-9d1c-0660b7976219
+isolated_focal_cortical_dysplasia_type_iib	2	240	93	37	http://dev2.ndexbio.org/v2/network/a62f8646-6b53-11e8-9d1c-0660b7976219
+isolated_growth_hormone_deficiency__type_2	2	147	70	17	http://dev2.ndexbio.org/v2/network/98481b75-6b53-11e8-9d1c-0660b7976219
+jackson_weiss_syndrome	2	9	2	0	http://dev2.ndexbio.org/v2/network/8ccf184f-6b53-11e8-9d1c-0660b7976219
+jakob_creutzfeldt_disease	2	447	191	97	http://dev2.ndexbio.org/v2/network/f1aa574a-6b53-11e8-9d1c-0660b7976219
+joubert_syndrome_21	2	414	201	73	http://dev2.ndexbio.org/v2/network/d974867e-6b53-11e8-9d1c-0660b7976219
+junctional_epidermolysis_bullosa_herlitz_type	2	3	1	1	http://dev2.ndexbio.org/v2/network/9435eebd-6b53-11e8-9d1c-0660b7976219
+juvenile_glaucoma	2	35	14	3	http://dev2.ndexbio.org/v2/network/962821e2-6b53-11e8-9d1c-0660b7976219
+juvenile_or_adult_cach_syndrome	5	5	1	1	http://dev2.ndexbio.org/v2/network/94f34acf-6b53-11e8-9d1c-0660b7976219
+juvenile_polyposis_syndrome	3	231	99	57	http://dev2.ndexbio.org/v2/network/d0526b0b-6b53-11e8-9d1c-0660b7976219
+juvenile_retinoschisis	2	259	106	54	http://dev2.ndexbio.org/v2/network/bdfe7f05-6b53-11e8-9d1c-0660b7976219
+kabuki_syndrome_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/943419fb-6b53-11e8-9d1c-0660b7976219
+keratosis__seborrheic	2	35	13	10	http://dev2.ndexbio.org/v2/network/9688b7a1-6b53-11e8-9d1c-0660b7976219
+keratosis_palmoplantaris_striata	3	11	8	1	http://dev2.ndexbio.org/v2/network/bf294325-6b53-11e8-9d1c-0660b7976219
+kid_syndrome	2	5	3	0	http://dev2.ndexbio.org/v2/network/969f25d5-6b53-11e8-9d1c-0660b7976219
+klippel_feil_syndrome_kfs_	2	25	7	5	http://dev2.ndexbio.org/v2/network/a2ebf3d7-6b53-11e8-9d1c-0660b7976219
+laryngeal_benign_neoplasm	2	6	3	0	http://dev2.ndexbio.org/v2/network/96ff2051-6b53-11e8-9d1c-0660b7976219
+late_infantile_cach_syndrome	5	5	1	1	http://dev2.ndexbio.org/v2/network/9d4d0ce4-6b53-11e8-9d1c-0660b7976219
+leber_hereditary_optic_neuropathy_and_dystonia__ldyt_	2	11	5	0	http://dev2.ndexbio.org/v2/network/94adb61b-6b53-11e8-9d1c-0660b7976219
+leber_optic_atrophy_and_dystonia	2	11	5	0	http://dev2.ndexbio.org/v2/network/95f2b9f6-6b53-11e8-9d1c-0660b7976219
+leber_plus_disease	2	11	5	0	http://dev2.ndexbio.org/v2/network/9ed6e101-6b53-11e8-9d1c-0660b7976219
+leigh_syndrome_with_nephrotic_syndrome	2	274	132	20	http://dev2.ndexbio.org/v2/network/bd766311-6b53-11e8-9d1c-0660b7976219
+leiomyoma__epithelioid	2	2	1	1	http://dev2.ndexbio.org/v2/network/9f27992d-6b53-11e8-9d1c-0660b7976219
+lethal_multiple_pterygium_syndrome	4	141	62	30	http://dev2.ndexbio.org/v2/network/aa9ccb02-6b53-11e8-9d1c-0660b7976219
+leukemia__chronic_myeloid	2	8	2	0	http://dev2.ndexbio.org/v2/network/9d3ba7c0-6b53-11e8-9d1c-0660b7976219
+leukemia__erythroblastic__acute	3	308	124	72	http://dev2.ndexbio.org/v2/network/c1478f7c-6b53-11e8-9d1c-0660b7976219
+leukocytosis	2	48	14	6	http://dev2.ndexbio.org/v2/network/bff2d428-6b53-11e8-9d1c-0660b7976219
+leukodystrophy__hypomyelinating__7__with_or_without_oligodontia_and_or_hypogonadotropic_hypogonadism	2	4	1	1	http://dev2.ndexbio.org/v2/network/9ff9b59f-6b53-11e8-9d1c-0660b7976219
+leukoencephalopathy_with_vanishing_white_matter	5	5	1	1	http://dev2.ndexbio.org/v2/network/9ef899dd-6b53-11e8-9d1c-0660b7976219
+leukoencephalopathy_with_vanishing_white_matter__vanishing_white_matter_disease__childhood_ataxia_with_diffuse_central_nervous_system_hypomyelination__cach___cree_leukoencephalopathy__cle_	5	5	1	1	http://dev2.ndexbio.org/v2/network/c35a9051-6b53-11e8-9d1c-0660b7976219
+leydig_cell_tumor	2	46	12	6	http://dev2.ndexbio.org/v2/network/a0dc7508-6b53-11e8-9d1c-0660b7976219
+li_fraumeni_syndrome	3	7	4	1	http://dev2.ndexbio.org/v2/network/9e3fa9b3-6b53-11e8-9d1c-0660b7976219
+li_fraumeni_syndrome_1	2	25	11	2	http://dev2.ndexbio.org/v2/network/9ece5579-6b53-11e8-9d1c-0660b7976219
+li_fraumeni_syndrome_2	2	25	10	3	http://dev2.ndexbio.org/v2/network/bea7419d-6b53-11e8-9d1c-0660b7976219
+lichenoid_eruptions	2	34	15	7	http://dev2.ndexbio.org/v2/network/a027ca9f-6b53-11e8-9d1c-0660b7976219
+liddle_syndrome	4	74	25	12	http://dev2.ndexbio.org/v2/network/a2956f51-6b53-11e8-9d1c-0660b7976219
+listeriosis	2	294	111	52	http://dev2.ndexbio.org/v2/network/dc490361-6b53-11e8-9d1c-0660b7976219
+loeys_dietz_syndrome	4	6	5	1	http://dev2.ndexbio.org/v2/network/9f165b17-6b53-11e8-9d1c-0660b7976219
+loeys_dietz_syndrome__lds_	4	6	5	1	http://dev2.ndexbio.org/v2/network/b048d1b0-6b53-11e8-9d1c-0660b7976219
+lymphangioleiomyomatosis__lam_	2	2	1	1	http://dev2.ndexbio.org/v2/network/9e173a0c-6b53-11e8-9d1c-0660b7976219
+maffucci_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/b0b5ebdf-6b53-11e8-9d1c-0660b7976219
+malignant_hyperthermia	2	134	73	30	http://dev2.ndexbio.org/v2/network/b8ad906b-6b53-11e8-9d1c-0660b7976219
+malpuech_facial_clefting_syndrome	2	6	2	1	http://dev2.ndexbio.org/v2/network/a75652b3-6b53-11e8-9d1c-0660b7976219
+mandibuloacral_dysplasia	2	2	1	1	http://dev2.ndexbio.org/v2/network/a85db13a-6b53-11e8-9d1c-0660b7976219
+maple_syrup_urine_disease	5	68	26	12	http://dev2.ndexbio.org/v2/network/aa8a7b77-6b53-11e8-9d1c-0660b7976219
+maple_syrup_urine_disease__msud_	4	7	2	2	http://dev2.ndexbio.org/v2/network/a724e250-6b53-11e8-9d1c-0660b7976219
+martsolf_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/aab7f430-6b53-11e8-9d1c-0660b7976219
+medullary_thyroid_cancer	3	20	9	5	http://dev2.ndexbio.org/v2/network/a82c67eb-6b53-11e8-9d1c-0660b7976219
+megaepiphyseal_dwarfism	2	3	1	1	http://dev2.ndexbio.org/v2/network/a6dfc3cf-6b53-11e8-9d1c-0660b7976219
+megaesophagus	2	3	2	0	http://dev2.ndexbio.org/v2/network/a65054c1-6b53-11e8-9d1c-0660b7976219
+megalencephaly_polymicrogyria_polydactyly_hydrocephalus_syndrome_1	4	239	112	46	http://dev2.ndexbio.org/v2/network/c7f0ba74-6b53-11e8-9d1c-0660b7976219
+megaloblastic_anemia_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/a5eb513c-6b53-11e8-9d1c-0660b7976219
+meier_gorlin_syndrome	7	33	14	6	http://dev2.ndexbio.org/v2/network/aa605e22-6b53-11e8-9d1c-0660b7976219
+melanoma__cutaneous_malignant__susceptibility_to__8	2	39	16	5	http://dev2.ndexbio.org/v2/network/aaf54b68-6b53-11e8-9d1c-0660b7976219
+melas_syndrome__mitochondrial_myopathy__encephalopathy__lactic_acidosis__stroke_like_episodes	2	2	1	0	http://dev2.ndexbio.org/v2/network/a26ed46a-6b53-11e8-9d1c-0660b7976219
+melnick_fraser_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/a8305f90-6b53-11e8-9d1c-0660b7976219
+meningitis	3	96	30	22	http://dev2.ndexbio.org/v2/network/b332843b-6b53-11e8-9d1c-0660b7976219
+mental_retardation__autosomal_dominant_35	2	27	11	2	http://dev2.ndexbio.org/v2/network/b11dd4e6-6b53-11e8-9d1c-0660b7976219
+mental_retardation__autosomal_recessive_39	2	8	5	1	http://dev2.ndexbio.org/v2/network/b05ecad0-6b53-11e8-9d1c-0660b7976219
+mental_retardation__x_linked__syndromic_10	2	12	9	5	http://dev2.ndexbio.org/v2/network/afe70310-6b53-11e8-9d1c-0660b7976219
+mesenteric_ischemia	2	4	2	2	http://dev2.ndexbio.org/v2/network/b00e1348-6b53-11e8-9d1c-0660b7976219
+metachromatic_leukodystrophy__adult_form	2	73	20	12	http://dev2.ndexbio.org/v2/network/b1f0401c-6b53-11e8-9d1c-0660b7976219
+metachromatic_leukodystrophy__juvenile_form	2	73	20	12	http://dev2.ndexbio.org/v2/network/b346a88f-6b53-11e8-9d1c-0660b7976219
+metachromatic_leukodystrophy__late_infantile_form	2	73	20	12	http://dev2.ndexbio.org/v2/network/b1dd2e34-6b53-11e8-9d1c-0660b7976219
+metachromatic_leukodystrophy__mld_	2	73	20	12	http://dev2.ndexbio.org/v2/network/cda8813d-6b53-11e8-9d1c-0660b7976219
+metaphyseal_anadysplasia	2	311	140	63	http://dev2.ndexbio.org/v2/network/d48cb9cf-6b53-11e8-9d1c-0660b7976219
+microcephaly_with_chorioretinopathy__autosomal_recessive	2	3	1	1	http://dev2.ndexbio.org/v2/network/bf773c49-6b53-11e8-9d1c-0660b7976219
+microphthalmia__isolated__with_coloboma_6	2	25	7	6	http://dev2.ndexbio.org/v2/network/b207e6e2-6b53-11e8-9d1c-0660b7976219
+microphthalmia_with_linear_skin_defects_syndrome	3	175	65	31	http://dev2.ndexbio.org/v2/network/bbb2e124-6b53-11e8-9d1c-0660b7976219
+miller_dieker_lissencephaly_syndrome	2	113	41	16	http://dev2.ndexbio.org/v2/network/b637d50f-6b53-11e8-9d1c-0660b7976219
+mitral_valve_prolapse	2	466	222	63	http://dev2.ndexbio.org/v2/network/0af5b5bd-6b54-11e8-9d1c-0660b7976219
+mosaic_variegated_aneuploidy_syndrome_1	4	464	167	80	http://dev2.ndexbio.org/v2/network/0cc4a963-6b54-11e8-9d1c-0660b7976219
+muir_torre_syndrome	3	9	5	2	http://dev2.ndexbio.org/v2/network/b963245e-6b53-11e8-9d1c-0660b7976219
+multiple_acyl_coa_dehydrogenation_deficiency__mild_type	3	3	2	1	http://dev2.ndexbio.org/v2/network/b90c5288-6b53-11e8-9d1c-0660b7976219
+multiple_acyl_coa_dehydrogenation_deficiency__severe_neonatal_type	3	3	2	1	http://dev2.ndexbio.org/v2/network/b90a2fa7-6b53-11e8-9d1c-0660b7976219
+multiple_benign_circumferential_skin_creases_on_limbs	2	322	120	55	http://dev2.ndexbio.org/v2/network/ed581413-6b53-11e8-9d1c-0660b7976219
+multiple_congenital_exostosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/bc4f2087-6b53-11e8-9d1c-0660b7976219
+multiple_epiphyseal_dysplasia_due_to_collagen_9_anomaly	3	3	1	1	http://dev2.ndexbio.org/v2/network/b9cac00a-6b53-11e8-9d1c-0660b7976219
+multiple_exostoses	2	2	1	1	http://dev2.ndexbio.org/v2/network/b96cc15a-6b53-11e8-9d1c-0660b7976219
+multiple_joint_dislocations__short_stature__craniofacial_dysmorphism__and_congenital_heart_defects	3	218	73	34	http://dev2.ndexbio.org/v2/network/ccec83b7-6b53-11e8-9d1c-0660b7976219
+muscular_dystrophy__congenital_merosin_deficient__1a	2	11	6	3	http://dev2.ndexbio.org/v2/network/b9e35126-6b53-11e8-9d1c-0660b7976219
+muscular_dystrophy__limb_girdle__type_1e	2	306	133	59	http://dev2.ndexbio.org/v2/network/d994b8c1-6b53-11e8-9d1c-0660b7976219
+myasthenic_syndrome__congenital__1a__slow_channel	4	11	3	0	http://dev2.ndexbio.org/v2/network/b841d600-6b53-11e8-9d1c-0660b7976219
+myasthenic_syndrome__congenital__21__presynaptic	2	11	6	1	http://dev2.ndexbio.org/v2/network/bd85f379-6b53-11e8-9d1c-0660b7976219
+myeloproliferative_disorder__chronic__with_eosinophilia	2	6	4	0	http://dev2.ndexbio.org/v2/network/ba295af0-6b53-11e8-9d1c-0660b7976219
+myoclonic_epilepsy_of_lafora	2	3	1	1	http://dev2.ndexbio.org/v2/network/b8a21eb1-6b53-11e8-9d1c-0660b7976219
+myopathy__centronuclear__2	2	81	37	22	http://dev2.ndexbio.org/v2/network/c577cb40-6b53-11e8-9d1c-0660b7976219
+myopathy__lactic_acidosis__and_sideroblastic_anemia	2	13	9	5	http://dev2.ndexbio.org/v2/network/c29a4da9-6b53-11e8-9d1c-0660b7976219
+myotonia_congenita	2	30	11	3	http://dev2.ndexbio.org/v2/network/c425cf8b-6b53-11e8-9d1c-0660b7976219
+naxos_disease_and_carvajal_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/c1df6240-6b53-11e8-9d1c-0660b7976219
+neonatal_glycine_encephalopathy	3	3	2	2	http://dev2.ndexbio.org/v2/network/c30c49db-6b53-11e8-9d1c-0660b7976219
+neoplasms__hormone_dependent	3	3	2	0	http://dev2.ndexbio.org/v2/network/c28e8dcd-6b53-11e8-9d1c-0660b7976219
+nephrotic_syndrome__idiopathic__steroid_resistant	3	11	5	1	http://dev2.ndexbio.org/v2/network/cd561b3f-6b53-11e8-9d1c-0660b7976219
+netherton_syndrome	2	148	55	26	http://dev2.ndexbio.org/v2/network/ca0765e9-6b53-11e8-9d1c-0660b7976219
+neu_laxova_syndrome_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/c23ee7d4-6b53-11e8-9d1c-0660b7976219
+neurofibroma	2	46	31	7	http://dev2.ndexbio.org/v2/network/c51d75fd-6b53-11e8-9d1c-0660b7976219
+neurologic_waardenburg_shah_syndrome	2	21	8	5	http://dev2.ndexbio.org/v2/network/c2b48c7a-6b53-11e8-9d1c-0660b7976219
+neuromyelitis_optica	3	41	11	6	http://dev2.ndexbio.org/v2/network/c434c3bf-6b53-11e8-9d1c-0660b7976219
+nevus__epidermal	5	18	10	4	http://dev2.ndexbio.org/v2/network/d10b8260-6b53-11e8-9d1c-0660b7976219
+nevus__pigmented	2	46	31	6	http://dev2.ndexbio.org/v2/network/cdc8b386-6b53-11e8-9d1c-0660b7976219
+nicolaides_baraitser_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/c1342e79-6b53-11e8-9d1c-0660b7976219
+niemann_pick_disease__type_b	2	3	2	2	http://dev2.ndexbio.org/v2/network/c44a6eba-6b53-11e8-9d1c-0660b7976219
+nodulosis_arthropathy_osteolysis_syndrome	2	3	1	1	http://dev2.ndexbio.org/v2/network/c1cb16e0-6b53-11e8-9d1c-0660b7976219
+nonketotic_hyperglycinemia__glycine_encephalopathy__gce_	3	3	2	2	http://dev2.ndexbio.org/v2/network/c1f33877-6b53-11e8-9d1c-0660b7976219
+null_pituitary_adenoma	2	19	10	0	http://dev2.ndexbio.org/v2/network/c7879820-6b53-11e8-9d1c-0660b7976219
+ocular_albinism__ocular_albinism__type_i__oa1___waardenburg_syndrome__type_ii__ws2_oa_	2	29	11	5	http://dev2.ndexbio.org/v2/network/cbd399eb-6b53-11e8-9d1c-0660b7976219
+oculocutaneous_albinism	2	39	16	5	http://dev2.ndexbio.org/v2/network/d7c9e326-6b53-11e8-9d1c-0660b7976219
+opll	2	318	121	52	http://dev2.ndexbio.org/v2/network/f156dfb9-6b53-11e8-9d1c-0660b7976219
+optic_atrophies__hereditary	2	11	5	0	http://dev2.ndexbio.org/v2/network/cb3f49a6-6b53-11e8-9d1c-0660b7976219
+optic_atrophy_9	2	193	74	19	http://dev2.ndexbio.org/v2/network/d40205af-6b53-11e8-9d1c-0660b7976219
+oropharyngeal_cancer	2	329	120	34	http://dev2.ndexbio.org/v2/network/0a426bd2-6b54-11e8-9d1c-0660b7976219
+oropharynx_cancer	4	391	132	71	http://dev2.ndexbio.org/v2/network/04efcfa4-6b54-11e8-9d1c-0660b7976219
+osteogenesis_imperfecta_type_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/e1bfa237-6b53-11e8-9d1c-0660b7976219
+osteogenesis_imperfecta_type_2	5	10	4	3	http://dev2.ndexbio.org/v2/network/ca43f9ec-6b53-11e8-9d1c-0660b7976219
+osteoporosis__juvenile	4	38	20	4	http://dev2.ndexbio.org/v2/network/cea8d9e2-6b53-11e8-9d1c-0660b7976219
+otospondylomegaepiphyseal_dysplasia	2	3	1	1	http://dev2.ndexbio.org/v2/network/cc45960a-6b53-11e8-9d1c-0660b7976219
+pachydermoperiostosis	2	103	28	13	http://dev2.ndexbio.org/v2/network/d8607e22-6b53-11e8-9d1c-0660b7976219
+pachyonychia_congenita	4	22	4	2	http://dev2.ndexbio.org/v2/network/d449bd3d-6b53-11e8-9d1c-0660b7976219
+pachyonychia_congenita_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/d38200d3-6b53-11e8-9d1c-0660b7976219
+pachyonychia_congenita_type_2	2	31	6	5	http://dev2.ndexbio.org/v2/network/d43ff93b-6b53-11e8-9d1c-0660b7976219
+palmoplantar_keratoderma__epidermolytic	3	11	2	0	http://dev2.ndexbio.org/v2/network/d401425d-6b53-11e8-9d1c-0660b7976219
+palmoplantar_keratoderma__nonepidermolytic	2	2	1	1	http://dev2.ndexbio.org/v2/network/d240f4b7-6b53-11e8-9d1c-0660b7976219
+palmoplantar_keratoderma__nonepidermolytic__focal	2	2	1	1	http://dev2.ndexbio.org/v2/network/d3f1b1eb-6b53-11e8-9d1c-0660b7976219
+palmoplantar_keratoderma_i__striate__focal__or_diffuse	2	13	4	2	http://dev2.ndexbio.org/v2/network/d4758843-6b53-11e8-9d1c-0660b7976219
+pancreatitis__hereditary	6	249	88	45	http://dev2.ndexbio.org/v2/network/ee4a8a02-6b53-11e8-9d1c-0660b7976219
+papillary_renal_cell_carcinoma	2	127	49	24	http://dev2.ndexbio.org/v2/network/dc527943-6b53-11e8-9d1c-0660b7976219
+paraganglioma_and_gastric_stromal_sarcoma	3	4	3	0	http://dev2.ndexbio.org/v2/network/d45ad447-6b53-11e8-9d1c-0660b7976219
+parapsoriasis	2	8	5	0	http://dev2.ndexbio.org/v2/network/d34d5c22-6b53-11e8-9d1c-0660b7976219
+parietal_foramina	2	300	133	42	http://dev2.ndexbio.org/v2/network/00232bdf-6b54-11e8-9d1c-0660b7976219
+parkinson_disease_6__autosomal_recessive_early_onset	2	2	1	0	http://dev2.ndexbio.org/v2/network/cdfededf-6b53-11e8-9d1c-0660b7976219
+partial_chromosome_y_deletion	2	400	157	74	http://dev2.ndexbio.org/v2/network/1644c324-6b54-11e8-9d1c-0660b7976219
+pasteurellaceae_infections	3	26	8	2	http://dev2.ndexbio.org/v2/network/d54b9d7e-6b53-11e8-9d1c-0660b7976219
+peeling_skin_syndrome	2	3	1	1	http://dev2.ndexbio.org/v2/network/dccab5af-6b53-11e8-9d1c-0660b7976219
+penile_neoplasm	4	28	18	7	http://dev2.ndexbio.org/v2/network/dee0c4b1-6b53-11e8-9d1c-0660b7976219
+peptic_ulcer_disease	2	355	150	69	http://dev2.ndexbio.org/v2/network/311f2671-6b54-11e8-9d1c-0660b7976219
+peptic_ulcer_hemorrhage	2	206	70	47	http://dev2.ndexbio.org/v2/network/f2309df0-6b53-11e8-9d1c-0660b7976219
+perianal_crohn_s_disease	2	359	172	21	http://dev2.ndexbio.org/v2/network/1a04b0bc-6b54-11e8-9d1c-0660b7976219
+pericardial_effusion	2	84	36	15	http://dev2.ndexbio.org/v2/network/e282a37e-6b53-11e8-9d1c-0660b7976219
+peripheral_artery_disease	2	10	4	1	http://dev2.ndexbio.org/v2/network/dde5c35f-6b53-11e8-9d1c-0660b7976219
+peripheral_primitive_neuroectodermal_tumor	2	11	4	1	http://dev2.ndexbio.org/v2/network/dd48e6c0-6b53-11e8-9d1c-0660b7976219
+peripheral_resistance_to_thyroid_hormones	2	6	2	1	http://dev2.ndexbio.org/v2/network/dd81aa27-6b53-11e8-9d1c-0660b7976219
+peroxisome_biogenesis_disorder_1b	2	4	2	0	http://dev2.ndexbio.org/v2/network/dd9ea817-6b53-11e8-9d1c-0660b7976219
+persistent_fetal_circulation_syndrome	2	43	14	7	http://dev2.ndexbio.org/v2/network/e90e5bd1-6b53-11e8-9d1c-0660b7976219
+pfeiffer_syndrome	2	9	2	1	http://dev2.ndexbio.org/v2/network/f262aaad-6b53-11e8-9d1c-0660b7976219
+pfeiffer_syndrome_type_1	2	9	2	0	http://dev2.ndexbio.org/v2/network/dc1289f8-6b53-11e8-9d1c-0660b7976219
+phakomatosis_cesioflammea	2	5	2	0	http://dev2.ndexbio.org/v2/network/dbae70c6-6b53-11e8-9d1c-0660b7976219
+pharynx_cancer	2	6	3	0	http://dev2.ndexbio.org/v2/network/dd2272eb-6b53-11e8-9d1c-0660b7976219
+phenylketonuria	2	2	1	1	http://dev2.ndexbio.org/v2/network/dd619ef4-6b53-11e8-9d1c-0660b7976219
+phosphoenolpyruvate_carboxykinase_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/dcb13a2f-6b53-11e8-9d1c-0660b7976219
+phytanic_acid_storage_disease	2	2	1	1	http://dev2.ndexbio.org/v2/network/dd4abb85-6b53-11e8-9d1c-0660b7976219
+pick_s_disease	2	20	12	1	http://dev2.ndexbio.org/v2/network/de1fe650-6b53-11e8-9d1c-0660b7976219
+piebald_trait	2	341	114	51	http://dev2.ndexbio.org/v2/network/3238fb79-6b54-11e8-9d1c-0660b7976219
+piebaldism	2	341	114	51	http://dev2.ndexbio.org/v2/network/100f412e-6b54-11e8-9d1c-0660b7976219
+pitt_hopkins_like_syndrome	2	6	1	1	http://dev2.ndexbio.org/v2/network/ddf7ebd5-6b53-11e8-9d1c-0660b7976219
+pituitary_hormone_deficiency__combined_2	3	332	144	59	http://dev2.ndexbio.org/v2/network/18ff4f2e-6b54-11e8-9d1c-0660b7976219
+platelet_type_bleeding_disorder_16	2	4	1	1	http://dev2.ndexbio.org/v2/network/e5dfb1d2-6b53-11e8-9d1c-0660b7976219
+platelet_type_bleeding_disorder_8	3	194	101	15	http://dev2.ndexbio.org/v2/network/f58f323c-6b53-11e8-9d1c-0660b7976219
+pleurisy	6	186	82	43	http://dev2.ndexbio.org/v2/network/f423bb44-6b53-11e8-9d1c-0660b7976219
+polycystic_lipomembranous_osteodysplasia_with_sclerosing_leukoencephalopathy	2	17	9	4	http://dev2.ndexbio.org/v2/network/e551f07a-6b53-11e8-9d1c-0660b7976219
+polycystic_lipomembranous_osteodysplasia_with_sclerosing_leukoencephalopathy__plosl___nasu_hakola_disease	2	17	9	4	http://dev2.ndexbio.org/v2/network/f534dd14-6b53-11e8-9d1c-0660b7976219
+polycystic_liver_disease	2	116	50	28	http://dev2.ndexbio.org/v2/network/ec3d7bb0-6b53-11e8-9d1c-0660b7976219
+polymerase_proofreading_related_adenomatous_polyposis	2	5	3	0	http://dev2.ndexbio.org/v2/network/e6a3eba3-6b53-11e8-9d1c-0660b7976219
+polymyositis	5	282	113	68	http://dev2.ndexbio.org/v2/network/04fbdd9c-6b54-11e8-9d1c-0660b7976219
+polyploidy	4	215	91	53	http://dev2.ndexbio.org/v2/network/fda310a6-6b53-11e8-9d1c-0660b7976219
+poor_drug_metabolism__pm_	2	12	3	1	http://dev2.ndexbio.org/v2/network/f04659cc-6b53-11e8-9d1c-0660b7976219
+porokeratosis_of_mibelli	2	22	7	3	http://dev2.ndexbio.org/v2/network/e740ef6c-6b53-11e8-9d1c-0660b7976219
+prader_willi_syndrome__pws_	2	74	43	12	http://dev2.ndexbio.org/v2/network/ebe4fb36-6b53-11e8-9d1c-0660b7976219
+precocious_puberty__male_limited	3	18	9	2	http://dev2.ndexbio.org/v2/network/e55f36f2-6b53-11e8-9d1c-0660b7976219
+primary_ciliary_dyskinesia_28	2	19	8	1	http://dev2.ndexbio.org/v2/network/e5d0487c-6b53-11e8-9d1c-0660b7976219
+primary_congenital_glaucoma__pcg_	2	115	33	19	http://dev2.ndexbio.org/v2/network/eaa54f80-6b53-11e8-9d1c-0660b7976219
+primary_hyperoxaluria__hp_	2	117	41	27	http://dev2.ndexbio.org/v2/network/f4cddd8d-6b53-11e8-9d1c-0660b7976219
+primary_localized_cutaneous_amyloidosis__plca_	2	2	1	1	http://dev2.ndexbio.org/v2/network/ef381e21-6b53-11e8-9d1c-0660b7976219
+primary_microcephaly_mild_intellectual_disability_young_onset_diabetes_syndrome	2	413	197	33	http://dev2.ndexbio.org/v2/network/1f29380d-6b54-11e8-9d1c-0660b7976219
+progressive_cardiac_conduction_defect__pccd___progressive_familial_heart_block__pfhb___lenegre_lev_disease	2	2	1	1	http://dev2.ndexbio.org/v2/network/eeb903a3-6b53-11e8-9d1c-0660b7976219
+propionic_acidemia	2	4	4	1	http://dev2.ndexbio.org/v2/network/ef3f983a-6b53-11e8-9d1c-0660b7976219
+protein_deficiency	2	143	62	36	http://dev2.ndexbio.org/v2/network/f77026bb-6b53-11e8-9d1c-0660b7976219
+proteus_syndrome	2	15	9	3	http://dev2.ndexbio.org/v2/network/eee12439-6b53-11e8-9d1c-0660b7976219
+proximal_symphalangism	2	3	2	0	http://dev2.ndexbio.org/v2/network/eef54883-6b53-11e8-9d1c-0660b7976219
+pseudohypoaldosteronism__type_2	4	5	1	1	http://dev2.ndexbio.org/v2/network/ee9faf27-6b53-11e8-9d1c-0660b7976219
+pulmonary_surfactant_metabolism_dysfunction__smdp_	3	10	3	1	http://dev2.ndexbio.org/v2/network/ef8f6624-6b53-11e8-9d1c-0660b7976219
+pyridoxine_refractory_autosomal_recessive_sideroblastic_anemia	2	44	23	6	http://dev2.ndexbio.org/v2/network/f455a0de-6b53-11e8-9d1c-0660b7976219
+radio_ulnar_synostosis_amegakaryocytic_thrombocytopenia_syndrome	2	6	6	0	http://dev2.ndexbio.org/v2/network/ef49aa64-6b53-11e8-9d1c-0660b7976219
+rare_familial_disorder_with_hypertrophic_cardiomyopathy	7	59	27	15	http://dev2.ndexbio.org/v2/network/f2c8e5fb-6b53-11e8-9d1c-0660b7976219
+ras_associated_autoimmune_leukoproliferative_disorder	2	2	1	1	http://dev2.ndexbio.org/v2/network/ee91a554-6b53-11e8-9d1c-0660b7976219
+refsum_disease__heredopathia_atactica_polyneuritiformis	2	2	1	1	http://dev2.ndexbio.org/v2/network/fa6858a4-6b53-11e8-9d1c-0660b7976219
+renal_angiomyolipoma	2	2	1	1	http://dev2.ndexbio.org/v2/network/ef4febf8-6b53-11e8-9d1c-0660b7976219
+renal_cysts_and_diabetes_syndrome	2	7	5	1	http://dev2.ndexbio.org/v2/network/ef0fae6d-6b53-11e8-9d1c-0660b7976219
+renal_dysplasia	4	8	7	2	http://dev2.ndexbio.org/v2/network/f2d2f828-6b53-11e8-9d1c-0660b7976219
+renal_hypomagnesemia_2	2	20	8	3	http://dev2.ndexbio.org/v2/network/f1036824-6b53-11e8-9d1c-0660b7976219
+renal_hypomagnesemia_3	2	104	63	17	http://dev2.ndexbio.org/v2/network/f75091a4-6b53-11e8-9d1c-0660b7976219
+renal_hypouricemia__rhuc_	2	2	1	1	http://dev2.ndexbio.org/v2/network/f6ac61fe-6b53-11e8-9d1c-0660b7976219
+renal_tubular_dysgenesis	4	8	7	1	http://dev2.ndexbio.org/v2/network/f8ed2a52-6b53-11e8-9d1c-0660b7976219
+restrictive_cardiomyopathy__rcm_	4	31	18	11	http://dev2.ndexbio.org/v2/network/f92f6390-6b53-11e8-9d1c-0660b7976219
+restrictive_dermopathy	2	2	1	1	http://dev2.ndexbio.org/v2/network/f9dc1db8-6b53-11e8-9d1c-0660b7976219
+restrictive_dermopathy__lethal	2	2	1	1	http://dev2.ndexbio.org/v2/network/f790a72d-6b53-11e8-9d1c-0660b7976219
+retinitis_pigmentosa_7	2	3	1	1	http://dev2.ndexbio.org/v2/network/f74f3211-6b53-11e8-9d1c-0660b7976219
+retinitis_pigmentosa_deafness_syndrome	2	208	81	2	http://dev2.ndexbio.org/v2/network/07a1f6ee-6b54-11e8-9d1c-0660b7976219
+retinitis_punctata_albescens	2	284	118	59	http://dev2.ndexbio.org/v2/network/1d48b8d1-6b54-11e8-9d1c-0660b7976219
+rh_deficiency_syndrome	2	5	1	1	http://dev2.ndexbio.org/v2/network/f81938b0-6b53-11e8-9d1c-0660b7976219
+rhabdoid_predisposition_syndrome__rps_	2	2	1	1	http://dev2.ndexbio.org/v2/network/f67c030c-6b53-11e8-9d1c-0660b7976219
+rickets	4	481	209	111	http://dev2.ndexbio.org/v2/network/5d7036bd-6b54-11e8-9d1c-0660b7976219
+rieger_anomaly	2	2	1	1	http://dev2.ndexbio.org/v2/network/f6992816-6b53-11e8-9d1c-0660b7976219
+rotor_syndrome	2	4	2	2	http://dev2.ndexbio.org/v2/network/f85b4a09-6b53-11e8-9d1c-0660b7976219
+roussy_lc_vy_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/f75d3ae3-6b53-11e8-9d1c-0660b7976219
+sagittal_sinus_thrombosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/fbca329d-6b53-11e8-9d1c-0660b7976219
+saldino_mainzer_syndrome	2	18	4	2	http://dev2.ndexbio.org/v2/network/00b07838-6b54-11e8-9d1c-0660b7976219
+scapuloperoneal_myopathy__spm_	3	351	145	81	http://dev2.ndexbio.org/v2/network/365169f3-6b54-11e8-9d1c-0660b7976219
+sciatic_neuropathy	3	28	8	4	http://dev2.ndexbio.org/v2/network/0179e27a-6b54-11e8-9d1c-0660b7976219
+sclerosteosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/fff6ec9e-6b53-11e8-9d1c-0660b7976219
+seizures__benign_familial_neonatal__2	2	2	1	1	http://dev2.ndexbio.org/v2/network/00b9ee23-6b54-11e8-9d1c-0660b7976219
+self_healing_collodion_baby	3	3	1	1	http://dev2.ndexbio.org/v2/network/0097e711-6b54-11e8-9d1c-0660b7976219
+seminoma	3	417	156	73	http://dev2.ndexbio.org/v2/network/4c1fd718-6b54-11e8-9d1c-0660b7976219
+sensenbrenner_syndrome	5	18	3	1	http://dev2.ndexbio.org/v2/network/06c0e630-6b54-11e8-9d1c-0660b7976219
+septic_arthritis	2	2	1	1	http://dev2.ndexbio.org/v2/network/ff533211-6b53-11e8-9d1c-0660b7976219
+severe_combined_immunodeficiency__autosomal_recessive__t_cell_negative__b_cell_negative__nk_cell_positive	2	2	1	1	http://dev2.ndexbio.org/v2/network/014cdee2-6b54-11e8-9d1c-0660b7976219
+severe_combined_immunodeficiency__autosomal_recessive__t_cell_negative__b_cell_positive__nk_cell_negative	3	59	22	6	http://dev2.ndexbio.org/v2/network/034728ac-6b54-11e8-9d1c-0660b7976219
+severe_combined_immunodeficiency__autosomal_recessive__t_cell_negative__b_cell_positive__nk_cell_positive	4	35	18	9	http://dev2.ndexbio.org/v2/network/078d3658-6b54-11e8-9d1c-0660b7976219
+severe_cutaneous_adverse_reaction__susceptibility_to	2	4	2	0	http://dev2.ndexbio.org/v2/network/ffa8a55f-6b53-11e8-9d1c-0660b7976219
+severe_intellectual_disability_and_progressive_spastic_paraplegia	4	4	1	1	http://dev2.ndexbio.org/v2/network/fd1fb058-6b53-11e8-9d1c-0660b7976219
+severe_neonatal_lactic_acidosis_due_to_nfs1_isd11_complex_deficiency	2	2	1	1	http://dev2.ndexbio.org/v2/network/ff5ecadc-6b53-11e8-9d1c-0660b7976219
+short_rib_polydactyly_syndrome	2	173	91	18	http://dev2.ndexbio.org/v2/network/1a5bd18d-6b54-11e8-9d1c-0660b7976219
+short_rib_polydactyly_syndrome__majewski_type	2	173	91	12	http://dev2.ndexbio.org/v2/network/180425ec-6b54-11e8-9d1c-0660b7976219
+short_rib_thoracic_dysplasia_6_with_or_without_polydactyly	2	173	91	12	http://dev2.ndexbio.org/v2/network/17041bab-6b54-11e8-9d1c-0660b7976219
+sick_sinus_syndrome__sss___sinus_node_dysfunction	2	9	4	1	http://dev2.ndexbio.org/v2/network/0a2bfd95-6b54-11e8-9d1c-0660b7976219
+silent_pituitary_adenoma	2	19	10	0	http://dev2.ndexbio.org/v2/network/0a78e547-6b54-11e8-9d1c-0660b7976219
+silver_russell_syndrome_due_to_a_point_mutation	2	7	5	1	http://dev2.ndexbio.org/v2/network/0a0e6360-6b54-11e8-9d1c-0660b7976219
+singleton_merten_dysplasia	2	2	1	1	http://dev2.ndexbio.org/v2/network/084ba4ba-6b54-11e8-9d1c-0660b7976219
+singleton_merten_syndrome__sms_	2	2	1	1	http://dev2.ndexbio.org/v2/network/0993188a-6b54-11e8-9d1c-0660b7976219
+sitosterolemia	2	2	1	1	http://dev2.ndexbio.org/v2/network/097e09dd-6b54-11e8-9d1c-0660b7976219
+sodium_channelopathy_related_small_fiber_neuropathy	3	3	1	1	http://dev2.ndexbio.org/v2/network/0963f21c-6b54-11e8-9d1c-0660b7976219
+solitary_fibrous_tumor	2	50	25	4	http://dev2.ndexbio.org/v2/network/0d0c12c8-6b54-11e8-9d1c-0660b7976219
+solitary_fibrous_tumors	2	50	25	4	http://dev2.ndexbio.org/v2/network/0c186477-6b54-11e8-9d1c-0660b7976219
+sost_related_sclerosing_bone_dysplasia	2	5	2	0	http://dev2.ndexbio.org/v2/network/0a125b04-6b54-11e8-9d1c-0660b7976219
+spasm	2	102	25	14	http://dev2.ndexbio.org/v2/network/34d4660c-6b54-11e8-9d1c-0660b7976219
+spermatogenesis_arrest	2	89	42	6	http://dev2.ndexbio.org/v2/network/175485bf-6b54-11e8-9d1c-0660b7976219
+spinal_muscular_atrophy__type_3	2	498	202	72	http://dev2.ndexbio.org/v2/network/7c744754-6b54-11e8-9d1c-0660b7976219
+split_hand_foot_malformation__shfm_	2	211	87	34	http://dev2.ndexbio.org/v2/network/29cb3cca-6b54-11e8-9d1c-0660b7976219
+spondyloarthropathy__susceptibility_to__1	2	4	2	0	http://dev2.ndexbio.org/v2/network/115b48e3-6b54-11e8-9d1c-0660b7976219
+stevens_johnson_syndrome_and_toxic_epidermal_necrolysis__lyell_s_syndrome	2	4	2	0	http://dev2.ndexbio.org/v2/network/12f34e06-6b54-11e8-9d1c-0660b7976219
+striate_palmoplantar_keratoderma	3	11	8	3	http://dev2.ndexbio.org/v2/network/0faa3da8-6b54-11e8-9d1c-0660b7976219
+subcortical_band_heterotopia	3	321	139	67	http://dev2.ndexbio.org/v2/network/4bc6e188-6b54-11e8-9d1c-0660b7976219
+subependymal_giant_cell_astrocytoma__sega_	2	2	1	1	http://dev2.ndexbio.org/v2/network/1154b92d-6b54-11e8-9d1c-0660b7976219
+surfactant_metabolism_dysfunction__pulmonary__1	3	7	3	2	http://dev2.ndexbio.org/v2/network/12c0a52d-6b54-11e8-9d1c-0660b7976219
+synaptic_congenital_myasthenic_syndromes	2	462	176	68	http://dev2.ndexbio.org/v2/network/67ab628e-6b54-11e8-9d1c-0660b7976219
+t_b__severe_combined_immunodeficiency_due_to_cd3delta_cd3epsilon_cd3zeta	3	3	1	1	http://dev2.ndexbio.org/v2/network/136ebfb8-6b54-11e8-9d1c-0660b7976219
+tay_sachs_disease	2	2	1	1	http://dev2.ndexbio.org/v2/network/117dec25-6b54-11e8-9d1c-0660b7976219
+thiamine_responsive_maple_syrup_urine_disease	3	4	1	1	http://dev2.ndexbio.org/v2/network/14356b6e-6b54-11e8-9d1c-0660b7976219
+thrombotic_thrombocytopenic_purpura	3	87	30	21	http://dev2.ndexbio.org/v2/network/20056803-6b54-11e8-9d1c-0660b7976219
+thyroid_ectopia	2	8	10	1	http://dev2.ndexbio.org/v2/network/1259f3ed-6b54-11e8-9d1c-0660b7976219
+thyroid_hypoplasia	3	7	4	1	http://dev2.ndexbio.org/v2/network/116ab23b-6b54-11e8-9d1c-0660b7976219
+thyrotoxicosis	2	124	52	23	http://dev2.ndexbio.org/v2/network/1c00cfb9-6b54-11e8-9d1c-0660b7976219
+tic_disorder	2	284	92	53	http://dev2.ndexbio.org/v2/network/37879fde-6b54-11e8-9d1c-0660b7976219
+tonsillar_cancer	3	7	5	1	http://dev2.ndexbio.org/v2/network/12736f6d-6b54-11e8-9d1c-0660b7976219
+torg_winchester_syndrome	2	3	1	1	http://dev2.ndexbio.org/v2/network/11769921-6b54-11e8-9d1c-0660b7976219
+treacher_collins_syndrome	3	361	129	61	http://dev2.ndexbio.org/v2/network/4c4a1b7d-6b54-11e8-9d1c-0660b7976219
+treacher_collins_syndrome_1	3	361	129	62	http://dev2.ndexbio.org/v2/network/3dca8f05-6b54-11e8-9d1c-0660b7976219
+trichohepatoenteric_syndrome_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/120c49d9-6b54-11e8-9d1c-0660b7976219
+trichuriasis	2	199	74	45	http://dev2.ndexbio.org/v2/network/33a36076-6b54-11e8-9d1c-0660b7976219
+tuberous_sclerosis	2	2	1	1	http://dev2.ndexbio.org/v2/network/11f25923-6b54-11e8-9d1c-0660b7976219
+tuberous_sclerosis_complex__tsc___bourneville_pringle_disease	2	2	1	1	http://dev2.ndexbio.org/v2/network/18d88d37-6b54-11e8-9d1c-0660b7976219
+tyrosinemia__tyrosinemia__type_i__tyrosinemia__type_ii__tyrosinemia__type_iii__hawkinsinuria	3	212	73	45	http://dev2.ndexbio.org/v2/network/28015239-6b54-11e8-9d1c-0660b7976219
+ullrich_congenital_muscular_dystrophy	4	7	2	1	http://dev2.ndexbio.org/v2/network/1bc91dc3-6b54-11e8-9d1c-0660b7976219
+ullrich_congenital_muscular_dystrophy_1	3	3	1	1	http://dev2.ndexbio.org/v2/network/1b64b671-6b54-11e8-9d1c-0660b7976219
+ureteral_calculi	4	340	143	72	http://dev2.ndexbio.org/v2/network/43838e9e-6b54-11e8-9d1c-0660b7976219
+usher_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/214f9b21-6b54-11e8-9d1c-0660b7976219
+usher_syndrome__type_1	7	342	174	54	http://dev2.ndexbio.org/v2/network/425c7344-6b54-11e8-9d1c-0660b7976219
+usher_syndrome_type_1d	2	2	1	1	http://dev2.ndexbio.org/v2/network/1c2baf5a-6b54-11e8-9d1c-0660b7976219
+uv_sensitive_syndrome	3	13	3	1	http://dev2.ndexbio.org/v2/network/24a2bd18-6b54-11e8-9d1c-0660b7976219
+van_maldergem_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/2010b1b0-6b54-11e8-9d1c-0660b7976219
+viral_infectious_disease	2	262	82	47	http://dev2.ndexbio.org/v2/network/45c05f4e-6b54-11e8-9d1c-0660b7976219
+visceral_myopathy	2	2	1	1	http://dev2.ndexbio.org/v2/network/19e4f3b7-6b54-11e8-9d1c-0660b7976219
+vitamin_e__familial_isolated_deficiency_of	3	171	59	39	http://dev2.ndexbio.org/v2/network/271432cd-6b54-11e8-9d1c-0660b7976219
+vulvar_lichen_sclerosus	2	25	11	1	http://dev2.ndexbio.org/v2/network/207f2b3e-6b54-11e8-9d1c-0660b7976219
+waardenburg_shah_syndrome	3	53	17	9	http://dev2.ndexbio.org/v2/network/1ee66377-6b54-11e8-9d1c-0660b7976219
+waardenburg_syndrome__type_2e	2	21	8	4	http://dev2.ndexbio.org/v2/network/1c91eb7c-6b54-11e8-9d1c-0660b7976219
+waardenburg_syndrome__type_4a	3	53	17	9	http://dev2.ndexbio.org/v2/network/1c8da5b5-6b54-11e8-9d1c-0660b7976219
+waardenburg_syndrome__type_4c	2	21	8	4	http://dev2.ndexbio.org/v2/network/1922dcd5-6b54-11e8-9d1c-0660b7976219
+water_intoxication	2	64	12	8	http://dev2.ndexbio.org/v2/network/1f2f2b86-6b54-11e8-9d1c-0660b7976219
+weaver_syndrome	2	310	169	52	http://dev2.ndexbio.org/v2/network/67cfb375-6b54-11e8-9d1c-0660b7976219
+well_differentiated_liposarcoma	3	298	129	48	http://dev2.ndexbio.org/v2/network/49a56176-6b54-11e8-9d1c-0660b7976219
+werner_syndrome	2	266	132	59	http://dev2.ndexbio.org/v2/network/536edf02-6b54-11e8-9d1c-0660b7976219
+white_sponge_nevus	2	2	1	1	http://dev2.ndexbio.org/v2/network/2669254f-6b54-11e8-9d1c-0660b7976219
+white_sponge_nevus_1	2	2	1	1	http://dev2.ndexbio.org/v2/network/23c778b4-6b54-11e8-9d1c-0660b7976219
+wiedemann_steiner_syndrome	2	220	101	39	http://dev2.ndexbio.org/v2/network/4a70c712-6b54-11e8-9d1c-0660b7976219
+wilson_turner_x_linked_mental_retardation_syndrome	2	17	12	1	http://dev2.ndexbio.org/v2/network/2518d7c9-6b54-11e8-9d1c-0660b7976219
+x_linked_diffuse_leiomyomatosis_alport_syndrome	2	2	1	1	http://dev2.ndexbio.org/v2/network/26e819a6-6b54-11e8-9d1c-0660b7976219
+xeroderma_pigmentosum__complementation_group_a	2	10	5	0	http://dev2.ndexbio.org/v2/network/26412ad4-6b54-11e8-9d1c-0660b7976219
+xeroderma_pigmentosum_cockayne_syndrome_complex	4	20	6	3	http://dev2.ndexbio.org/v2/network/267b74dd-6b54-11e8-9d1c-0660b7976219

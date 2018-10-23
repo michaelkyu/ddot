@@ -1,0 +1,11 @@
+# Ignore compiled files in alignOntology directory
+ddot/alignOntology/calculateFDRsForAlignment
+ddot/alignOntology/alignOntology
+ddot/alignOntology/collapseRedundantNodes
+ddot/alignOntology/ontologyTermStats
+ddot/alignOntology/*.o
+
+# Ignore compiled files in clixo directory
+ddot/clixo_0.3/clixo
+ddot/clixo_0.3/clustersToDAG
+ddot/clixo_0.3/*.o

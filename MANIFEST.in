@@ -1,6 +1,6 @@
 include README.md
 include LICENSE.txt
-recursive-include ddot/mhk7-clixo_0.3-cec3674 *
-recursive-include ddot/alignOntology *
+recursive-include ddot/mhk7-clixo_0.3-cec3674 clixo clustersToDAG extractOnt extractOnt_leaves ontologyTermStats
+recursive-include ddot/alignOntology alignOntology calculateFDRs calculateFDRs_background calculateFDRsForAlignment collapseRedundantNodes ontologyTermStats
 include ddot/ontology_style.cx
 include ddot/passthrough_style.cx

@@ -783,7 +783,6 @@ class Ontology(object):
 
         tmp = set(self.terms) - set([y for x in self.parent_2_child.values() for y in x])
         return sorted(tmp)
-#        return sorted(set(self.parent_2_child.keys()) - set([y for x in self.parent_2_child.values() for y in x]))
 
     def align(self,
               hier,
@@ -1029,8 +1028,9 @@ class Ontology(object):
         del merge['orig_tmp']
 
         # Set the 'Size' attribute of duplicate nodes to be the 'Size'
-        # of the original node, or the term size if the 'Size'
-        # attribute was not set and the original node is a term
+        # of the original node. If the original node is a term with no
+        # 'Size' attribute, then set 'Size' to be the number of genes
+        # in the term
         in_merge = set(merge.index)
         for node in merge.index:
             if node in new_2_orig:
@@ -1039,9 +1039,13 @@ class Ontology(object):
                     merge.loc[node, 'Size'] = merge.loc[new_2_orig[node], 'Size']
                 elif orig in ont.terms_index:
                     merge.loc[node, 'Size'] = ont.term_sizes[ont.terms_index[orig]]
-            
-        # Append attributes for the new nodes        
-        ont_collect.node_attr = pd.concat([ont.node_attr, merge], 0)
+        
+        # Append attributes for the new nodes
+        try:
+            # Used for pandas version >= 0.23
+            ont_collect.node_attr = pd.concat([ont.node_attr, merge], axis=0, sort=True)
+        except:
+            ont_collect.node_attr = pd.concat([ont.node_attr, merge], axis=0)
         
         ########################################
         # Set Label and Size for collect nodes #
@@ -3160,11 +3164,12 @@ class Ontology(object):
     def infer_ontology(cls,
                        graph,
                        method='clixo',
-                       square=False,
-                       square_names=None,
-                       output=None,
                        **kwargs):        
-        if method.lower()=='clixo':
+        if method.lower()=='clixo_0.3':
+            kwargs["clixo_version"] = 0.3
+            return cls.run_clixo(graph, **kwargs)
+        elif method.lower()=='clixo_1.0':
+            kwargs["clixo_version"] = 1.0
             return cls.run_clixo(graph, **kwargs)
         else:
             raise Exception("Unsupported method")
@@ -3173,13 +3178,18 @@ class Ontology(object):
     def run_clixo(cls,
                   graph,
                   alpha=0.0,
-                  beta=1.0,
+                  beta=None,
+                  modularity=None,
+                  modularity_cutoff=None,
+                  stop_score=None,
                   min_dt=-10000000,
                   timeout=100000000,
                   square=False,
                   square_names=None,
                   output=None,
                   output_log=None,
+                  clixo_cmd=None,
+                  clixo_version=None,
                   verbose=False,
                   debug=False):
         """Runs the CLIXO algorithm and returns the result as an Ontology object.
@@ -3286,15 +3296,23 @@ class Ontology(object):
         if debug:
             delete_output_log = False
 
-        if rerun:            
+        if rerun:
             try:
                 return cls.run_clixo(
-                    graph, alpha, beta,
+                    graph,
+                    alpha=alpha,
+                    beta=beta,
+                    modularity=modularity,
+                    modularity_cutoff=modularity_cutoff,
+                    stop_score=stop_score,
                     min_dt=min_dt,
                     timeout=timeout,
                     output=output,
                     output_log=output_log,
-                    verbose=verbose)
+                    clixo_cmd=clixo_cmd,
+                    clixo_version=clixo_version,
+                    verbose=verbose,
+                    debug=debug)
             finally:
                 if delete_output:
                     os.remove(output)
@@ -3303,43 +3321,60 @@ class Ontology(object):
                 if delete_graph:
                     os.remove(graph)
 
-        if verbose:
-            time_print('\t'.join(map(str, [graph, alpha, beta, min_dt])))
-        
         top_level = os.path.dirname(os.path.abspath(inspect.getfile(ddot)))
-        clixo_cmd = os.path.join(top_level, 'mhk7-clixo_0.3-cec3674', 'clixo')
 
-        # For timestamping everyline: awk '{ print strftime("%Y-%m-%d %H:%M:%S"), $0; fflush(); }'
-        cmd = ("""{0} {1} {2} {3} | awk""".format(clixo_cmd, graph, alpha, beta) + 
-               """ '{if ( $1 ~ /^#/ ) {print "\#", strftime("%Y-%m-%d %H:%M:%S"), $0 ; fflush() } else {print $0}}'""" + 
-               """ | tee {}""".format(output_log))
+        if clixo_version is None:
+            clixo_version = 1.0
 
-        # For timestamping everyline:
-        # awk '{ print strftime("%Y-%m-%d %H:%M:%S"), $0; fflush(); }'
-        # while IFS= read -r line; do printf '[%s] %s\\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$line"; done
-        # cmd = ("""{0} {1} {2} {3} """.format(clixo_cmd, graph, alpha, beta) +
-        #        """ | while IFS= read -r line; do printf '[%s] %s\\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$line"; done """ +
-        #        """ | tee {}""".format(output_log))
+        if clixo_version == 0.3:
+            if clixo_cmd is None:
+                clixo_cmd = os.path.join(top_level, 'mhk7-clixo_0.3-cec3674', 'clixo')
 
-        cmd = ("""{0} {1} {2} {3} """.format(clixo_cmd, graph, alpha, beta) +
-               """ | tee {}""".format(output_log))
-        
+            if beta is None:
+                beta = 1.0
+                
+            cmd = ("""{0} {1} {2} {3} """.format(clixo_cmd, graph, alpha, beta) +
+                   """ | tee {}""".format(output_log))            
+        elif clixo_version == 1.0:
+            if clixo_cmd is None:
+                raise Exception(
+                    """Please install CliXO 1.0 from https://github.com/fanzheng10/CliXO,"""
+                    """and specify the path on your machine to the CliXO executable file.""")
+
+            if alpha is None:
+                raise Exception(
+                    """For CliXO v1.0, alpha must be set to a positive (non-zero) value.""")
+                
+            # Format optional parameters
+            if beta is None:
+                beta = ""
+            else:
+                beta = '-b %s' % beta                
+            if modularity is None:
+                modularity = ""            
+            else:
+                modularity = '-m %s' % modularity
+            if modularity_cutoff is None:
+                modularity_cutoff = ""                
+            else:
+                modularity_cutoff = '-z %s' % modularity_cutoff
+            if stop_score is None:
+                stop_score = ""
+            else:
+                stop_score = '-s %s' % stop_score
+
+            cmd = ("""{} -i {} -a {} {} {} {} {}""".format(clixo_cmd, graph, alpha, beta, modularity, modularity_cutoff, stop_score) + 
+                   """ | tee {}""".format(output_log))
+            
         if verbose:
             print('CLIXO command:', cmd)
 
         p = Popen(cmd, shell=True, stdout=PIPE, stderr=STDOUT, bufsize=1)
-
-        # p = Popen(shlex.split(cmd), shell=False, stdout=PIPE, stderr=STDOUT, bufsize=1)
-
-        ## This version prints out timestamps, but the function strftime is not recognized across all platforms
-        # p_cmd = "{0} {1} {2} {3} | awk""".format(clixo_cmd, graph, alpha, beta)
-        # p2_cmd = """awk '{if ( $1 ~ /^#/ ) {print "\#", strftime("%Y-%m-%d %H:%M:%S"), $0 ; fflush() } else {print $0}}'"""
-        # print 'CLIXO command:', cmd
         
         curr_dt = None
         start = time.time()
 
-        # Asynchronous readout of the command's output
+        ## Asynchronous readout of the command's output
         while p.poll() is None:
 
             # Break if passed the maximum processing time
@@ -3362,7 +3397,7 @@ class Ontology(object):
                              'Current dt: %s, min_dt: %s') % (p.pid, curr_dt, min_dt))
                     break
 
-            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            # datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
             # If line was empty, then sleep a bit
             if line=='':  time.sleep(0.01)
@@ -3392,23 +3427,13 @@ class Ontology(object):
             p_ext = Popen("grep -v '#' %s | grep -v '@' > %s" % (output_log, output), shell=True)
             p_ext.communicate()
 
-        if verbose:
-            time_print('Elapsed time (sec): %s' % (time.time() - start))
-
-        # ont = cls.from_table(
-        #     output,
-        #     is_mapping=lambda x: x[2]=='gene',
-        #     header=0,
-        #     verbose=verbose)
+        if verbose: time_print('Elapsed time (sec): %s' % (time.time() - start))
+        
         ont = cls.from_table(output, clixo_format=True)
         ont.rename(terms=lambda x: 'S:%s' % x, inplace=True)
         ont.edge_attr.rename(columns={'3':'CLIXO_score'}, inplace=True)
-        
-        # ont.edge_attr.columns = map(str, ont.edge_attr.columns)
-        # ont.edge_attr.drop('2', inplace=True, axis=1)
 
-        if verbose:
-            print('Ontology:', ont)
+        if verbose: print('Ontology:', ont)
 
         return ont
 

@@ -1,7 +1,7 @@
 OBJS = clixo.o
 CC = g++
-CFLAGS11 = -Wall -O4 -c -std=c++11 -fomit-frame-pointer -funroll-loops -fforce-addr -fexpensive-optimizations -static -I .
-LFLAGS11 = -Wall -O4 -std=c++11 -fomit-frame-pointer -funroll-loops -fforce-addr -fexpensive-optimizations -static -I .
+CFLAGS11 = -Wall -O4 -c -std=c++11 -fomit-frame-pointer -funroll-loops -fforce-addr -fexpensive-optimizations -I .
+LFLAGS11 = -Wall -O4 -std=c++11 -fomit-frame-pointer -funroll-loops -fforce-addr -fexpensive-optimizations -I .
 
 all: clixo clustersToDAG
 

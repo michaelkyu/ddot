@@ -1,8 +1,8 @@
 OBJS = alignOntology.o alignmentUtils.o
 CC = g++
 LIBS = -I ./boost_1_47_0
-CFLAGS = -Wall -c -O4 -ffast-math -fomit-frame-pointer -fforce-addr -static
-LFLAGS = -Wall -O4 -ffast-math -fomit-frame-pointer -fforce-addr -static
+CFLAGS = -Wall -c -O4 -ffast-math -fomit-frame-pointer -fforce-addr 
+LFLAGS = -Wall -O4 -ffast-math -fomit-frame-pointer -fforce-addr
 
 all: alignOntology calculateFDRsForAlignment collapseRedundantNodes ontologyTermStats
 

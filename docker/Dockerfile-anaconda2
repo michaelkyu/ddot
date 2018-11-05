@@ -6,8 +6,12 @@ RUN conda update conda
 RUN conda install -c conda-forge python-igraph 
 RUN conda install networkx=1.11
 
-# For some reason, libiconv is needed for conda's python-igraph to work correctly
+# libiconv seems to be necessary for conda's python-igraph to work correctly
 RUN conda install libiconv
 
 RUN pip install tulip-python ndex-dev
-RUN pip install git+git://github.com/michaelkyu/ddot.git@v1.0rc2
+RUN pip install git+git://github.com/michaelkyu/ddot.git@v1.0rc3
+
+RUN git clone -b 'v1.0rc3' --single-branch --depth 1 https://github.com/michaelkyu/ddot.git ddot
+RUN mv ddot/examples /ddot_examples
+RUN rm -rf ddot

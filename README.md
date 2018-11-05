@@ -96,13 +96,13 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> import ddot
 ```
 
-For a quick start on DDOT's functionality, run the tutorial Jupyter notebook. To do so, start a Jupyter notebook server in the container's command line
+Alternatively, you can try DDOT in some example Jupyter notebooks. To do so, start a Jupyter notebook server in the container's command line
 
 ```
 (base) root@<container>:/$ jupyter notebook --no-browser --all-root --ip 0.0.0.0 --NotebookApp.token=''
 ```
 
-Next, open up your web browser and access the tutorial notebook at http://0.0.0.0:8888/notebooks/ddot_examples/Tutorial.ipynb
+Next, open up your web browser and access the notebooks at http://0.0.0.0:8888/notebooks/ddot_examples/. We recommend starting with the tutorial `Tutorial.ipynb`.
 
 # Citing DDOT
 

@@ -85,7 +85,7 @@ docker pull michaelkyu/ddot-anaconda2
 docker run -it -p 8888:8888 michaelkyu/ddot-anaconda2
 ```
 
-## Using DDOT in Docker
+### Using DDOT in Docker
 
 After running the image, you will be inside the container's command line. Here, you can run DDOT in a basic Python terminal
 

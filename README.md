@@ -45,7 +45,7 @@ The recommended method for installing these dependencies is to use the [Anaconda
   pip install ndex-dev
   ```   
 
-## Install the `ddot` Python package
+### Install the `ddot` Python package
 
 After dependencies are satisfied, install ddot with pip.
 
@@ -59,7 +59,7 @@ If a previous version of ddot is already installed, then force an upgrade with t
   pip install --upgrade git+git://github.com/michaelkyu/ddot.git
   ```
 
-## Docker image
+# Docker image
 
 A Docker image of DDOT is located online at Docker Hub. To learn more about Docker, see https://docs.docker.com/get-started/
 

@@ -61,7 +61,7 @@ If a previous version of ddot is already installed, then force an upgrade with t
 
 ## Docker image
 
-A Docker image of DDOT is located online at Docker Hub. The image contains (1) DDOT installed in an Anaconda distribution of Python (v2.7 or 3.6), and (2) the Jupyter notebooks in the [examples](examples) folder. To learn more about Docker, see https://docs.docker.com/get-started/
+A Docker image of DDOT is located online at Docker Hub. To learn more about Docker, see https://docs.docker.com/get-started/
 
 ### Download and run image from Docker Hub
 
@@ -96,7 +96,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> import ddot
 ```
 
-Alternatively, you can try DDOT in some example Jupyter notebooks. To do so, start a Jupyter notebook server in the container's command line
+Alternatively, you can run DDOT in [example Jupyter notebooks](examples). To do so, start a Jupyter server in the container's command line
 
 ```
 (base) root@<container>:/$ jupyter notebook --no-browser --all-root --ip 0.0.0.0 --NotebookApp.token=''

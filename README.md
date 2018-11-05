@@ -7,7 +7,7 @@ The Data-Driven Ontology Toolkit (DDOT) facilitates the inference, analysis, and
 
 # Documentation
 
-For a quick start, please see the [tutorial](examples/Tutorial.ipynb) and other Jupyter notebooks in the [examples](examples) folder.
+For a quick start on DDOT's functionality, please see the [tutorial](examples/Tutorial.ipynb) and other Jupyter notebooks in the [examples](examples) folder.
 
 For further documentation, please see http://ddot.readthedocs.io/. This includes a description of the [Ontology class](http://ddot.readthedocs.io/en/latest/ontology.html) and a list of [utility functions](http://ddot.readthedocs.io/en/latest/utils.html).
 
@@ -61,9 +61,7 @@ If a previous version of ddot is already installed, then force an upgrade with t
 
 ## Docker image
 
-A Docker image of DDOT is located online at Docker Hub. The image contains (1) DDOT installed in an Anaconda distribution of Python (v2.7 or 3.6), and (2) the Jupyter notebooks in the [examples](examples) folder.
-
-To learn more about Docker, see https://docs.docker.com/get-started/
+A Docker image of DDOT is located online at Docker Hub. The image contains (1) DDOT installed in an Anaconda distribution of Python (v2.7 or 3.6), and (2) the Jupyter notebooks in the [examples](examples) folder. To learn more about Docker, see https://docs.docker.com/get-started/
 
 ### Download and run image from Docker Hub
 
@@ -98,7 +96,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> import ddot
 ```
 
-Alternatively, we recommend that you get a quick start on DDOT's functionality with the tutorial Jupyter notebook. To do so, start a Jupyter notebook server in the container's command line
+For a quick start on DDOT's functionality, run the tutorial Jupyter notebook. To do so, start a Jupyter notebook server in the container's command line
 
 ```
 (base) root@<container>:/$ jupyter notebook --no-browser --all-root --ip 0.0.0.0 --NotebookApp.token=''

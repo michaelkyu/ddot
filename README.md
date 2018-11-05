@@ -30,7 +30,7 @@ The recommended method for installing these dependencies is to use the [Anaconda
 
   ```bash
   # Create and activate a virtual environment (optional, but recommended).
-  # Read more about virtual environments at https://conda.io/docs/user-guide/tasks/manage-environments.html
+  # Learn more about virtual environments at https://conda.io/docs/user-guide/tasks/manage-environments.html
   conda create -n <environment_name>
   source activate <environment_name>
 
@@ -61,17 +61,50 @@ If a previous version of ddot is already installed, then force an upgrade with t
 
 ## Docker image
 
-A docker image of DDOT can be pulled from Docker Hub.
+A Docker image of DDOT is located online at Docker Hub. The image contains (1) DDOT installed in an Anaconda distribution of Python (v2.7 or 3.6), and (2) the Jupyter notebooks in the [examples](examples) folder.
+
+To learn more about Docker, see https://docs.docker.com/get-started/
+
+### Download and run image from Docker Hub
+
+For Python 3.6,
 
 ```bash
-# image with DDOT installed in anaconda3 (Python 3.6)
+# Download image installed with DDOT in anaconda3 (Python 3.6)
 docker pull michaelkyu/ddot-anaconda3
-docker run -i -t michaelkyu/ddot-anaconda3
-   
-# image with DDOT installed in anaconda2 (Python 2.7)
-docker pull michaelkyu/ddot-anaconda2
-docker run -i -t michaelkyu/ddot-anaconda2
+# Run image in a container
+docker run -it -p 8888:8888 michaelkyu/ddot-anaconda3
 ```
+
+For Python 2.7,
+
+```
+# Download image installed with DDOT in anaconda2 (Python 2.7)
+docker pull michaelkyu/ddot-anaconda2
+# Run image in a container
+docker run -it -p 8888:8888 michaelkyu/ddot-anaconda2
+```
+
+## Using DDOT in Docker
+
+After running the image, you will be inside the container's command line. Here, you can run DDOT in a basic Python terminal
+
+```
+(base) root@<container>:/$ python
+
+Python 2.7.14 |Anaconda, Inc.| (default, Dec  7 2017, 17:05:42) 
+[GCC 7.2.0] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import ddot
+```
+
+Alternatively, we recommend that you get a quick start on DDOT's functionality with the tutorial Jupyter notebook. To do so, start a Jupyter notebook server in the container's command line
+
+```
+(base) root@<container>:/$ jupyter notebook --no-browser --all-root --ip 0.0.0.0 --NotebookApp.token=''
+```
+
+Next, open up your web browser and access the tutorial notebook at http://0.0.0.0:8888/notebooks/ddot_examples/Tutorial.ipynb
 
 # Citing DDOT
 

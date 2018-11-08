@@ -60,7 +60,7 @@ Next, compile C++ files for running [CliXO v0.3](https://github.com/mhk7/clixo_0
   make
   ```
   
-Finally, install ddot using `pip`. If you are installing within a conda virtual environment, remember to first run `source activate <environment_name>`.
+Finally, install ddot using `pip`. If you are installing within a conda virtual environment, remember to enter the environment with `source activate <environment_name>` before running `pip`.
 
   ```bash
   pip install /path/to/ddot_repository

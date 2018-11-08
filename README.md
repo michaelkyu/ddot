@@ -53,7 +53,7 @@ After dependencies are satisfied, download or clone this repository
   git clone https://github.com/michaelkyu/ddot.git
   ```
   
-Next, compile C++ files for running [CliXO v0.3](https://github.com/mhk7/clixo_0.3) and an [ontology alignment algorithm](https://mhk7.github.io/alignOntology/)
+Next, compile C++ files for running [CliXO v0.3](https://github.com/mhk7/clixo_0.3) and an [ontology alignment algorithm](https://mhk7.github.io/alignOntology/). 
 
   ```bash
   cd /path/to/ddot_repository

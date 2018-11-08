@@ -412,8 +412,13 @@ def nx_nodes_to_pandas(G, attr_list=None):
     if attr_list is None:
         attr_list = list(set([a for d in G.nodes(data=True)
                               for a in d[1].keys()]))
-    return pd.concat([pd.Series(nx.get_node_attributes(G,a), name=a) for a in attr_list],
-                     axis=1)
+    try:
+        # Used for pandas version >= 0.23
+        return pd.concat([pd.Series(nx.get_node_attributes(G,a), name=a) for a in attr_list],
+                         axis=1, sort=True)
+    except:
+        return pd.concat([pd.Series(nx.get_node_attributes(G,a), name=a) for a in attr_list],
+                         axis=1)
 
 def nx_edges_to_pandas(G, attr_list=None):
     """Create pandas.DataFrame of edge attributes of a NetworkX graph.
@@ -1043,11 +1048,12 @@ def expand_seed(seed,
             expand = np.append(expand, sim_names[attach_idx])
             expand_idx = np.append(expand_idx, attach_idx)
             expand_sim = np.append(expand_sim, sim_2_seed[attach_idx])
+            
+    if figure:
+        import matplotlib.pyplot as plt
+        import seaborn as sns
 
-    try:
-        if figure:
-            import matplotlib.pyplot as plt
-            import seaborn as sns
+        try:
             fig = plt.figure()
             ax = plt.gca()
             if non_seed_idx.size > 1:
@@ -1058,17 +1064,13 @@ def expand_seed(seed,
                 sns.distplot(sim_2_seed[seed_idx], kde=False, norm_hist=True,
                              ax=ax,
                              axlabel='Similarity to seed set', label='Probability Density')
-            # plt.show(fig)
-            
             try:
                 figure.savefig(figure)
             except:
                 pass
-
-            #plt.close(fig)
-        else:
+        except:
             fig = None
-    except:
+    else:
         fig = None
 
     return expand, expand_idx, sim_2_seed, fig

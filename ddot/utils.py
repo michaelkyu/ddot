@@ -649,12 +649,17 @@ def create_edgeMatrix(X, X_cols, X_rows, verbose=True, G=None):
 
     if G is None:
         G = NdexGraph()
-    G.unclassified_cx.append(
-        {'matrix': serialized,
-         'matrix_cols' : X_cols,
-         'matrix_rows' : X_rows,
-         'matrix_dtype' : X.dtype.name})
-    
+    # G.unclassified_cx.append(
+    #     {'matrix': serialized,
+    #      'matrix_cols' : X_cols,
+    #      'matrix_rows' : X_rows,
+    #      'matrix_dtype' : X.dtype.name})
+
+    G.unclassified_cx.append({'matrix': [{'v': serialized}]})
+    G.unclassified_cx.append({'matrix_cols': [{'v': X_cols}]})
+    G.unclassified_cx.append({'matrix_rows': [{'v': X_rows}]})
+    G.unclassified_cx.append({'matrix_dtype': [{'v': X.dtype.name}]})
+
     return G
 
 def load_edgeMatrix(ndex_uuid,
@@ -722,24 +727,45 @@ def load_edgeMatrix(ndex_uuid,
 
     for aspect in cx:
         if 'matrix' in aspect:
-            assert 'matrix_dtype' in aspect
-            assert 'matrix_cols' in aspect
-            assert 'matrix_rows' in aspect
-
             # Convert text back into binary data
             start = time.time()
-            binary_data = base64.decodestring(aspect.get('matrix'))
+            binary_data = base64.decodestring(aspect.get('matrix')[0].get('v'))
             if verbose:
                 print('base64 decoding time (sec):', time.time() - start)
+        if 'matrix_cols' in aspect:
+            cols = aspect.get('matrix_cols')[0].get('v')
+        if 'matrix_rows' in aspect:
+            rows = aspect.get('matrix_rows')[0].get('v')
+        if 'matrix_dtype' in aspect:
+            dtype = np.dtype(aspect.get('matrix_dtype')[0].get('v'))
+            
+        # if 'matrix' in aspect:
 
-            dtype = np.dtype(aspect.get('matrix_dtype'))
-            rows = aspect.get('matrix_rows')
-            cols = aspect.get('matrix_cols')
-            dim = (len(rows), len(cols))
+        #     assert 'matrix_dtype' in aspect
+        #     assert 'matrix_cols' in aspect
+        #     assert 'matrix_rows' in aspect
 
-            # Create a NumPy array, which is nothing but a glorified
-            # pointer in C to the binary data in RAM
-            X = np.frombuffer(binary_data, dtype=dtype).reshape(dim)
+        #     # Convert text back into binary data
+        #     start = time.time()
+        #     binary_data = base64.decodestring(aspect.get('matrix'))
+        #     if verbose:
+        #         print('base64 decoding time (sec):', time.time() - start)
+
+        #     dtype = np.dtype(aspect.get('matrix_dtype'))
+        #     rows = aspect.get('matrix_rows')
+        #     cols = aspect.get('matrix_cols')
+        #     dim = (len(rows), len(cols))
+
+        #     # Create a NumPy array, which is nothing but a glorified
+        #     # pointer in C to the binary data in RAM
+        #     X = np.frombuffer(binary_data, dtype=dtype).reshape(dim)
+
+        
+    dim = (len(rows), len(cols))
+
+    # Create a NumPy array, which is nothing but a glorified
+    # pointer in C to the binary data in RAM
+    X = np.frombuffer(binary_data, dtype=dtype).reshape(dim)
 
     if verbose:
         print('loop time (sec):', time.time() - start_loop)

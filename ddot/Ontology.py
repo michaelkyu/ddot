@@ -4076,7 +4076,8 @@ class Ontology(object):
             # (contributed by Fan Zheng)
             children = ont.parent_2_child[t]
             min_children_term_weights = -1
-            if ('Parent weight' in ont.node_attr.columns.tolist()) and (len(children) >0):
+            format_parent_weight = ('Parent weight' in ont.node_attr.columns.tolist()) and (len(children) >0)
+            if format_parent_weight:                
                 children_term_weights = []
                 for c in children:
                     if ont.node_attr.loc[c, 'Parent weight'] >0:
@@ -4137,15 +4138,18 @@ class Ontology(object):
 #                    G.set_network_attribute('Group:' + c, True)
                 G.set_network_attribute('Group', '|'.join(children))
 
-                # New: calculate the score threshold of this subnetwork
+                if format_parent_weight:
+                    # New: calculate the score threshold of this subnetwork
+                    # (contributed by Fan Zheng)
+                    G.set_network_attribute('Main Feature Default Cutoff', 0.4)
+                    G.set_network_attribute('Parent weight', float(ont.node_attr.loc[t, 'Parent weight']))
+
+                    if min_children_term_weights > 0:
+                        G.set_network_attribute('Children weight', '|'.join(['{:.3f}'.format(w) for w in children_term_weights]))
+                        G.set_network_attribute('Main Feature Default Cutoff', float(min_children_term_weights))
+
+                # New: annotate edge groups
                 # (contributed by Fan Zheng)
-                G.set_network_attribute('Main Feature Default Cutoff', 0.4)
-                G.set_network_attribute('Parent weight', float(ont.node_attr.loc[t, 'Parent weight']))
-
-                if min_children_term_weights > 0:
-                    G.set_network_attribute('Children weight', '|'.join(['{:.3f}'.format(w) for w in children_term_weights]))
-                    G.set_network_attribute('Main Feature Default Cutoff', float(min_children_term_weights))
-
                 if isinstance(edge_groups, dict) and (len(edge_groups.keys()) > 0):
                     edge_group_string = []
                     for k, vs in edge_groups.iteritems():

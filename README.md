@@ -33,9 +33,6 @@ The recommended method for installing these dependencies is to use the [Anaconda
   # Learn more about virtual environments at https://conda.io/docs/user-guide/tasks/manage-environments.html
   conda create -n <environment_name>
   source activate <environment_name>
-
-  # Update conda
-  conda update conda
    
   # Install dependencies
   conda install pandas numpy scipy networkx=1.11
@@ -66,6 +63,13 @@ Finally, install ddot using `pip`. If you are installing within a conda virtual 
   pip install /path/to/ddot_repository
   ```
 
+### Known installation problems and tips
+* Older versions of Anaconda (<= v4.5) might not install the dependencies correctly. Consider updating Anaconda to the newest version by running `conda update conda` (outside of a virtual environment).
+* Make sure that no other local installations of Python is conflicting with Anaconda. In particular, check that the directory `$HOME/.local/lib` does not contain Python packages. If it does contain Python packages, check that those packages are not being imported. 
+* If `ddot` does not import successfully in a Python terminal, first check that the dependencies can be imported. In particular, check that `import ndex, networkx, igraph, tulip, numpy, scipy, pandas` works.
+* The `python-tulip` package currently provides pip wheels for Python 3.6 (but not 3.7). If you need to use `ddot` with Python 3.7, then please install `python-tulip` package from source.
+* Please raise any other installation problems as an issue on this github repo.
+  
 # Docker image
 
 A Docker image of DDOT is located online at Docker Hub. To learn more about Docker, see https://docs.docker.com/get-started/

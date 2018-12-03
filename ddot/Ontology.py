@@ -3735,43 +3735,59 @@ class Ontology(object):
                     data['Vis:Fill Color'] = '#FFFFFF'
                 if 'Vis:Border Paint' not in data:
                     data['Vis:Border Paint'] = '#000000'
-                if 'Vis:Size' not in data:
-                    if 'Size' in data and data['Size'] > 0:
-                        data['Vis:Size'] = 20 * float(1. + np.log10(data['Size']))
-                    else:
-                        data['Vis:Size'] = 20
+
+                # # Deprecated: use of 'Vis:Size' attribute. HiView currently sets size according to 'Size' attribute
+                # if 'Vis:Size' not in data:
+                #     if 'Size' in data and data['Size'] > 0:
+                #         data['Vis:Size'] = 20 * float(1. + np.log10(data['Size']))
+                #     else:
+                #         data['Vis:Size'] = 20
+
+                # Set links to subnetworks supporting each term
+                if term_2_uuid:
+                    if v in term_2_uuid:
+                        data['ndex:internalLink'] = '[%s](%s)' % (data['Label'], term_2_uuid[v])
+                    elif ('Original_Name' in data) and (data['Original_Name'] in term_2_uuid):
+                        data['ndex:internalLink'] = '[%s](%s)' % (data['Label'], term_2_uuid[data['Original_Name']])
+
+#                 if ('Hidden' in data) and (data['Hidden']):
+#                     print('hiding %s' % v)
+# #                    data['Vis:Size'] = 100
+#                     data['Size'] = 1
 
             for u, v, data in G.edges(data=True):
                 if 'Vis:Visible' not in data and 'Is_Tree_Edge' in data:
                     data['Vis:Visible'] = data['Is_Tree_Edge']=='Tree'
 
-            if hasattr(G, 'pos'):
-                # Rescale node sizes so that they don't overlap
-                base_size = 20.
-                desired_ratio = 0.5                
-                pos = G.pos
-                max_ratio = 0
-                for v, v_data in G.nodes(data=True):
-                    v_size = v_data['Vis:Size']
-                    for u in G.predecessors(v):                        
-                        u_size = G.node[u]['Vis:Size']
-                        dist = math.sqrt(sum([(a-b)**2 for a, b in zip(pos[v], pos[u])]))
-                        if dist > 0:
-                            ratio = ((v_size + u_size) / 2.) / dist
-                            max_ratio = max(max_ratio, ratio)
-                if max_ratio > desired_ratio:
-                    for v, data in G.nodes(data=True):
-                        data['Vis:Size'] = (data['Vis:Size'] - base_size) * (desired_ratio / max_ratio) + base_size
+            # # Deprecated: use of 'Vis:Size' attribute. HiView currently sets size according to 'Size' attribute
+            # # Need to change this later
+            # if hasattr(G, 'pos'):
+            #     # Rescale node sizes so that they don't overlap
+            #     base_size = 20.
+            #     desired_ratio = 0.5                
+            #     pos = G.pos
+            #     max_ratio = 0
+            #     for v, v_data in G.nodes(data=True):
+            #         v_size = v_data['Vis:Size']
+            #         for u in G.predecessors(v):                        
+            #             u_size = G.node[u]['Vis:Size']
+            #             dist = math.sqrt(sum([(a-b)**2 for a, b in zip(pos[v], pos[u])]))
+            #             if dist > 0:
+            #                 ratio = ((v_size + u_size) / 2.) / dist
+            #                 max_ratio = max(max_ratio, ratio)
+            #     if max_ratio > desired_ratio:
+            #         for v, data in G.nodes(data=True):
+            #             data['Vis:Size'] = (data['Vis:Size'] - base_size) * (desired_ratio / max_ratio) + base_size
                     
             style = ddot.config.get_passthrough_style()
         else:
             raise Exception('Unsupported style')
                 
-        # Set links to subnetworks supporting each term
-        if term_2_uuid:
-            for t in self.terms:        
-                if t in term_2_uuid:
-                    G.node[t]['ndex:internalLink'] = '[%s](%s)' % (G.node[t]['Label'], term_2_uuid[t])
+        # # Set links to subnetworks supporting each term
+        # if term_2_uuid:
+        #     for t in self.terms:        
+        #         if t in term_2_uuid:
+        #             G.node[t]['ndex:internalLink'] = '[%s](%s)' % (G.node[t]['Label'], term_2_uuid[t])
 
         # # Change Original_Name to node indices
         # name_2_idx = {data['name'] : v for v, data in G.nodes(data=True)}

@@ -23,6 +23,13 @@ def print_time(*s):
     print(' '.join(map(str, s)), datetime.today())
     sys.stdout.flush()
 
+def to_hiview_url(ndex_url, hiview_server='http://hiview.ucsd.edu'):
+    if hiview_server=='test':
+        hiview_server = 'http://hiview-test.ucsd.edu'
+        
+    hiview_url = "%s/%s?type=test&server=%s" % (hiview_server, ndex_url.split('/')[-1], ndex_url.split('ndexbio.org')[0] + 'ndexbio.org')
+    return hiview_url
+
 def invert_dict(dic, sort=True, keymap={}, valmap={}):
     """Inverts a dictionary of the form
     key1 : [val1, val2]
@@ -601,18 +608,30 @@ def parse_ndex_uuid(ndex_url):
         UUID of the network
 
     """
-    return ndex_url.split('v2/network/')[1]
+    if 'v2/network/' in ndex_url:
+        return ndex_url.split('v2/network/')[1]
+    elif '#/network/' in ndex_url:
+        return ndex_url.split('#/network/')[1]
+    else:
+        raise Exception("Not a valid NDEx URL: %s" % ndex_url)
 
 def parse_ndex_server(ndex_url):
-    tmp = ndex_url.split('//')
-    if len(tmp) == 2:
-        # e.g. 'http://dev2.ndexbio.org/v2/network/8bfa8318-55ed-11e7-a2e2-0660b7976219'
-        return tmp[0] + '//' + tmp[1].split('v2/network/')[0]
-    elif len(tmp) == 1:
-        # e.g. 'dev2.ndexbio.org/v2/network/8bfa8318-55ed-11e7-a2e2-0660b7976219'
-        return tmp[0].split('v2/network/')[0]
-    elif len(tmp) == 0 or len(tmp) > 2:
-        raise Exception()        
+    if 'v2/network/' in ndex_url:
+        return ndex_url.split('v2/network/')[0]
+    elif '#/network/' in ndex_url:
+        return ndex_url.split('#/network/')[0]
+    else:
+        raise Exception("Not a valid NDEx URL: %s" % ndex_url)
+
+    # tmp = ndex_url.split('//')
+    # if len(tmp) == 2:
+    #     # e.g. 'http://dev2.ndexbio.org/v2/network/8bfa8318-55ed-11e7-a2e2-0660b7976219'
+    #     return tmp[0] + '//' + tmp[1].split('v2/network/')[0]
+    # elif len(tmp) == 1:
+    #     # e.g. 'dev2.ndexbio.org/v2/network/8bfa8318-55ed-11e7-a2e2-0660b7976219'
+    #     return tmp[0].split('v2/network/')[0]
+    # elif len(tmp) == 0 or len(tmp) > 2:
+    #     raise Exception()        
 
 def create_edgeMatrix(X, X_cols, X_rows, verbose=True, G=None, ndex2=True):
     """Converts an NumPy array into a NdexGraph with a special CX aspect
@@ -770,18 +789,11 @@ def load_edgeMatrix(ndex_uuid,
 
     start = time.time()
     response = ndex.get_network_as_cx_stream(ndex_uuid)
+    tmp = response.content
     if verbose:
         print('NDEx download time (sec):', time.time() - start)
-
-    start = time.time()
-    # cx = json.loads(response.text)
-
-    tmp = response.content    
-    print('response.content time: %s' % (time.time() - start))
     cx = json.loads(tmp)
 
-    # cx = json.loads(response.content)
-    
     if verbose:
         print('Read HTTP response as JSON',
               json.__name__, 'time (sec):',
@@ -897,7 +909,7 @@ def sim_matrix_to_NdexGraph(sim, names, similarity, output_fmt, node_attr=None):
     else:
         raise Exception('Unsupported output_fmt: %s' % output_fmt)
 
-def ndex_to_sim_matrix(ndex_uuid,
+def ndex_to_sim_matrix(ndex_url,
                        ndex_server=None,
                        ndex_user=None,
                        ndex_pass=None,
@@ -911,8 +923,8 @@ def ndex_to_sim_matrix(ndex_uuid,
 
     Parameters
     ----------
-    ndex_uuid : str
-        NDEx UUID of ontology
+    ndex_url : str
+        NDEx URL (or UUID) of ontology
     
     ndex_server : str
         URL of NDEx server
@@ -950,9 +962,11 @@ def ndex_to_sim_matrix(ndex_uuid,
     if ndex_pass is None:
         ndex_pass = ddot.config.ndex_pass
 
-    if 'http' in ndex_uuid:
-        ndex_server = ndex_uuid.split('v2/network/')[0]
-        ndex_uuid = parse_ndex_uuid(ndex_uuid)
+    if 'http' in ndex_url:
+        ndex_server = parse_ndex_server(ndex_url)
+        ndex_uuid = parse_ndex_uuid(ndex_url)
+    else:
+        ndex_uuid = ndex_url
     
     if input_fmt=='cx':
         # Read graph using NDEx client

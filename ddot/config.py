@@ -32,8 +32,9 @@ def get_passthrough_style():
 # NDEx URLs for example networks #
 ##################################
 
-# mikeyu_testacct
-HUMAN_GENE_SIMILARITIES_URL = 'http://dev2.ndexbio.org/v2/network/f80ab7de-e91f-11e8-ad43-0660b7976219'
-GO_HUMAN_URL = 'http://dev2.ndexbio.org/v2/network/ccf12fb2-e399-11e8-a260-0660b7976219'
-MONARCH_DISEASE_GENE_URL = 'http://dev2.ndexbio.org/v2/network/afecb56c-e398-11e8-a260-0660b7976219'
-MONARCH_DISEASE_GENE_SLIM_URL = 'http://dev2.ndexbio.org/v2/network/85611be5-e39b-11e8-a260-0660b7976219'
+# mikeyu (public server)
+HUMAN_GENE_SIMILARITIES_URL = "http://public.ndexbio.org/v2/network/cbd481aa-f73c-11e8-aaa6-0ac135e8bacf"
+GO_HUMAN_URL = 'http://public.ndexbio.org/v2/network/1a0917db-f739-11e8-aaa6-0ac135e8bacf'
+MONARCH_DISEASE_GENE_URL = 'http://public.ndexbio.org/v2/network/bce041f4-f739-11e8-aaa6-0ac135e8bacf'
+MONARCH_DISEASE_GENE_SLIM_URL = 'http://public.ndexbio.org/v2/network/aba9e837-f73b-11e8-aaa6-0ac135e8bacf'
+FANGO_URL = "http://public.ndexbio.org/v2/network/0fb9fec3-f772-11e8-aaa6-0ac135e8bacf"

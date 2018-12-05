@@ -26,8 +26,18 @@ def print_time(*s):
 def to_hiview_url(ndex_url, hiview_server='http://hiview.ucsd.edu'):
     if hiview_server=='test':
         hiview_server = 'http://hiview-test.ucsd.edu'
-        
-    hiview_url = "%s/%s?type=test&server=%s" % (hiview_server, ndex_url.split('/')[-1], ndex_url.split('ndexbio.org')[0] + 'ndexbio.org')
+
+    ndex_uuid = parse_ndex_uuid(ndex_url)
+    ndex_server = parse_ndex_server(ndex_url)
+    ndex_server = ndex_server.rstrip('/')
+    if ndex_server=='http://test.ndexbio.org' or ndex_server=='http://dev2.ndexbio.org':
+        server_type = 'test'
+    elif ndex_server=='http://public.ndexbio.org' or ndex_server=='http://ndexbio.org':
+        server_type = 'public'
+    else:
+        raise Exception('Invalid NDEx server URL: %s' % ndex_server)
+    
+    hiview_url = "%s/%s?type=%s&server=%s" % (hiview_server, ndex_uuid, server_type, ndex_server)
     return hiview_url
 
 def invert_dict(dic, sort=True, keymap={}, valmap={}):

@@ -923,7 +923,7 @@ def ndex_to_sim_matrix(ndex_url,
                        ndex_server=None,
                        ndex_user=None,
                        ndex_pass=None,
-                       similarity='similarity',
+                       similarity=None,
                        input_fmt='cx_matrix',
                        output_fmt='matrix',
                        subset=None):

@@ -110,7 +110,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 Alternatively, you can run DDOT in [example Jupyter notebooks](examples). To do so, start a Jupyter server in the container's command line
 
 ```
-(base) root@<container>:/$ jupyter notebook --no-browser --all-root --ip 0.0.0.0 --NotebookApp.token=''
+(base) root@<container>:/$ jupyter notebook --no-browser --allow-root --ip 0.0.0.0 --NotebookApp.token=''
 ```
 
 Next, open up your web browser and access the notebooks at http://0.0.0.0:8888/notebooks/ddot_examples/. We recommend starting with the tutorial `Tutorial.ipynb`.

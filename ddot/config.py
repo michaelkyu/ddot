@@ -38,3 +38,4 @@ GO_HUMAN_URL = 'http://public.ndexbio.org/v2/network/1a0917db-f739-11e8-aaa6-0ac
 MONARCH_DISEASE_GENE_URL = 'http://public.ndexbio.org/v2/network/bce041f4-f739-11e8-aaa6-0ac135e8bacf'
 MONARCH_DISEASE_GENE_SLIM_URL = 'http://public.ndexbio.org/v2/network/aba9e837-f73b-11e8-aaa6-0ac135e8bacf'
 FANGO_URL = "http://public.ndexbio.org/v2/network/0fb9fec3-f772-11e8-aaa6-0ac135e8bacf"
+FANGO_DATA_URL = "http://public.ndexbio.org/#/network/84898ca0-fa98-11e8-8438-0ac135e8bacf"

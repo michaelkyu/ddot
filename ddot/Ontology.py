@@ -3808,7 +3808,7 @@ class Ontology(object):
         if name is not None:
             G.set_name(name)
         if description is not None:
-            G.set_network_attribute('Description', description)
+            G.set_network_attribute('description', description)
             
         if style:
             import ndex.beta.toolbox as toolbox
@@ -4150,7 +4150,7 @@ class Ontology(object):
 
                 G = nx_to_NdexGraph(G_nx)
                 G.set_name('%s supporting network for %s' % (name, t))
-                G.set_network_attribute('Description', '%s supporting network for %s' % (name, t))
+                G.set_network_attribute('description', '%s supporting network for %s' % (name, t))
                 G.set_network_attribute('Main Feature', main_feature)
                 for f in features:
 

@@ -1642,7 +1642,11 @@ class Ontology(object):
             mapping_attr = mapping.set_index([mapping_child, mapping_parent])
             mapping_attr.index.rename(['Child', 'Parent'], inplace=True)
 
-            edge_attr = pd.concat([edge_attr, mapping_attr])
+            try:
+                # Used for pandas version >= 0.23
+                edge_attr = pd.concat([edge_attr, mapping_attr], sort=True)
+            except:
+                edge_attr = pd.concat([edge_attr, mapping_attr])
             mapping = mapping.loc[:,[mapping_child, mapping_parent]]
             hierarchy = table.loc[:,[child, parent]]
 
@@ -2104,7 +2108,11 @@ class Ontology(object):
             new_nodes = new_connections['Child'].values.tolist()
             new_connections['Summary'] = True
             df['Summary'] = False
-            tmp = pd.concat([df, new_connections], ignore_index=True)
+            try:
+                # Used for pandas version >= 0.23
+                tmp = pd.concat([df, new_connections], ignore_index=True, sort=True)
+            except:
+                tmp = pd.concat([df, new_connections], ignore_index=True)
             df = tmp[df.columns]
 
         ont = Ontology.from_table(df)

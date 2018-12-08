@@ -2,7 +2,6 @@
 FROM continuumio/anaconda
 
 # Install any needed packages specified in requirements.txt
-RUN conda update conda
 RUN conda install -c conda-forge python-igraph 
 RUN conda install networkx=1.11
 
@@ -10,8 +9,17 @@ RUN conda install networkx=1.11
 RUN conda install libiconv
 
 RUN pip install tulip-python ndex-dev
-RUN pip install git+git://github.com/michaelkyu/ddot.git@v1.0rc3
 
-RUN git clone -b 'v1.0rc3' --single-branch --depth 1 https://github.com/michaelkyu/ddot.git ddot
+RUN git clone -b 'v1.0' --single-branch --depth 1 https://github.com/michaelkyu/ddot.git ddot
+
+RUN apt-get update
+RUN apt-get install -y build-essential 
+
+RUN cd ddot && make
+RUN cd ..
+
+RUN pip install ddot/
 RUN mv ddot/examples /ddot_examples
 RUN rm -rf ddot
+
+WORKDIR /ddot_examples

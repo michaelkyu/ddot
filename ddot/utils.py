@@ -814,7 +814,10 @@ def load_edgeMatrix(ndex_uuid,
     start = time.time()
     response = ndex.get_network_as_cx_stream(ndex_uuid)
     response.raw.decode_content = True
-    cx = json.load(response.raw)
+    try:
+        cx = json.load(response.raw)
+    finally:
+        response.close()
     if verbose:
         print('NDEx download and CX parse time (sec):', time.time() - start)
 
@@ -829,12 +832,14 @@ def load_edgeMatrix(ndex_uuid,
             dtype = np.dtype(aspect.get('matrix_dtype')[0].get('v'))
 
     dim = (len(rows), len(cols))
-    X_buf = bytearray(dim[0] * dim[1] * np.dtype(dtype).itemsize)
+    #X_buf = bytearray(dim[0] * dim[1] * np.dtype(dtype).itemsize)
+    X_buf = []
     pointer = 0
 
     if verbose:
         print('Dim:', dim)
-        print('Bytes:', len(X_buf))
+        # print('Bytes:', len(X_buf))
+        print('Bytes:', dim[0] * dim[1] * np.dtype(dtype).itemsize)
     
     for aspect in cx:
         if 'matrix' in aspect:
@@ -843,20 +848,15 @@ def load_edgeMatrix(ndex_uuid,
                     binary_data = base64.decodebytes(x.get('v').encode('utf-8'))
                 else:
                     binary_data = base64.b64decode(x.get('v'))
-                X_buf[pointer : pointer + len(binary_data)] = binary_data
-                pointer += len(binary_data)
+                del x['v']
+                X_buf.append(binary_data)
+                
+                # X_buf[pointer : pointer + len(binary_data)] = binary_data
+                # pointer += len(binary_data)
 
-            # if sys.version_info.major==3:
-            #     #binary_data = base64.decodebytes((b"").join([x.get('v').encode('utf-8') for x in aspect.get('matrix')]))
-            #     for x in aspect.get('matrix'):
-            #         binary_data = base64.decodebytes(x.get('v').encode('utf-8'))
-            #         X_buf[pointer : pointer + len(binary_data)] = binary_data
-            #         pointer += len(binary_data)
-            # else:
-            #     raise Exception("Not supported")
-
-    # Create a NumPy array, which is nothing but a glorified
-    # pointer in C to the binary data in RAM
+    X_buf = (b"").join(X_buf)
+        
+    # Create a NumPy array
     X = np.frombuffer(X_buf, dtype=dtype).reshape(dim)
 
     if verbose:

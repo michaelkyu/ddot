@@ -817,11 +817,6 @@ def load_edgeMatrix(ndex_uuid,
     cx = json.load(response.raw)
     if verbose:
         print('NDEx download and CX parse time (sec):', time.time() - start)
-    
-    # tmp = response.content
-    # if verbose:
-    #     print('NDEx download time (sec):', time.time() - start)
-    # cx = json.loads(tmp)
 
     start_loop = time.time()
 
@@ -833,12 +828,16 @@ def load_edgeMatrix(ndex_uuid,
         if 'matrix_dtype' in aspect:
             dtype = np.dtype(aspect.get('matrix_dtype')[0].get('v'))
 
-    dim = (len(rows), len(cols))
+    dim = (len(rows), len(cols))    
     if sys.version_info.major==3:
         X_buf = bytearray(dim[0] * dim[1] * np.dtype(dtype).itemsize)
     else:
         raise Exception("Not supported")
     pointer = 0
+
+    if verbose:
+        print('Dim:', dim)
+        print('Bytes:', len(X_buf))
     
     for aspect in cx:
         if 'matrix' in aspect:
@@ -853,7 +852,7 @@ def load_edgeMatrix(ndex_uuid,
 
     # Create a NumPy array, which is nothing but a glorified
     # pointer in C to the binary data in RAM
-    X = np.frombuffer(binary_data, dtype=dtype).reshape(dim)
+    X = np.frombuffer(X_buf, dtype=dtype).reshape(dim)
 
     if verbose:
         print('Iterate through CX and construct array time (sec):', time.time() - start_loop)

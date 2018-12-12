@@ -35,9 +35,9 @@ The recommended method for installing these dependencies is to use the [Anaconda
   source activate <environment_name>
    
   # Install dependencies
-  conda install pandas numpy scipy networkx=1.11
-  conda install -c conda-forge python-igraph
-  conda install libiconv # Needed for igraph to run properly
+  conda install -y pandas numpy scipy networkx=1.11
+  conda install -y -c conda-forge python-igraph
+  conda install -y libiconv # Needed for igraph to run properly
   pip install tulip-python
   pip install ndex-dev
   ```   
@@ -112,7 +112,7 @@ Alternatively, you can run DDOT in [example Jupyter notebooks](examples). To do 
 (base) root@<container>:/$ jupyter notebook --no-browser --allow-root --ip 0.0.0.0 --NotebookApp.token=''
 ```
 
-Next, open up your web browser and access the notebooks at http://0.0.0.0:8888/notebooks/ddot_examples/. We recommend starting with the tutorial `Tutorial.ipynb`.
+Next, open up your web browser and access the notebooks at http://0.0.0.0:8888/. We recommend starting with the tutorial `Tutorial.ipynb`.
 
 # Citing DDOT
 

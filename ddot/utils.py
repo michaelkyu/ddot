@@ -677,22 +677,36 @@ def create_edgeMatrix(X, X_cols, X_rows, verbose=True, G=None, ndex2=True):
         if not X.flags['C_CONTIGUOUS']:
             X = np.ascontiguousarray(X)
 
-        serialized = base64.b64encode(X.tobytes())
+        X_bytes = X.tobytes()
+        chunk_size = int(1e8) # 100MB
+        serialized_list = [{'v': base64.b64encode(X_bytes[s:e])} for i, (s, e) in enumerate(ddot.split_indices_chunk(len(X_bytes), chunk_size))]
+        if verbose:
+            print('Broke up serialization into %s chunks' % len(serialized_list))
 
         if verbose:
             print('Size of numpy array (MB):', X.nbytes / 1e6)
-            print('Size of serialization (MB):', sys.getsizeof(serialized) / 1e6)
-            print('Constant factor overhead:', float(sys.getsizeof(serialized)) / X.nbytes)
+            serialize_size = sum([sys.getsizeof(x['v']) for x in serialized_list])
+            print('Size of serialization (MB):', serialize_size / 1e6)
+            print('Constant factor overhead:', float(serialize_size) / X.nbytes)
+            
+#         serialized = base64.b64encode(X.tobytes())
+
+#         if verbose:
+#             print('Size of numpy array (MB):', X.nbytes / 1e6)
+#             print('Size of serialization (MB):', sys.getsizeof(serialized) / 1e6)
+#             print('Constant factor overhead:', float(sys.getsizeof(serialized)) / X.nbytes)
+
+#         chunk_size = int(1e8)
+# #        chunk_size = int(1e1)
+#         serialized_list = [{'v': serialized[s:e]} for i, (s, e) in enumerate(ddot.split_indices_chunk(len(serialized), chunk_size))]
+#         if verbose:
+#             print('Broke up serialization into %s chunks' % len(serialized_list))
+
 
         nice_cx_builder = ndex2.NiceCXBuilder()
         # nice_cx_builder.set_name(name)
         nice_cx_builder.add_node(name='Matrix', represents='Matrix')
 
-        chunk_size = int(1e8)
-        serialized_list = [{'v': serialized[s:e]} for i, (s, e) in enumerate(ddot.split_indices_chunk(len(serialized), chunk_size))]
-        if verbose:
-            print('Broke up serialization into %s chunks' % len(serialized_list))
-                  
         # nice_cx_builder.add_opaque_aspect('matrix', [{'v': serialized}])
         #nice_cx_builder.add_opaque_aspect('matrix', [serialized_list])
         nice_cx_builder.add_opaque_aspect('matrix', serialized_list)
@@ -799,71 +813,50 @@ def load_edgeMatrix(ndex_uuid,
 
     start = time.time()
     response = ndex.get_network_as_cx_stream(ndex_uuid)
-    tmp = response.content
+    response.raw.decode_content = True
+    cx = json.load(response.raw)
     if verbose:
-        print('NDEx download time (sec):', time.time() - start)
-    cx = json.loads(tmp)
-
-    if verbose:
-        print('Read HTTP response as JSON',
-              json.__name__, 'time (sec):',
-              time.time() - start)
+        print('NDEx download and CX parse time (sec):', time.time() - start)
+    
+    # tmp = response.content
+    # if verbose:
+    #     print('NDEx download time (sec):', time.time() - start)
+    # cx = json.loads(tmp)
 
     start_loop = time.time()
 
     for aspect in cx:
-        if 'matrix' in aspect:
-            if sys.version_info.major==3:
-                binary_data = base64.decodebytes((b"").join([x.get('v').encode('utf-8') for x in aspect.get('matrix')]))
-            else:
-                raise Exception("Not supported")
-            
-            # # Convert text back into binary data
-            # start = time.time()
-            # if sys.version_info.major==3:
-            #     binary_data = base64.decodebytes(aspect.get('matrix')[0].get('v').encode('utf-8'))
-            # else:
-            #     binary_data = base64.decodestring(aspect.get('matrix')[0].get('v'))
-            
-            # if verbose:
-            #     print('base64 decoding time (sec):', time.time() - start)
         if 'matrix_cols' in aspect:
             cols = aspect.get('matrix_cols')[0].get('v')
         if 'matrix_rows' in aspect:
             rows = aspect.get('matrix_rows')[0].get('v')
         if 'matrix_dtype' in aspect:
             dtype = np.dtype(aspect.get('matrix_dtype')[0].get('v'))
-            
-        # if 'matrix' in aspect:
 
-        #     assert 'matrix_dtype' in aspect
-        #     assert 'matrix_cols' in aspect
-        #     assert 'matrix_rows' in aspect
-
-        #     # Convert text back into binary data
-        #     start = time.time()
-        #     binary_data = base64.decodestring(aspect.get('matrix'))
-        #     if verbose:
-        #         print('base64 decoding time (sec):', time.time() - start)
-
-        #     dtype = np.dtype(aspect.get('matrix_dtype'))
-        #     rows = aspect.get('matrix_rows')
-        #     cols = aspect.get('matrix_cols')
-        #     dim = (len(rows), len(cols))
-
-        #     # Create a NumPy array, which is nothing but a glorified
-        #     # pointer in C to the binary data in RAM
-        #     X = np.frombuffer(binary_data, dtype=dtype).reshape(dim)
-
-        
     dim = (len(rows), len(cols))
+    if sys.version_info.major==3:
+        X_buf = bytearray(dim[0] * dim[1] * np.dtype(dtype).itemsize)
+    else:
+        raise Exception("Not supported")
+    pointer = 0
+    
+    for aspect in cx:
+        if 'matrix' in aspect:
+            if sys.version_info.major==3:
+                #binary_data = base64.decodebytes((b"").join([x.get('v').encode('utf-8') for x in aspect.get('matrix')]))
+                for x in aspect.get('matrix'):
+                    binary_data = base64.decodebytes(x.get('v').encode('utf-8'))
+                    X_buf[pointer : pointer + len(binary_data)] = binary_data
+                    pointer += len(binary_data)
+            else:
+                raise Exception("Not supported")
 
     # Create a NumPy array, which is nothing but a glorified
     # pointer in C to the binary data in RAM
     X = np.frombuffer(binary_data, dtype=dtype).reshape(dim)
 
     if verbose:
-        print('loop time (sec):', time.time() - start_loop)
+        print('Iterate through CX and construct array time (sec):', time.time() - start_loop)
     
     return X, rows, cols
 
@@ -926,7 +919,8 @@ def ndex_to_sim_matrix(ndex_url,
                        similarity=None,
                        input_fmt='cx_matrix',
                        output_fmt='matrix',
-                       subset=None):
+                       subset=None,
+                       verbose=True):
     """Read a similarity network from NDEx and return it as either a
     square np.array (compact representation) or a pandas.DataFrame of
     the non-zero similarity values (sparse representation)
@@ -1012,7 +1006,8 @@ def ndex_to_sim_matrix(ndex_url,
             ndex_uuid,
             ndex_server,
             ndex_user,
-            ndex_pass)
+            ndex_pass,
+            verbose=verbose)
         assert sim_names == sim_names_col
 
         if subset is not None:

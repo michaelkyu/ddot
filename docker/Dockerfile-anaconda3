@@ -1,6 +1,9 @@
 # Use an official Python runtime as a parent image
 FROM continuumio/anaconda3
 
+RUN apt-get update
+RUN apt-get install -y build-essential 
+
 # Install any needed packages specified in requirements.txt
 RUN conda install -c conda-forge python-igraph 
 RUN conda install networkx=1.11
@@ -10,10 +13,11 @@ RUN conda install libiconv
 
 RUN pip install tulip-python ndex-dev
 
-RUN git clone -b 'v1.0' --single-branch --depth 1 https://github.com/michaelkyu/ddot.git ddot
+RUN pip install simplejson mygene
 
-RUN apt-get update
-RUN apt-get install -y build-essential 
+RUN echo a
+
+RUN git clone -b 'v1.0' --depth 1 https://github.com/michaelkyu/ddot.git ddot
 
 RUN cd ddot && make
 RUN cd ..

@@ -828,11 +828,8 @@ def load_edgeMatrix(ndex_uuid,
         if 'matrix_dtype' in aspect:
             dtype = np.dtype(aspect.get('matrix_dtype')[0].get('v'))
 
-    dim = (len(rows), len(cols))    
-    if sys.version_info.major==3:
-        X_buf = bytearray(dim[0] * dim[1] * np.dtype(dtype).itemsize)
-    else:
-        raise Exception("Not supported")
+    dim = (len(rows), len(cols))
+    X_buf = bytearray(dim[0] * dim[1] * np.dtype(dtype).itemsize)
     pointer = 0
 
     if verbose:
@@ -841,14 +838,22 @@ def load_edgeMatrix(ndex_uuid,
     
     for aspect in cx:
         if 'matrix' in aspect:
-            if sys.version_info.major==3:
-                #binary_data = base64.decodebytes((b"").join([x.get('v').encode('utf-8') for x in aspect.get('matrix')]))
-                for x in aspect.get('matrix'):
+            for x in aspect.get('matrix'):
+                if sys.version_info.major==3:
                     binary_data = base64.decodebytes(x.get('v').encode('utf-8'))
-                    X_buf[pointer : pointer + len(binary_data)] = binary_data
-                    pointer += len(binary_data)
-            else:
-                raise Exception("Not supported")
+                else:
+                    binary_data = base64.b64decode(x.get('v'))
+                X_buf[pointer : pointer + len(binary_data)] = binary_data
+                pointer += len(binary_data)
+
+            # if sys.version_info.major==3:
+            #     #binary_data = base64.decodebytes((b"").join([x.get('v').encode('utf-8') for x in aspect.get('matrix')]))
+            #     for x in aspect.get('matrix'):
+            #         binary_data = base64.decodebytes(x.get('v').encode('utf-8'))
+            #         X_buf[pointer : pointer + len(binary_data)] = binary_data
+            #         pointer += len(binary_data)
+            # else:
+            #     raise Exception("Not supported")
 
     # Create a NumPy array, which is nothing but a glorified
     # pointer in C to the binary data in RAM

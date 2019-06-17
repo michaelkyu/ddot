@@ -1047,7 +1047,10 @@ def expand_seed(seed,
 
     A gene is included in the expanded set only if it meets all of the
     specified criteria. If include_seed is True, then genes that are
-    seeds will be included regardless of the criteria.
+    seeds will be included regardless of the criteria. At the same time,
+    the number of genes returned is still limited by expand_size. One way
+    to get n novel genes returned is therefore to set expand_size = n + |seed| and
+    include_seed = True, and then to remove the seed list from expand.
 
     Parameters
     ----------
@@ -1063,26 +1066,39 @@ def expand_seed(seed,
        Minimum similarity to the seed set.
 
     filter_perc : float
+       Filter based on a percentile of similarities between all genes and the seed set.
     
     seed_perc : float
+       Filter based on a percentile of similarities between seed set to itself.
 
     agg_perc : float
+       The <agg_perc> percentile of similarities to the seed set.
+       For example, if a gene has similarities of (0, 0.2, 0.4,
+       0.6, 0.8) to five seed genes, then the 10% similarity is 0.2
 
     expand_size : int
+       Maximum limit on the number of returned genes.
 
     include_seed : bool
-
+Include the seed genes even if they didn't meet the criteria.
     figure : bool
 
     Returns
     -------
     expand
+       The list of expanded genes passing all filters.
 
     expand_idx
-    
-    sim_2_seed
+       Indices of the ranking. I.e. `expand_idx[0]` is the index of the top
+       gene, so you can get the name of the top gene
+       with `sim_names[expand_idx[0]]` where `sim_names` is the input parameter.
 
+    sim_2_seed
+       The returned array `sim_2_seed` is the calculated similarities of the
+       genes to the seed set. So `sim_2_seed[0]` is the similarity of the gene 
+    
     fig
+       Generate a figure.
 
     """
 

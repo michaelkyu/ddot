@@ -1061,6 +1061,7 @@ def expand_seed(seed,
     sim_names : list of str
 
     agg : str or function
+       Aggregation method. Possible values are mean, min, max, perc.
 
     min_sim : float
        Minimum similarity to the seed set.
@@ -1081,7 +1082,9 @@ def expand_seed(seed,
 
     include_seed : bool
 Include the seed genes even if they didn't meet the criteria.
+
     figure : bool
+       Generate a figure showing the average distances within the seed an d the average distances between seed and the background.
 
     Returns
     -------
@@ -1098,7 +1101,7 @@ Include the seed genes even if they didn't meet the criteria.
        genes to the seed set. So `sim_2_seed[0]` is the similarity of the gene 
     
     fig
-       Generate a figure.
+       The generated figure. Can be saved like this: plt.savefig('foo.pdf')
 
     """
 

@@ -1081,7 +1081,7 @@ def expand_seed(seed,
        Maximum limit on the number of returned genes.
 
     include_seed : bool
-Include the seed genes even if they didn't meet the criteria.
+	Include the seed genes even if they didn't meet the criteria.
 
     figure : bool
        Generate a figure showing the average distances within the seed an d the average distances between seed and the background.

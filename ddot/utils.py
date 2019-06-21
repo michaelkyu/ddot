@@ -1061,46 +1061,57 @@ def expand_seed(seed,
     sim_names : list of str
 
     agg : str or function
+    
        Aggregation method. Possible values are mean, min, max, perc.
 
     min_sim : float
+    
        Minimum similarity to the seed set.
 
     filter_perc : float
+    
        Filter based on a percentile of similarities between all genes and the seed set.
     
     seed_perc : float
+    
        Filter based on a percentile of similarities between seed set to itself.
 
     agg_perc : float
+    
        The <agg_perc> percentile of similarities to the seed set.
        For example, if a gene has similarities of (0, 0.2, 0.4,
        0.6, 0.8) to five seed genes, then the 10% similarity is 0.2
 
     expand_size : int
+    
        Maximum limit on the number of returned genes.
 
     include_seed : bool
 	Include the seed genes even if they didn't meet the criteria.
 
     figure : bool
+    
        Generate a figure showing the average distances within the seed an d the average distances between seed and the background.
 
     Returns
     -------
     expand
+    
        The list of expanded genes passing all filters.
 
     expand_idx
+    
        Indices of the ranking. I.e. `expand_idx[0]` is the index of the top
        gene, so you can get the name of the top gene
        with `sim_names[expand_idx[0]]` where `sim_names` is the input parameter.
 
     sim_2_seed
+    
        The returned array `sim_2_seed` is the calculated similarities of the
        genes to the seed set. So `sim_2_seed[0]` is the similarity of the gene 
     
     fig
+    
        The generated figure. Can be saved like this: plt.savefig('foo.pdf')
 
     """

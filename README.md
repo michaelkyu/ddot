@@ -118,6 +118,4 @@ Next, open up your web browser and access the notebooks at http://0.0.0.0:8888/.
 
 If you find DDOT helpful in your research, please cite
 
-Yu MK, Ma J, Ono K, Zheng F, Fong S, Gary A, Chen J, Demchak B, Pratt
-D, Ideker T. "A swiss-army knife for hierarchical modeling of
-biological systems." (in preparation)
+Michael Ku Yu, Jianzhu Ma, Keiichiro Ono, Fan Zheng, Samson H Fong, Aaron Gary, Jing Chen, Barry Demchak, Dexter Pratt, Trey Ideker. ["DDOT: A Swiss Army Knife for Investigating Data-Driven Biological Ontologies"](https://doi.org/10.1016/j.cels.2019.02.003). Cell Systems. 2019 Mar 27;8(3):267-273. 
